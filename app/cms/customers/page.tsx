@@ -1,19 +1,42 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import Checkbox from "@/app/components/checkbox";
 import { useState } from "react";
 
 const CustomersPage: React.FC = () => {
+    const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
-    const dummy = [];
+    const { FaFilter, FaEye, MdModeEdit, FaRegTrashAlt, MdOutlineCancel, FaBan, FaChevronDown } = icons
 
-    for (let i = 0; i <= 100; i++) {
-        dummy.push(i);
+    const dummy: number[] = [];
+    for (let i = 0; i <= 8; i++) {
+        dummy.push(i)
+    };
+
+    const selectOne = (e: any, i: number) => {
+        if (e.target.checked) {
+            if (!checkBoxes.includes(i)) {
+                setCheckBoxes(checkBoxes.concat(i))
+            }
+            if (checkBoxes.length + 1 == dummy.length) setCheckAll(true)
+        } else {
+            setCheckAll(false)
+            setCheckBoxes(checkBoxes.filter((v) => v !== i))
+        }
     }
 
-    const { FaFilter, FaEye, MdModeEdit, FaRegTrashAlt, MdOutlineCancel, FaBan, FaChevronDown } = icons
+    const selectAll = (e: any) => {
+        setCheckAll(e.target.checked)
+        if (e.target.checked) {
+            setCheckBoxes(dummy)
+        } else {
+            setCheckBoxes([])
+        }
+    }
 
     return (
         <>
+            {JSON.stringify(checkBoxes)}
             <main className="h-full">
                 <div className="mt-5 mb-5 px-6">
                     <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
@@ -68,9 +91,9 @@ const CustomersPage: React.FC = () => {
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead>
                                         <tr>
-                                            <th className="px-2 py-2 md:px-3 bg-gray-50" onClick={() => setCheckAll(!checkAll)}>
+                                            <th className="px-2 py-2 md:px-3 bg-gray-50" >
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 group focus:outline-none focus:underline">
-                                                    <input type="checkbox" />
+                                                    <input type="checkbox" onChange={(e) => selectAll(e)} checked={checkAll} />
                                                 </button>
                                             </th>
                                             <th className="px-3 py-2 md:px-6 md:py-3 bg-gray-50">
@@ -124,7 +147,7 @@ const CustomersPage: React.FC = () => {
                                                 return (
                                                     <tr key={i} className="bg-white">
                                                         <td className="px-2 py-2 md:px-3 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <input type="checkbox" checked={checkAll} />
+                                                            <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
                                                         </td>
                                                         <td className="px-3 py-2 md:px-6 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             {i}
