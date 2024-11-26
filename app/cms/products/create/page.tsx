@@ -143,12 +143,12 @@ const ProductAddForm: React.FC = () => {
                                                 <Switch setEnable={setEnableVariation} />
                                                 {
                                                     !enableVariation ? null :
-                                                        <button onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
+                                                        <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
                                                             className='bg-gray-500 text-white text-xs p-2 rounded-md flex gap-1 items-center'
                                                         >
                                                             <IoIosAddCircleOutline className='w-5 h-5' />
                                                             <b>Thêm biến thể</b>
-                                                        </button>
+                                                        </div>
                                                 }
                                             </div>
                                             {
