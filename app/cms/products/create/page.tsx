@@ -1,4 +1,4 @@
-// import CustomCKEditor from "@/app/components/ckeditor"
+import CustomCKEditor from "@/app/components/ckeditor"
 import CustomDatePicker from "@/app/components/datepicker"
 import CustomImagePicker from "@/app/components/imagepicker"
 
@@ -184,7 +184,7 @@ const ProductAddForm = () => {
                                         <td className="py-2">Chi tiết sản phẩm</td>
                                         <td className="py-2">:</td>
                                         <td className="py-2">
-                                            {/* <CustomCKEditor /> */}
+                                            <CustomCKEditor />
                                         </td>
                                     </tr>
 
