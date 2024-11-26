@@ -1,5 +1,5 @@
 // import CustomCKEditor from "@/app/components/ckeditor"
-// import CustomDatePicker from "@/app/components/datepicker"
+import CustomDatePicker from "@/app/components/datepicker"
 import CustomImagePicker from "@/app/components/imagepicker"
 
 const ProductAddForm = () => {
@@ -12,7 +12,7 @@ const ProductAddForm = () => {
                     </div>
                     <div className="p-3">
                         <form className="">
-                            <table className="">
+                            <table className="w-full">
                                 <tbody>
                                     <tr className="bg-[#347ab6] text-white">
                                         <td colSpan={2} className="bg-primary">&nbsp;</td>
@@ -147,11 +147,11 @@ const ProductAddForm = () => {
                                                 </div>
                                                 <div className="flex flex-col flex-auto">
                                                     <label>Ngày bắt đầu</label>
-                                                    {/* <CustomDatePicker /> */}
+                                                    <CustomDatePicker />
                                                 </div>
                                                 <div className="flex flex-col flex-auto">
                                                     <label>Ngày kết thúc</label>
-                                                    {/* <CustomDatePicker /> */}
+                                                    <CustomDatePicker />
                                                 </div>
                                             </div>
                                             <small className="text-[#eead51]">
