@@ -1,4 +1,9 @@
-import CustomCKEditor from "@/app/components/ckeditor"
+"use client"
+import dynamic from 'next/dynamic';
+const CustomCKEditor = dynamic(() => import('@/app/components/ckeditor'), {
+    ssr: false // Prevents Editor.js from being included in server-side rendering
+});
+// import CustomCKEditor from "@/app/components/ckeditor"
 import CustomDatePicker from "@/app/components/datepicker"
 import CustomImagePicker from "@/app/components/imagepicker"
 
