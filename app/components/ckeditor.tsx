@@ -1,9 +1,9 @@
 "use client"
 import { useState, useEffect, useRef } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import type { EditorConfig } from "ckeditor5"
 
 import {
+    EditorConfig,
     ClassicEditor,
     AccessibilityHelp,
     Alignment,
