@@ -1,7 +1,6 @@
 'use client'
 import { useContext } from 'react';
 import { useState } from "react"
-import { Session } from "@auth/core/types"
 import { AdminContext } from '@/app/hooks/admin.context';
 import { icons } from '@/app/common/icons';
 

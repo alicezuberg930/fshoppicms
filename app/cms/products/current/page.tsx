@@ -1,7 +1,7 @@
 "use client"
 import { icons } from "@/app/common/icons";
 import Link from "next/link";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 const CurrentProductsPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
@@ -13,7 +13,7 @@ const CurrentProductsPage: React.FC = () => {
         dummy.push(i)
     };
 
-    const selectOne = (e: any, i: number) => {
+    const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         if (e.target.checked) {
             if (!checkBoxes.includes(i)) {
                 setCheckBoxes(checkBoxes.concat(i))
@@ -25,7 +25,7 @@ const CurrentProductsPage: React.FC = () => {
         }
     }
 
-    const selectAll = (e: any) => {
+    const selectAll = (e: ChangeEvent<HTMLInputElement>) => {
         setCheckAll(e.target.checked)
         if (e.target.checked) {
             setCheckBoxes(dummy)

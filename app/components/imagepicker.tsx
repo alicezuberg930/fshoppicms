@@ -16,7 +16,7 @@ const CustomImagePicker = () => {
               e.preventDefault();
               setFileEnter(true);
             }}
-            onDragLeave={(e) => {
+            onDragLeave={() => {
               setFileEnter(false);
             }}
             onDragEnd={(e) => {
@@ -61,10 +61,10 @@ const CustomImagePicker = () => {
               type="file"
               className="hidden"
               onChange={(e) => {
-                let files = e.target.files;
+                const files = e.target.files;
                 if (files) {
                   console.log(e.target.files);
-                  let blobUrls: string[] = []
+                  const blobUrls: string[] = []
                   for (let i = 0; i < files?.length; i++) {
                     blobUrls.push(URL.createObjectURL(files[i]))
                   }
