@@ -9,7 +9,7 @@ interface IAdminContext {
 
 export const AdminContext = createContext<IAdminContext | null>(null);
 
-export const AdminContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const AdminContextProvider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     const [collapseMenu, setCollapseMenu] = useState<boolean>(false);
 
     return (

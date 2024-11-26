@@ -2,10 +2,10 @@
 
 import React from "react";
 
-const Content = ({ children }: { children: React.ReactNode }) => {
+const Content = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     return (
         <main className="h-full overflow-y-auto">
-            <div className="w-full py-3 mx-auto">
+            <div className="w-full mx-auto">
                 {children}
             </div>
         </main>

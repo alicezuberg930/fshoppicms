@@ -5,7 +5,7 @@ import { Session } from "@auth/core/types"
 import { AdminContext } from '@/app/hooks/admin.context';
 import { icons } from '@/app/common/icons';
 
-const Header: React.FC<{ session?: Session | null }> = ({ session }) => {
+const Header: React.FC = () => {
     const [hideProfile, setHideProfile] = useState<boolean>(true)
     const { collapseMenu, setCollapseMenu } = useContext(AdminContext)!;
     const { FaChevronDown, CiBellOn } = icons
@@ -41,7 +41,7 @@ const Header: React.FC<{ session?: Session | null }> = ({ session }) => {
                             >
                                 <img className="object-cover w-8 h-8 rounded-full"
                                     src="https://sobexpressacms.di4l.vn/images/user.png" alt="profile" />
-                                <p className="hidden md:block">{session?.user?.name ?? "Hatsune Miku"}</p>
+                                <p className="hidden md:block">{"Hatsune Miku"}</p>
                                 <FaChevronDown className="w-5 h-5" />
                             </button>
                         </div>

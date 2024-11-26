@@ -1,8 +1,9 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import Link from "next/link";
 import { useState } from "react";
 
-const CustomersPage: React.FC = () => {
+const CurrentProductsPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
@@ -38,12 +39,12 @@ const CustomersPage: React.FC = () => {
             <main className="h-full">
                 <div className="mt-5 mb-5 px-6">
                     <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
-                        <h2>Khách hàng</h2>
+                        <h2>Sản phẩm</h2>
                         <div className="flex gap-2">
-                            <button className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
+                            <Link className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4" href="/cms/products/create">
                                 <IoIosAddCircleOutline className="w-5 h-5" />
                                 <span>Thêm mới</span>
-                            </button>
+                            </Link>
                             <button className="flex items-center text-sm font-medium rounded-xl bg-red-600 gap-1 text-white py-2 px-4">
                                 <FaRegTrashAlt className="w-5 h-5" />
                                 <span>Xóa</span>
@@ -96,7 +97,7 @@ const CustomersPage: React.FC = () => {
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead>
                                         <tr>
-                                            <th className="px-2 py-2 bg-gray-50" >
+                                            <th className="px-2 py-2 bg-gray-50">
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 group focus:outline-none">
                                                     <input type="checkbox" onChange={(e) => selectAll(e)} checked={checkAll} />
                                                 </button>
@@ -128,12 +129,7 @@ const CustomersPage: React.FC = () => {
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
                                                     <span>Số lượng</span>
                                                     <span className="relative flex items-center">
-                                                        <svg className="w-3 h-3 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-                                                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                            xmlns="http://www.w3.org/2000/svg">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2" d="M5 15l7-7 7 7"></path>
-                                                        </svg>
+                                                        <FaChevronDown className="w-2 h-2" />
                                                     </span>
                                                 </button>
                                             </th>
@@ -166,7 +162,7 @@ const CustomersPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
-                                                                Người dùng grefick ddd wirhiuw wiorhfuhf fjeioffer feifu erifheu fehfer eorirfh  erf4re cefer wfiuw wifuuid ddddserer {i * 1000000}
+                                                                Tên sản phẩm {i * 1000000}
                                                             </div>
                                                         </td>
 
@@ -199,123 +195,14 @@ const CustomersPage: React.FC = () => {
                                 </table>
                             </div>
                             {/* <div className="p-6 md:p-0">
-                        {{ $products->links() }}
-                    </div> */}
+                                {{ $products->links() }}
+                            </div> */}
                         </div>
                     </div>
                 </div>
-                {/* create modal */}
-                <div className="w-full h-screen fixed inset-0 z-20 overflow-y-scroll" hidden>
-                    <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="fixed inset-0 transition-opacity">
-                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                        </div>
-                        <div className="relative inline-block bg-white shadow-xl sm:my-8 sm:align-middle sm:max-w-3xl rounded-md w-full">
-                            <form>
-                                <div className="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4 text-left rounded-md">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xl font-semibold">Tạo sản phẩm</span>
-                                        <span className="text-white w-6 h-6">
-                                            {/* <x-bi-x-circle-fill className="w-6 h-6" fill="red" /> */}
-                                        </span>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div className="w-3/4">
-                                            <label className="block mt-4 text-sm">
-                                                <span className="text-gray-700">Tên</span>
-                                                <input className="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:border-blue-300 focus:outline-none focus:shadow-sm" />
-                                            </label>
-                                        </div>
-                                        <div className="w-1/4">
-                                            <label className="block mt-4 text-sm">
-                                                <span className="text-gray-700">Số lượng</span>
-                                                <input className="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:border-blue-300 focus:outline-none focus:shadow-sm" step="1" type="number" value="1" />
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div className="w-3/4">
-                                            <label className="block mt-4 text-sm">
-                                                <span className="text-gray-700">Thể loại</span>
-                                                <div className="w-full inline-block">
-                                                    <select className="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:border-blue-300 focus:outline-none focus:shadow-sm">
-
-                                                    </select>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <div className="w-1/4">
-                                            <label className="block mt-4 text-sm">
-                                                <span className="text-gray-700">Nguồn gốc</span>
-                                                <div className="w-full inline-block">
-                                                    <select className="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:border-blue-300 focus:outline-none focus:shadow-sm">
-                                                    </select>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block mt-4 text-sm">
-                                            <span className="text-gray-700">Hình ảnh</span>
-                                            <div className="w-full mt-1 inline-block">
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div>
-                                        <label className="block mt-4 text-sm">
-                                            <span className="text-gray-700">Mô tả</span>
-                                            <div className="w-full mt-1 inline-block h-56">
-                                                <div x-data x-ref="editor">
-                                                    description
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div className="w-3/4">
-                                            <label className="block mt-4 text-sm">
-                                                <span className="text-gray-700">Giá</span>
-                                                <input className="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:border-blue-300 focus:outline-none focus:shadow-sm" step="1" type="number" value="1" />
-                                            </label>
-                                        </div>
-                                        <div className="w-1/4">
-                                            <label className="block mt-4 text-sm">
-                                                <span className="text-gray-700">Giảm giá</span>
-                                                <div className="w-full inline-block">
-                                                    <select className="w-full p-2 mt-1 text-sm border border-gray-300 rounded focus:border-blue-300 focus:outline-none focus:shadow-sm">
-                                                    </select>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block mt-4 text-sm">
-                                            <div className="flex items-center gap-4">
-                                                <input className="w-5 h-5 border border-gray-300 rounded-sm" type="checkbox" />
-                                                <span className="font-semibold text-gray-700">Kích hoạt</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="px-4 py-3 bg-gray-50 flex">
-                                    <button type="submit"
-                                        className="bg-blue-300 w-full px-4 py-2 font-medium text-white border border-transparent rounded-md shadow-sm bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                        Lưu
-                                    </button>
-                                    <button type="button"
-                                        className="w-full px-4 py-2 mt-3 font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                        Đóng
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {/* show details modal  */}
             </main>
-
         </>
     )
 }
 
-export default CustomersPage
+export default CurrentProductsPage
