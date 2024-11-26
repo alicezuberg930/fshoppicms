@@ -1,5 +1,5 @@
-import CustomCKEditor from "@/app/components/ckeditor"
-import CustomDatePicker from "@/app/components/datepicker"
+// import CustomCKEditor from "@/app/components/ckeditor"
+// import CustomDatePicker from "@/app/components/datepicker"
 import CustomImagePicker from "@/app/components/imagepicker"
 
 const ProductAddForm = () => {
@@ -147,11 +147,11 @@ const ProductAddForm = () => {
                                                 </div>
                                                 <div className="flex flex-col flex-auto">
                                                     <label>Ngày bắt đầu</label>
-                                                    <CustomDatePicker />
+                                                    {/* <CustomDatePicker /> */}
                                                 </div>
                                                 <div className="flex flex-col flex-auto">
                                                     <label>Ngày kết thúc</label>
-                                                    <CustomDatePicker />
+                                                    {/* <CustomDatePicker /> */}
                                                 </div>
                                             </div>
                                             <small className="text-[#eead51]">
@@ -184,7 +184,7 @@ const ProductAddForm = () => {
                                         <td className="py-2">Chi tiết sản phẩm</td>
                                         <td className="py-2">:</td>
                                         <td className="py-2">
-                                            <CustomCKEditor />
+                                            {/* <CustomCKEditor /> */}
                                         </td>
                                     </tr>
 
@@ -192,7 +192,7 @@ const ProductAddForm = () => {
                                         <td className="py-2">Thông số kỹ thuật</td>
                                         <td className="py-2">:</td>
                                         <td className="py-2">
-                                            <CustomCKEditor />
+                                            {/* <CustomCKEditor /> */}
                                         </td>
                                     </tr>
 
