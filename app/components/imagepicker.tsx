@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { icons } from "../common/icons";
 
-const CustomImagePicker = () => {
+const CustomImagePicker: React.FC = () => {
   const [files, setFiles] = useState<string[]>([]);
   const [fileEnter, setFileEnter] = useState<boolean>(false);
   const { IoImagesOutline } = icons

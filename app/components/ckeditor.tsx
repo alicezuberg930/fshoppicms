@@ -79,7 +79,7 @@ import {
 import 'ckeditor5/ckeditor5.css'
 import '@/public/css/ckeditor.css'
 
-const CustomCKEditor = () => {
+const CustomCKEditor: React.FC = () => {
     const editorContainerRef = useRef(null);
     const editorRef = useRef(null);
     const [isLayoutReady, setIsLayoutReady] = useState(false);
