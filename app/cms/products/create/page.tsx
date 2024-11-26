@@ -1,9 +1,8 @@
 "use client"
-import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic'
 const CustomCKEditor = dynamic(() => import('@/app/components/ckeditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });
-// import CustomCKEditor from "@/app/components/ckeditor"
 import CustomDatePicker from "@/app/components/datepicker"
 import CustomImagePicker from "@/app/components/imagepicker"
 
@@ -197,7 +196,7 @@ const ProductAddForm = () => {
                                         <td className="py-2">Thông số kỹ thuật</td>
                                         <td className="py-2">:</td>
                                         <td className="py-2">
-                                            {/* <CustomCKEditor /> */}
+                                            <CustomCKEditor />
                                         </td>
                                     </tr>
 

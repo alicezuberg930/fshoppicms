@@ -1,9 +1,5 @@
 "use client"
 import { useState, useEffect, useRef } from 'react';
-// const CKEditor = dynamic(
-//     () => import('@ckeditor/ckeditor5-react').then((mod) => mod.CKEditor),
-//     { ssr: false }
-// );
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
     EditorConfig,
@@ -80,12 +76,10 @@ import {
     Underline,
     Undo
 } from 'ckeditor5';
-
-import 'ckeditor5/ckeditor5.css';
-
+import 'ckeditor5/ckeditor5.css'
 import '@/public/css/ckeditor.css'
 
-const App = () => {
+const CustomCKEditor = () => {
     const editorContainerRef = useRef(null);
     const editorRef = useRef(null);
     const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -382,40 +376,4 @@ const App = () => {
     );
 }
 
-export default App
-
-
-// 'use client';
-// import dynamic from 'next/dynamic';
-// import React, { useState } from 'react';
-
-// import { EditorState, convertToRaw } from 'draft-js';
-// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
-// const Editor = dynamic(
-//     () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
-//     { ssr: false }
-// );
-
-// const CustomCKEditor = () => {
-
-//     const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
-//     const onEditorStateChange = (newEditorState: EditorState) => {
-//         setEditorState(newEditorState);
-//     };
-
-//     return (
-//         <>
-//             <Editor
-//                 editorState={editorState}
-//                 wrapperClassName="demo-wrapper"
-//                 editorClassName="demo-editor"
-//                 onEditorStateChange={onEditorStateChange}
-//             />
-//         </>
-
-//     );
-// };
-
-// export default CustomCKEditor
+export default CustomCKEditor
