@@ -27,7 +27,7 @@ const CustomImagePicker = () => {
               e.preventDefault();
               setFileEnter(false);
               if (e.dataTransfer.items) {
-                let blobUrls: string[] = [];
+                const blobUrls: string[] = [];
                 [...e.dataTransfer.items].forEach((item, i) => {
                   if (item.kind === "file") {
                     const file = item.getAsFile();
@@ -59,6 +59,7 @@ const CustomImagePicker = () => {
               multiple
               id="file"
               type="file"
+              accept="image/*"
               className="hidden"
               onChange={(e) => {
                 const files = e.target.files;
