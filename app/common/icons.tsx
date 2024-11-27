@@ -1,4 +1,4 @@
-import { FaBan, FaGithub, FaLaravel, FaFilter, FaEye, FaRegTrashAlt, FaBoxOpen } from "react-icons/fa";
+import { FaRegShareSquare, FaBan, FaGithub, FaLaravel, FaFilter, FaEye, FaRegTrashAlt, FaBoxOpen } from "react-icons/fa";
 import { FaPhp } from "react-icons/fa6";
 import { SiMysql } from "react-icons/si";
 import { FaBootstrap } from "react-icons/fa";
@@ -38,4 +38,5 @@ export const icons = {
     FaBoxOpen,
     IoIosAddCircleOutline,
     IoImagesOutline,
+    FaRegShareSquare,
 }

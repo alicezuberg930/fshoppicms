@@ -109,11 +109,11 @@ const CustomersPage: React.FC = () => {
                                                     </span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2 md:py-3 bg-gray-50 w-[120px]">
+                                            {/* <th className="px-3 py-2 md:py-3 bg-gray-50 w-[120px]">
                                                 <span className="block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left">
                                                     Ảnh
                                                 </span>
-                                            </th>
+                                            </th> */}
                                             <th className="px-3 py-2 md:py-3 bg-gray-50 w-1/3">
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
                                                     <span>Tên</span>
@@ -128,12 +128,7 @@ const CustomersPage: React.FC = () => {
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
                                                     <span>Số lượng</span>
                                                     <span className="relative flex items-center">
-                                                        <svg className="w-3 h-3 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-                                                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                            xmlns="http://www.w3.org/2000/svg">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2" d="M5 15l7-7 7 7"></path>
-                                                        </svg>
+                                                        <FaChevronDown className="w-2 h-2" />
                                                     </span>
                                                 </button>
                                             </th>
@@ -158,11 +153,11 @@ const CustomersPage: React.FC = () => {
                                                             {i}
                                                         </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                        {/* <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="h-24 w-20">
                                                                 <img className="object-cover w-full h-full" srcSet="/logo.png" />
                                                             </div>
-                                                        </td>
+                                                        </td> */}
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">

@@ -1,4 +1,3 @@
-
 const AdminPage: React.FC = () => {
   return (
     <>
