@@ -9,7 +9,7 @@ import Switch from '@/app/components/switch';
 import { useState } from 'react';
 import { icons } from '@/app/common/icons';
 
-const ProductAddForm: React.FC = () => {
+const CreateProductPage: React.FC = () => {
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
@@ -158,10 +158,10 @@ const ProductAddForm: React.FC = () => {
                                                             variantElements.map(e => {
                                                                 return (
                                                                     <div key={e}>
-                                                                        <div className='flex flex-wrap gap-2 my-2'>
-                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 flex-auto focus:border-blue-500' type='text' placeholder='Biến thể' />
-                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 flex-auto focus:border-blue-500' type='text' placeholder='Thuộc tính' />
-                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 flex-auto focus:border-blue-500' type='number' placeholder='Kho' />
+                                                                        <div className='flex gap-2 my-2'>
+                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-[40%] focus:border-blue-500' type='text' placeholder='Biến thể' />
+                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-[30%] focus:border-blue-500' type='text' placeholder='Thuộc tính' />
+                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-[30%] focus:border-blue-500' type='number' placeholder='Kho' />
                                                                             <button className='p-2 rounded-md text-white bg-red-500'
                                                                                 onClick={() => setVariantElements(variantElements => variantElements.filter(i => i !== e))}
                                                                             >
@@ -298,9 +298,9 @@ const ProductAddForm: React.FC = () => {
                         </form>
                     </div>
                 </div>
-            </div >
+            </div>
         </>
     )
 }
 
-export default ProductAddForm
+export default CreateProductPage

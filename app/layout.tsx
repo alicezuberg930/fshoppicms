@@ -5,6 +5,7 @@ import Content from "./components/admin/content";
 import Header from "./components/admin/header";
 import SideBar from "./components/admin/sidebar"
 import { AdminContextProvider } from "./hooks/admin.context"
+import CustomProvider from "./components/StoreProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,15 +34,17 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AdminContextProvider>
-          <div className='flex h-screen'>
-            <SideBar />
-            <div className='flex flex-col flex-1 w-full'>
-              <Header />
-              <Content>
-                {children}
-              </Content>
+          <CustomProvider>
+            <div className='flex h-screen'>
+              <SideBar />
+              <div className='flex flex-col flex-1 w-full'>
+                <Header />
+                <Content>
+                  {children}
+                </Content>
+              </div>
             </div>
-          </div>
+          </CustomProvider>
         </AdminContextProvider>
       </body>
     </html>
