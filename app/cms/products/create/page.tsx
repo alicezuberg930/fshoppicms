@@ -18,8 +18,8 @@ const CreateProductPage: React.FC = () => {
         <>
             <div className='w-full'>
                 <div className=''>
-                    <div className='p-3 bg-[#f5f5f5]'>
-                        <h3 className='text-red-500 font-semibold'>Thêm sản phẩm</h3>
+                    <div className='bg-[#f5f5f5] p-3'>
+                        <h3 className='font-semibold text-red-500'>Thêm sản phẩm</h3>
                     </div>
                     <div className='p-3'>
                         <form className='' onSubmit={(e) => e.preventDefault()}>
@@ -27,14 +27,14 @@ const CreateProductPage: React.FC = () => {
                                 <tbody>
                                     <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2} className='bg-primary'>&nbsp;</td>
-                                        <td className='font-bold text-sm py-3'>Phân loại sản phẩm</td>
+                                        <td className='py-3 font-bold text-sm'>Phân loại sản phẩm</td>
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Thương hiệu<b className='text-danger'>*</b></td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <select className='outline-none rounded-md border p-2 border-gray-300 w-full' autoComplete='off'>
+                                        <td className='py-3'>Thương hiệu<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <select className='border-gray-300 p-2 border rounded-md w-full outline-none' autoComplete='off'>
                                                 <option value=''>Vui lòng chọn...</option>
                                             </select>
                                             {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
@@ -57,53 +57,53 @@ const CreateProductPage: React.FC = () => {
 
                                     <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2}>&nbsp;</td>
-                                        <td className='font-bold text-sm py-3'>Thông tin sản phẩm</td>
+                                        <td className='py-3 font-bold text-sm'>Thông tin sản phẩm</td>
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Hình</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
+                                        <td className='py-3'>Hình</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
                                             <div className='mb-2'>
                                                 <CustomImagePicker />
                                             </div>
-                                            <p className='text-red-500 mb-0 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
+                                            <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Mã sản phẩm<b className='text-red-500'>*</b></td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-full focus:border-blue-500' type='text' required autoComplete='off' />
+                                        <td className='py-3'>Mã sản phẩm<b className='text-red-500'>*</b></td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Tên Sản Phẩm<b className='text-danger'>*</b></td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-full focus:border-blue-500' type='text' required autoComplete='off' />
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td className='py-2'>Giới thiệu/Mô tả ngắn</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <textarea rows={5} className='outline-none rounded-md border p-2 border-gray-300 w-full focus:border-blue-500' />
+                                        <td className='py-3'>Tên Sản Phẩm<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Trạng thái</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
+                                        <td className='py-3'>Giới thiệu/Mô tả ngắn</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <textarea rows={5} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td className='py-3'>Trạng thái</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
                                             <div className='space-x-2 text-white text-xs'>
-                                                <label className='p-2 rounded-md bg-[#347ab6]'>
+                                                <label className='bg-[#347ab6] p-2 rounded-md'>
                                                     <input name='status' type='radio' value='1' autoComplete='off' defaultChecked />
                                                     Hiển thị
                                                 </label>
-                                                <label className='p-2 rounded-md bg-[#eead51]'>
+                                                <label className='bg-[#eead51] p-2 rounded-md'>
                                                     <input name='status' type='radio' value='0' autoComplete='off' />
                                                     Không Hiển thị
                                                 </label>
@@ -111,23 +111,23 @@ const CreateProductPage: React.FC = () => {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Tình trạng</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <div className='gap-2 text-white text-xs flex flex-wrap'>
-                                                <label className='p-2 rounded-md bg-[#5eb95b]'>
+                                        <td className='py-3'>Tình trạng</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <div className='flex flex-wrap gap-2 text-white text-xs'>
+                                                <label className='bg-[#5eb95b] p-2 rounded-md flex items-center gap-1'>
                                                     <input type='radio' value='1' name='tinhtrang' defaultChecked />
                                                     <b>Đang có hàng</b>
                                                 </label>
-                                                <label className='p-2 rounded-md bg-[#eead51]'>
+                                                <label className='bg-[#eead51] p-2 rounded-md flex items-center gap-1'>
                                                     <input type='radio' value='9' name='tinhtrang' />
                                                     <b>Hết hàng</b>
                                                 </label>
-                                                <label className='p-2 rounded-md bg-[#5ac0dd]'>
+                                                <label className='bg-[#5ac0dd] p-2 rounded-md flex items-center gap-1'>
                                                     <input type='radio' value='2' name='tinhtrang' />
                                                     <b>Hàng đặt theo yêu cầu</b>
                                                 </label>
-                                                <label className='p-2 rounded-md bg-red-500'>
+                                                <label className='bg-red-500 p-2 rounded-md flex items-center gap-1'>
                                                     <input type='radio' value='3' name='tinhtrang' />
                                                     <b>Hàng đang về</b>
                                                 </label>
@@ -135,16 +135,16 @@ const CreateProductPage: React.FC = () => {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Biến thể</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <div className='flex gap-6 items-center'>
+                                        <td className='py-3'>Biến thể</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <div className='flex items-center gap-6'>
                                                 <b className=''>Bật tắt biến thể</b>
                                                 <Switch setEnable={setEnableVariation} />
                                                 {
                                                     !enableVariation ? null :
                                                         <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
-                                                            className='bg-gray-500 text-white text-xs p-2 rounded-md flex gap-1 items-center'
+                                                            className='flex items-center gap-1 bg-gray-500 p-2 rounded-md text-white text-xs'
                                                         >
                                                             <IoIosAddCircleOutline className='w-5 h-5' />
                                                             <b>Thêm biến thể</b>
@@ -159,10 +159,10 @@ const CreateProductPage: React.FC = () => {
                                                                 return (
                                                                     <div key={e}>
                                                                         <div className='flex gap-2 my-2'>
-                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-[40%] focus:border-blue-500' type='text' placeholder='Biến thể' />
-                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-[30%] focus:border-blue-500' type='text' placeholder='Thuộc tính' />
-                                                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-[30%] focus:border-blue-500' type='number' placeholder='Kho' />
-                                                                            <button className='p-2 rounded-md text-white bg-red-500'
+                                                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[40%] outline-none' type='text' placeholder='Biến thể' />
+                                                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='text' placeholder='Thuộc tính' />
+                                                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='number' placeholder='Kho' />
+                                                                            <button className='bg-red-500 p-2 rounded-md text-white'
                                                                                 onClick={() => setVariantElements(variantElements => variantElements.filter(i => i !== e))}
                                                                             >
                                                                                 <FaRegTrashAlt className='w-5 h-5' />
@@ -179,24 +179,24 @@ const CreateProductPage: React.FC = () => {
 
                                     <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2}>&nbsp;</td>
-                                        <td className='font-bold text-sm py-3'>Giá bán</td>
+                                        <td className='py-3 font-bold text-sm'>Giá bán</td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Giá bán<b className='text-danger'>*</b></td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <input className='outline-none rounded-md border p-2 border-gray-300 w-full focus:border-blue-500' type='text' required autoComplete='off' />
+                                        <td className='py-3'>Giá bán<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Giá khuyến mãi</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <div className='flex flex-col lg:flex-row gap-5'>
+                                        <td className='py-3'>Giá khuyến mãi</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <div className='flex lg:flex-row flex-col gap-5'>
                                                 <div className='flex flex-col flex-auto'>
                                                     <label>Giá khuyến mãi</label>
-                                                    <input name='price_sale' value='0' className='outline-none rounded-md border p-2 border-gray-300 focus:border-blue-500 w-full' type='text' autoComplete='off' />
+                                                    <input name='price_sale' value='0' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' />
                                                 </div>
                                                 <div className='flex flex-col flex-auto'>
                                                     <label>Ngày bắt đầu</label>
@@ -215,13 +215,13 @@ const CreateProductPage: React.FC = () => {
 
                                     <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2}>&nbsp;</td>
-                                        <td className='font-bold text-sm py-3'>Chi tiết sản phẩm</td>
+                                        <td className='py-3 font-bold text-sm'>Chi tiết sản phẩm</td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Video</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
-                                            <input className='outline-none rounded-md border p-2 border-gray-300 focus:border-blue-500 w-full' type='text' autoComplete='off' />
+                                        <td className='py-3'>Video</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' />
                                             <div>
                                                 <small className='text-[#eead51]'>
                                                     - Copy đường dẫn Video từ Youtube.<br />
@@ -234,62 +234,62 @@ const CreateProductPage: React.FC = () => {
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Chi tiết sản phẩm</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
+                                        <td className='py-3'>Chi tiết sản phẩm</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
                                             <CustomCKEditor />
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td className='py-2'>Thông số kỹ thuật</td>
-                                        <td className='py-2'>:</td>
-                                        <td className='py-2'>
+                                        <td className='py-3'>Thông số kỹ thuật</td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
                                             <CustomCKEditor />
                                         </td>
                                     </tr>
 
                                     {/* <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2}>&nbsp;</td>
-                                        <td className='font-bold text-sm py-3'>SEO</td>
+                                        <td className='py-3 font-bold text-sm'>SEO</td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>URL: Slug<b className='text-danger'>*</b></td>
-                                        <td className='py-2'><b>:</b></td>
-                                        <td className='py-2'>
-                                            <div className='flex items-center border rounded-md border-gray-300'>
-                                                <div className='p-2 h-full text-red-500 font-bold bg-[#eeeeee]'>https://fshoppii.com/</div>
-                                                <input className='outline-none p-2 border focus:border-blue-500 w-full' type='text' required autoComplete='off' />
+                                        <td className='py-3'>URL: Slug<b className='text-danger'>*</b></td>
+                                        <td className='py-3'><b>:</b></td>
+                                        <td className='py-3'>
+                                            <div className='flex items-center border-gray-300 border rounded-md'>
+                                                <div className='bg-[#eeeeee] p-2 h-full font-bold text-red-500'>https://fshoppii.com/</div>
+                                                <input className='p-2 border focus:border-blue-500 w-full outline-none' type='text' required autoComplete='off' />
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Meta Title<b className='text-danger'>*</b></td>
-                                        <td className='py-2'><b>:</b></td>
-                                        <td className='py-2'>
-                                            <input className='outline-none rounded-md border p-2 border-gray-300 focus:border-blue-500 w-full' type='text' required autoComplete='off' />
+                                        <td className='py-3'>Meta Title<b className='text-danger'>*</b></td>
+                                        <td className='py-3'><b>:</b></td>
+                                        <td className='py-3'>
+                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Meta Description</td>
-                                        <td className='py-2'><b>:</b></td>
-                                        <td className='py-2'>
-                                            <textarea className='outline-none rounded-md border p-2 border-gray-300 focus:border-blue-500 w-full' rows={2} />
+                                        <td className='py-3'>Meta Description</td>
+                                        <td className='py-3'><b>:</b></td>
+                                        <td className='py-3'>
+                                            <textarea className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={2} />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-2'>Meta keyword</td>
-                                        <td className='py-2'><b>:</b></td>
-                                        <td className='py-2'>
-                                            <textarea className='outline-none rounded-md border p-2 border-gray-300 focus:border-blue-500 w-full' rows={2} />
+                                        <td className='py-3'>Meta keyword</td>
+                                        <td className='py-3'><b>:</b></td>
+                                        <td className='py-3'>
+                                            <textarea className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={2} />
                                         </td>
                                     </tr> */}
                                     <tr>
                                         <td colSpan={2}>&nbsp;</td>
                                         <td>
                                             <div className='space-x-3 font-bold text-md'>
-                                                <input type='submit' className='rounded-md p-3 outline-none bg-[#347ab6] text-white' value='Xác Nhận' />
-                                                <input type='reset' className='rounded-md p-3 outline-none bg-[#eeeeee]' value='Nhập Lại' />
+                                                <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
+                                                <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
                                             </div>
                                         </td>
                                     </tr>

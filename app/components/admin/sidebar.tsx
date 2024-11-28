@@ -15,7 +15,7 @@ const SideBar: React.FC = () => {
     const [productlistDropdown, setProductlistDropdown] = useState<boolean>(false)
     const [orderListDropdown, setOrderListDropdown] = useState<boolean>(false)
     return (
-        <aside className={collapseMenu ? "hidden" : "hidden lg:block z-20 flex-shrink-0 w-[270px] p-1 overflow-y-auto text-center bg-gray-800 h-full"}>
+        <aside className={collapseMenu ? "hidden" : "hidden lg:block z-20 flex-shrink-0 w-[260px] p-1 overflow-y-auto text-center bg-gray-800 h-full"}>
             <div className="text-gray-100 text-xl">
                 <div className="p-1 mt-1 flex items-center justify-between">
                     <div className="flex items-center">

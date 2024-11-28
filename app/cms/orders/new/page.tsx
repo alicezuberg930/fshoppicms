@@ -14,14 +14,14 @@ const AdminPage: React.FC = () => {
         <>
             <main className="h-full">
                 <div className="mt-5 mb-5 px-6">
-                    <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
+                    <div className="flex justify-between items-center mb-2 font-semibold text-2xl">
                         <h2>Danh sách đặt hàng</h2>
                         {/* <div className="flex gap-2">
-                            <button className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
+                            <button className="flex items-center gap-1 bg-blue-300 px-4 py-2 rounded-xl font-medium text-sm text-white">
                                 <IoIosAddCircleOutline className="w-5 h-5" />
                                 <span>Thêm mới</span>
                             </button>
-                            <button className="flex items-center text-sm font-medium rounded-xl bg-red-600 gap-1 text-white py-2 px-4">
+                            <button className="flex items-center gap-1 bg-red-600 px-4 py-2 rounded-xl font-medium text-sm text-white">
                                 <FaRegTrashAlt className="w-5 h-5" />
                                 <span>Xóa</span>
                             </button>
@@ -29,27 +29,27 @@ const AdminPage: React.FC = () => {
                     </div>
                     <div className="flex-col">
                         <div className="space-y-4">
-                            <div className="flex flex-col lg:flex-row justify-between gap-2">
-                                <div className="font-semibold rounded-md table border border-gray-300 text-sm text-gray-600">
-                                    <Link href="/cms/orders/new" className="py-2 px-3 border-r border-gray-300 table-cell w-[1%] whitespace-nowrap align-middle">
+                            <div className="flex lg:flex-row flex-col justify-between gap-2">
+                                <div className="border-gray-300 border rounded-md font-semibold text-gray-600 text-sm table">
+                                    <Link href="/cms/orders/new" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
                                         Đơn hàng mới
                                     </Link>
-                                    <Link href="/cms/orders/processing" className="py-2 px-3 border-r border-gray-300 table-cell w-[1%] whitespace-nowrap align-middle">
+                                    <Link href="/cms/orders/processing" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
                                         <span>Đang xử lý</span>
                                     </Link>
-                                    <Link href="/cms/orders/success" className="py-2 px-3 border-r border-gray-300 table-cell w-[1%] whitespace-nowrap align-middle">
+                                    <Link href="/cms/orders/success" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
                                         <span>Thành công</span>
                                     </Link>
-                                    <Link href="/cms/orders" className="py-2 px-3 table-cell w-[1%] whitespace-nowrap align-middle">
+                                    <Link href="/cms/orders" className="px-3 py-2 w-[1%] whitespace-nowrap align-middle table-cell">
                                         <span>Tất cả</span>
                                     </Link>
                                 </div>
-                                <div className="mb-4 md:mb-0 flex items-center gap-4">
-                                    <div className="rounded-md shadow-sm border">
-                                        <input placeholder="Tìm kiếm" type="text" className="p-2 shadow-sm block sm:text-sm sm:leading-5 focus:outline-none focus:border-indigo-300 focus:shadow-blue-300 rounded-md" />
+                                <div className="flex items-center gap-4 mb-4 md:mb-0">
+                                    <div className="shadow-sm border rounded-md">
+                                        <input placeholder="Tìm kiếm" type="text" className="block focus:border-indigo-300 shadow-sm focus:shadow-blue-300 p-2 rounded-md sm:text-sm sm:leading-5 focus:outline-none" />
                                     </div>
-                                    <div className="rounded-md shadow-sm border">
-                                        <select className="block w-full py-2 pl-3 pr-10 text-base leading-6 border border-gray-300 focus:outline-none focus:border-indigo-300 focus:shadow-blue-300 sm:text-sm">
+                                    <div className="shadow-sm border rounded-md">
+                                        <select className="block border-gray-300 focus:border-indigo-300 focus:shadow-blue-300 py-2 pr-10 pl-3 border w-full text-base leading-6 focus:outline-none sm:text-sm">
                                             <option value="5">5</option>
                                             <option value="10">10</option>
                                             <option value="15">15</option>
@@ -60,48 +60,48 @@ const AdminPage: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="align-middle min-w-full shadow rounded-none md:rounded-lg">
-                                <table className="min-w-full divide-y divide-gray-200">
+                            <div className="shadow rounded-none md:rounded-lg min-w-full align-middle">
+                                <table className="divide-y divide-gray-200 min-w-full">
                                     <thead>
                                         <tr>
-                                            <th className="px-3 py-2 md:py-3 bg-gray-50 w-36">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="bg-gray-50 px-3 py-2 md:py-3 w-36">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Code</span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2 md:py-3 bg-gray-50 w-1/3 hidden lg:table-cell">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="hidden bg-gray-50 px-3 py-2 md:py-3 w-1/3 lg:table-cell">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Thông tin người mua</span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2  md:py-3 bg-gray-50">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="bg-gray-50 px-3 py-2 md:py-3">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Tổng tiền</span>
                                                     <span className="relative flex items-center">
                                                         <FaChevronDown className="w-2 h-2" />
                                                     </span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2  md:py-3 bg-gray-50">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="bg-gray-50 px-3 py-2 md:py-3">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Ngày đặt</span>
                                                     <span className="relative flex items-center">
                                                         <FaChevronDown className="w-2 h-2" />
                                                     </span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2  md:py-3 bg-gray-50">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="bg-gray-50 px-3 py-2 md:py-3">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Trạng thái</span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2  md:py-3 bg-gray-50  hidden lg:table-cell">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="hidden bg-gray-50 px-3 py-2 md:py-3 lg:table-cell">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Thanh toán</span>
                                                 </button>
                                             </th>
-                                            <th className="px-3 py-2 md:py-3 bg-gray-50 w-12">
-                                                <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
+                                            <th className="bg-gray-50 px-3 py-2 md:py-3 w-12">
+                                                <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Xem</span>
                                                 </button>
                                             </th>
@@ -113,63 +113,63 @@ const AdminPage: React.FC = () => {
                                             dummy.map((v, i) => {
                                                 return (
                                                     <tr key={i} className="bg-white">
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                        <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                             <div className="text-gray-700">
                                                                 <span className="font-medium">NX{2411080009 * i}</span>
                                                             </div>
                                                         </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900 hidden lg:table-cell">
-                                                            <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-3">
+                                                        <td className="hidden px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal lg:table-cell">
+                                                            <div className="line-clamp-3 text-ellipsis text-gray-700 overflow-hidden">
                                                                 <a href="https://fshoppii.com/cms/cart/view/10/nx2411080010/">
                                                                     <h4>
                                                                         <b className="text-primary">Tiến Nguyễn Vĩnh</b> - <b>Phone: 0932430072</b>
                                                                     </h4>
                                                                     <p><b>Địa chỉ: </b>Ho Chi Minh City, Viet Nam</p>
-                                                                    <p className="text-green-700 font-semibold">Chuyển khoản ngân hàng</p>
+                                                                    <p className="font-semibold text-green-700">Chuyển khoản ngân hàng</p>
                                                                 </a>
                                                             </div>
                                                         </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                        <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                             <div className="text-gray-700">
                                                                 <span className="font-medium">{100000 * i}đ</span>
                                                             </div>
                                                         </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                        <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                             <div className="text-gray-700">
                                                                 <span className="font-medium">{moment().format('HH:mm D/M/YYYY')}</span>
                                                             </div>
                                                         </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-xs text-white">
-                                                                {
-                                                                    i % 2 == 0 ?
-                                                                        <span className="rounded-md p-1.5 bg-blue-300">Đơn hàng mới</span>
-                                                                        : i % 3 == 0 ?
-                                                                            <span className="rounded-md p-1.5 bg-[#347ab6]">Đang xử lý</span>
-                                                                            : i % 5 == 0 ?
-                                                                                <span className="rounded-md p-1.5 bg-[#5eb95b]">Thành công</span>
-                                                                                :
-                                                                                <span className="rounded-md p-1.5 bg-red-500">Thất bại</span>
-                                                                }
-                                                            </div>
-                                                        </td>
-
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900 hidden lg:table-cell">
+                                                        <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                             <div className="text-white text-xs">
                                                                 {
                                                                     i % 2 == 0 ?
-                                                                        <span className="rounded-md p-1.5 bg-[#5eb95b]">Đã thanh toán</span> :
-                                                                        <span className="rounded-md p-1.5 bg-red-500">Chưa thanh toán</span>
+                                                                        <span className="bg-blue-300 p-1.5 rounded-md">Đơn hàng mới</span>
+                                                                        : i % 3 == 0 ?
+                                                                            <span className="bg-[#347ab6] p-1.5 rounded-md">Đang xử lý</span>
+                                                                            : i % 5 == 0 ?
+                                                                                <span className="bg-[#5eb95b] p-1.5 rounded-md">Thành công</span>
+                                                                                :
+                                                                                <span className="bg-red-500 p-1.5 rounded-md">Thất bại</span>
                                                                 }
                                                             </div>
                                                         </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <Link href={`/cms/orders/details/${i}`} className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-blue-300 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700" title="Delete">
+                                                        <td className="hidden px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal lg:table-cell">
+                                                            <div className="text-white text-xs">
+                                                                {
+                                                                    i % 2 == 0 ?
+                                                                        <span className="bg-[#5eb95b] p-1.5 rounded-md">Đã thanh toán</span> :
+                                                                        <span className="bg-red-500 p-1.5 rounded-md">Chưa thanh toán</span>
+                                                                }
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
+                                                            <Link href={`/cms/orders/details/NX${2411080009 * i}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
                                                                 <FaRegShareSquare className='w-5 h-5' />
                                                             </Link>
                                                         </td>
