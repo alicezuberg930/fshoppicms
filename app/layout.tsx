@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Content from "./components/admin/content";
-import Header from "./components/admin/header";
-import SideBar from "./components/admin/sidebar"
+import Content from "./components/AdminContent";
+import Header from "./components/AdminHeader";
+import SideBar from "./components/AdminSideBar"
 import { AdminContextProvider } from "./hooks/admin.context"
 import CustomProvider from "./components/StoreProvider";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -46,6 +48,12 @@ export default function RootLayout({
             </div>
           </CustomProvider>
         </AdminContextProvider>
+        <ToastContainer
+          closeOnClick
+          draggable
+          pauseOnHover
+          pauseOnFocusLoss
+        />
       </body>
     </html>
   );

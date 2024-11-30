@@ -1,18 +1,101 @@
 'use client'
 import dynamic from 'next/dynamic'
-const CustomCKEditor = dynamic(() => import('@/app/components/ckeditor'), {
+const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });
-import CustomDatePicker from '@/app/components/datepicker'
-import CustomImagePicker from '@/app/components/imagepicker'
-import Switch from '@/app/components/switch';
-import { useState } from 'react';
+import CustomDatePicker from '@/app/components/DatePicker';
+import CustomImagePicker from '@/app/components/ImagePicker'
+import { useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';
+import { createProduct, getCategories } from '@/app/services/api';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import CustomSwitch from '@/app/components/CustomSwitch';
 
 const CreateProductPage: React.FC = () => {
+    const [name, setName] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
+    const [price, setPrice] = useState<number>(0)
+    const [stock, setStock] = useState<number>(0)
+    const [category, setCategory] = useState<string>("")
+    const [images, setImages] = useState<string[]>([
+        "https://vignette1.wikia.nocookie.net/rezero/images/0/02/Rem_Anime.png/revision/latest?cb=20160730213532",
+        "https://th.bing.com/th/id/OIP.321nazH3qax8WC5vG0wCVQHaEK?w=1200&h=675&rs=1&pid=ImgDetMain",
+        "https://i.pinimg.com/originals/17/3e/5f/173e5f2f8a2fdd8441d946880ad6a332.jpg",
+        "https://th.bing.com/th/id/OIP.CBQlnWpLiVi89qpy7JY1FwAAAA?w=256&h=256&rs=1&pid=ImgDetMain",
+    ])
+    const [productCode, setProductCode] = useState<string>("")
+
+    const [categories, setCategories] = useState<Category[]>([])
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
+    const { token } = useSelector((state: any) => state.login)
+
+    useEffect(() => {
+        const getCategoriesAction = async () => {
+            try {
+                const response = await getCategories(token);
+                if (response?.status === "OK") {
+                    setCategories(response.data.categories as Category[])
+                }
+            } catch (error) {
+            }
+        }
+        getCategoriesAction()
+    }, [])
+
+    const createProductAction = async () => {
+        let variants: Variant[] = variantInfo()
+        const product: Product = {
+            name: name,
+            description: description,
+            price: price,
+            stock: stock,
+            category: category,
+            images: images,
+            productCode: productCode,
+            options: enableVariation ? variants : [],
+        }
+        try {
+            const response = await createProduct(token, product)
+            if (response?.status === "OK") {
+                toast.success(response.message)
+            } else {
+                toast.error(response.message)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+            }
+        }
+    }
+
+    const variantInfo = () => {
+        const variantsEls = document.getElementsByClassName('variant')
+        let attributes = []
+        let variants: Variant[] = []
+
+        for (let i = 0; i < variantsEls.length; i++) {
+            let variant = (variantsEls[i].children[0] as HTMLInputElement).value
+            let attribute = (variantsEls[i].children[1] as HTMLInputElement).value
+            let stock = +(variantsEls[i].children[2] as HTMLInputElement).value
+            let isDuplicate = variants.find(value => value.key.toLowerCase() === variant.toLowerCase());
+            if (isDuplicate) {
+                isDuplicate.value.push({ val: attribute, quantity: stock })
+            } else {
+                attributes.push({ val: attribute, quantity: stock })
+                variants.push({ key: variant, value: attributes })
+            }
+            attributes = []
+        }
+        return variants
+    }
+
+    const removeAttribute = (i: number) => {
+        setVariantElements(variantElements => variantElements.filter(val => val !== i))
+    }
 
     return (
         <>
@@ -31,11 +114,19 @@ const CreateProductPage: React.FC = () => {
                                     </tr>
 
                                     <tr>
-                                        <td className='py-3'>Thương hiệu<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>Thương hiệu<b className='text-red-500'>*</b></td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <select className='border-gray-300 p-2 border rounded-md w-full outline-none' autoComplete='off'>
-                                                <option value=''>Vui lòng chọn...</option>
+                                            <select onChange={(e) => setCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' autoComplete='off'>
+                                                {
+                                                    categories.length > 0 ?
+                                                        categories?.map(v => {
+                                                            return (
+                                                                <option key={v._id} value={v._id}>{v.name}</option>
+                                                            )
+                                                        }) :
+                                                        <option value="" disabled>Không có dữ liệu</option>
+                                                }
                                             </select>
                                             {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
                                                 data-select2-id='4'>
@@ -75,26 +166,26 @@ const CreateProductPage: React.FC = () => {
                                         <td className='py-3'>Mã sản phẩm<b className='text-red-500'>*</b></td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
+                                            <input onChange={(e) => setProductCode(e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-3'>Tên Sản Phẩm<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>Tên Sản Phẩm<b className='text-red-500'>*</b></td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
+                                            <input onChange={(e) => setName(e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    {/* <tr>
                                         <td className='py-3'>Giới thiệu/Mô tả ngắn</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
                                             <textarea rows={5} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
                                         </td>
-                                    </tr>
+                                    </tr> */}
 
-                                    <tr>
+                                    {/* <tr>
                                         <td className='py-3'>Trạng thái</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
@@ -109,8 +200,8 @@ const CreateProductPage: React.FC = () => {
                                                 </label>
                                             </div>
                                         </td>
-                                    </tr>
-                                    <tr>
+                                    </tr> */}
+                                    {/* <tr>
                                         <td className='py-3'>Tình trạng</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
@@ -133,14 +224,14 @@ const CreateProductPage: React.FC = () => {
                                                 </label>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
                                         <td className='py-3'>Biến thể</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
                                             <div className='flex items-center gap-6'>
                                                 <b className=''>Bật tắt biến thể</b>
-                                                <Switch setEnable={setEnableVariation} />
+                                                <CustomSwitch setEnable={setEnableVariation} />
                                                 {
                                                     !enableVariation ? null :
                                                         <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
@@ -157,17 +248,15 @@ const CreateProductPage: React.FC = () => {
                                                         {
                                                             variantElements.map(e => {
                                                                 return (
-                                                                    <div key={e}>
-                                                                        <div className='flex gap-2 my-2'>
-                                                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[40%] outline-none' type='text' placeholder='Biến thể' />
-                                                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='text' placeholder='Thuộc tính' />
-                                                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='number' placeholder='Kho' />
-                                                                            <button className='bg-red-500 p-2 rounded-md text-white'
-                                                                                onClick={() => setVariantElements(variantElements => variantElements.filter(i => i !== e))}
-                                                                            >
-                                                                                <FaRegTrashAlt className='w-5 h-5' />
-                                                                            </button>
-                                                                        </div>
+                                                                    <div className='flex gap-2 my-2 variant' key={e}>
+                                                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[40%] outline-none' type='text' placeholder='Biến thể' />
+                                                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='text' placeholder='Thuộc tính' />
+                                                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='number' placeholder='Kho' />
+                                                                        <button className='bg-red-500 p-2 rounded-md text-white'
+                                                                            onClick={() => removeAttribute(e)}
+                                                                        >
+                                                                            <FaRegTrashAlt className='w-5 h-5' />
+                                                                        </button>
                                                                     </div>
                                                                 )
                                                             })
@@ -182,14 +271,22 @@ const CreateProductPage: React.FC = () => {
                                         <td className='py-3 font-bold text-sm'>Giá bán</td>
                                     </tr>
                                     <tr>
-                                        <td className='py-3'>Giá bán<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>Giá bán<b className='text-red-500'>*</b></td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
+                                            <input onChange={(e) => setPrice(+e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' required autoComplete='off' />
                                         </td>
                                     </tr>
 
                                     <tr>
+                                        <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
+                                        <td className='py-3'>:</td>
+                                        <td className='py-3'>
+                                            <input onChange={(e) => setStock(+e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' required autoComplete='off' />
+                                        </td>
+                                    </tr>
+
+                                    {/* <tr>
                                         <td className='py-3'>Giá khuyến mãi</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
@@ -211,13 +308,13 @@ const CreateProductPage: React.FC = () => {
                                                 - Nhập <b className='text-red-500'>0</b> nếu không có giá bán khuyến mãi
                                             </small>
                                         </td>
-                                    </tr>
+                                    </tr> */}
 
                                     <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2}>&nbsp;</td>
                                         <td className='py-3 font-bold text-sm'>Chi tiết sản phẩm</td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                         <td className='py-3'>Video</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
@@ -231,30 +328,30 @@ const CreateProductPage: React.FC = () => {
                                                 </small>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </tr> */}
 
                                     <tr>
                                         <td className='py-3'>Chi tiết sản phẩm</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <CustomCKEditor />
+                                            <CustomCKEditor value={setDescription} />
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    {/* <tr>
                                         <td className='py-3'>Thông số kỹ thuật</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
                                             <CustomCKEditor />
                                         </td>
-                                    </tr>
+                                    </tr> */}
 
                                     {/* <tr className='bg-[#347ab6] text-white'>
                                         <td colSpan={2}>&nbsp;</td>
                                         <td className='py-3 font-bold text-sm'>SEO</td>
                                     </tr>
                                     <tr>
-                                        <td className='py-3'>URL: Slug<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>URL: Slug<b className='text-red-500'>*</b></td>
                                         <td className='py-3'><b>:</b></td>
                                         <td className='py-3'>
                                             <div className='flex items-center border-gray-300 border rounded-md'>
@@ -264,7 +361,7 @@ const CreateProductPage: React.FC = () => {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-3'>Meta Title<b className='text-danger'>*</b></td>
+                                        <td className='py-3'>Meta Title<b className='text-red-500'>*</b></td>
                                         <td className='py-3'><b>:</b></td>
                                         <td className='py-3'>
                                             <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' />
@@ -288,7 +385,7 @@ const CreateProductPage: React.FC = () => {
                                         <td colSpan={2}>&nbsp;</td>
                                         <td>
                                             <div className='space-x-3 font-bold text-md'>
-                                                <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
+                                                <input type='submit' onClick={() => createProductAction()} className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
                                                 <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
                                             </div>
                                         </td>

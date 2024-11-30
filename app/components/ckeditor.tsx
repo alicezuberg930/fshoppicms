@@ -79,7 +79,7 @@ import {
 import 'ckeditor5/ckeditor5.css'
 import '@/public/css/ckeditor.css'
 
-const CustomCKEditor: React.FC = () => {
+const CustomCKEditor: React.FC<{ value: (v: string) => void }> = ({ value }) => {
     const editorContainerRef = useRef(null);
     const editorRef = useRef(null);
     const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -368,7 +368,7 @@ const CustomCKEditor: React.FC = () => {
             <div className="main-container">
                 <div className="editor-container editor-container_classic-editor editor-container_include-style" ref={editorContainerRef}>
                     <div className="editor-container__editor">
-                        <div ref={editorRef}>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
+                        <div ref={editorRef}>{isLayoutReady && <CKEditor onChange={(e, editor) => value(editor.getData())} editor={ClassicEditor} config={editorConfig} />}</div>
                     </div>
                 </div>
             </div>

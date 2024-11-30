@@ -4,7 +4,7 @@ import { AdminContext } from "@/app/hooks/admin.context";
 import Link from 'next/link'
 import { icons } from '@/app/common/icons';
 
-const SideBar: React.FC = () => {
+const AdminSideBar: React.FC = () => {
     const { collapseMenu, setCollapseMenu } = useContext(AdminContext)!;
     const {
         MdCancel, FaUser, FaBox, SiChatbot, FaChevronDown, MdLogout, FaBoxOpen,
@@ -22,19 +22,20 @@ const SideBar: React.FC = () => {
                         <img srcSet='/logo.svg' className='w-12' />
                         <h1 className="font-bold text-gray-200 text-sm ml-3">FShoppii</h1>
                     </div>
-                    <MdCancel className="w-5 h-5" onClick={() => {
-                        setCollapseMenu(!collapseMenu)
-                        console.log(collapseMenu);
-
-                    }} />
+                    <MdCancel className="w-5 h-5" onClick={() => { setCollapseMenu(!collapseMenu) }} />
                 </div>
                 <div className="my-2 bg-gray-600 h-[1px]"></div>
             </div>
-            {/*  */}
-            <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/dashboard"}>
+            {/* Danh mục */}
+            <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/categories"}>
+                <PiShippingContainer className="w-5 h-5" />
+                <span className="text-[15px] ml-4 text-gray-200">Danh mục</span>
+            </Link>
+            {/* Thống kê */}
+            {/* <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/dashboard"}>
                 <TbLayoutDashboard className="w-5 h-5" />
                 <span className="text-[15px] ml-4 text-gray-200">Dashboard</span>
-            </Link>
+            </Link> */}
             {/* Đơn hàng */}
             <div className='mt-3 text-white'>
                 <div className="p-2 flex items-center rounded-md cursor-pointer hover:bg-blue-600"
@@ -62,17 +63,17 @@ const SideBar: React.FC = () => {
                     </Link>
                 </div>
             </div>
-            {/*  */}
-            <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/customers"}>
+            {/* Người dùng */}
+            <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/users"}>
                 <FaUser className="w-5 h-5" />
-                <span className="text-[15px] ml-4 text-gray-200">Khách hàng</span>
+                <span className="text-[15px] ml-4 text-gray-200">Người dùng</span>
             </Link>
-            {/*  */}
-            <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/shippings"}>
+            {/* Giao hàng */}
+            {/* <Link className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white" href={"/cms/shippings"}>
                 <PiShippingContainer className="w-5 h-5" />
                 <span className="text-[15px] ml-4 text-gray-200">Giao hàng</span>
-            </Link>
-            {/*  */}
+            </Link> */}
+            {/* Sản phẩm */}
             <div className='mt-3 text-white'>
                 <div className="p-2 flex items-center rounded-md cursor-pointer hover:bg-blue-600"
                     onClick={() => setProductlistDropdown(!productlistDropdown)}
@@ -100,8 +101,8 @@ const SideBar: React.FC = () => {
                     </Link>
                 </div>
             </div>
-            {/*  */}
-            <div className='mt-3 text-white'>
+            {/* Thanh toán  */}
+            {/* <div className='mt-3 text-white'>
                 <Link className="p-2 flex items-center rounded-md cursor-pointer hover:bg-blue-600" href={"/cms/payments"}
                     onClick={() => setPaymentsDropDown(!paymentsDropDown)}
                 >
@@ -127,7 +128,7 @@ const SideBar: React.FC = () => {
                         <span className="text-[15px] ml-4 text-gray-200">Sub 1</span>
                     </Link>
                 </div>
-            </div>
+            </div> */}
             {/*  */}
             <div className='mt-3 text-white'>
                 <Link className="p-2 flex items-center rounded-md cursor-pointer hover:bg-blue-600" href={"/cms/configuration"}
@@ -162,8 +163,7 @@ const SideBar: React.FC = () => {
                 <span className="text-[15px] ml-4 text-gray-200">Đăng xuất</span>
             </div>
         </aside >
-
     )
 }
 
-export default SideBar
+export default AdminSideBar

@@ -1,37 +1,27 @@
 "use client"
 import { icons } from "@/app/common/icons";
-import { deleteProduct, getProducts } from "@/app/services/api";
+import { getUsers, lockAccount, unlockAccount } from "@/app/services/api";
 import axios from "axios";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 
-const config: Intl.NumberFormatOptions = { style: 'currency', currency: 'VND', maximumFractionDigits: 9 }
-const formated = new Intl.NumberFormat('vi-VN', config);
-
-const CurrentProductsPage: React.FC = () => {
+const UsersPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
-    const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
-    const [products, setProducts] = useState<Product[]>([]);
+    const { FaFilter, CiLock, CiUnlock, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    const [users, setUsers] = useState<User[]>([])
     const { token } = useSelector((state: any) => state.login)
 
-    const dummy: number[] = [];
-    for (let i = 0; i <= 8; i++) {
-        dummy.push(i)
-    };
-
     useEffect(() => {
-        const getProductsAction = async () => {
+        const getUsersAction = async () => {
             try {
-                const response = await getProducts(token);
-                if (response?.products != null) {
+                const response = await getUsers(token);
+                if (response?.status === "OK") {
                     toast.success(response.message)
-                    setProducts(response.products as Product[])
+                    setUsers((response.data.users as User[]).filter(user => user.isAdmin != true))
                 } else {
                     toast.error(response)
                 }
@@ -41,56 +31,58 @@ const CurrentProductsPage: React.FC = () => {
                 }
             }
         }
-        getProductsAction()
+        getUsersAction()
     }, [])
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
-        if (e.target.checked) {
-            if (!checkBoxes.includes(i)) {
-                setCheckBoxes(checkBoxes.concat(i))
-            }
-            if (checkBoxes.length + 1 == dummy.length) setCheckAll(true)
-        } else {
-            setCheckAll(false)
-            setCheckBoxes(checkBoxes.filter((v) => v !== i))
-        }
+        // if (e.target.checked) {
+        //     if (!checkBoxes.includes(i)) {
+        //         setCheckBoxes(checkBoxes.concat(i))
+        //     }
+        //     if (checkBoxes.length + 1 == dummy.length) setCheckAll(true)
+        // } else {
+        //     setCheckAll(false)
+        //     setCheckBoxes(checkBoxes.filter((v) => v !== i))
+        // }
     }
 
     const selectAll = (e: ChangeEvent<HTMLInputElement>) => {
-        setCheckAll(e.target.checked)
-        if (e.target.checked) {
-            setCheckBoxes(dummy)
-        } else {
-            setCheckBoxes([])
+        // setCheckAll(e.target.checked)
+        // if (e.target.checked) {
+        //     setCheckBoxes(dummy)
+        // } else {
+        //     setCheckBoxes([])
+        // }
+    }
+
+    const lockAccountAction = async (id: string) => {
+        try {
+            const response = await lockAccount(token, id)
+            if (response?.status === "OK") {
+                toast.success(response.message)
+            } else {
+                toast.error(response.message | response)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+            }
         }
     }
 
-    const deleteProductAction = async (id: string) => {
-        withReactContent(Swal).fire({
-            title: "Bạn có chắc chắn không?",
-            text: "Bạn sẽ không thể đảo ngược hành động",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Xóa",
-            cancelButtonText: "Hủy"
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    const response = await deleteProduct(token, id)
-                    if (response?.status === "OK") {
-                        toast.success(response.message)
-                    } else {
-                        toast.error(response.message)
-                    }
-                } catch (error) {
-                    if (axios.isAxiosError(error)) {
-                        toast.error(error?.response?.data.error)
-                    }
-                }
+    const unlockAccountAction = async (id: string) => {
+        try {
+            const response = await unlockAccount(token, id)
+            if (response?.status === "OK") {
+                toast.success(response.message)
+            } else {
+                toast.error(response.message | response)
             }
-        })
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+            }
+        }
     }
 
     return (
@@ -98,9 +90,9 @@ const CurrentProductsPage: React.FC = () => {
             <main className="h-full">
                 <div className="mt-5 mb-5 px-6">
                     <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
-                        <h2>Sản phẩm</h2>
+                        <h2>Người dùng</h2>
                         <div className="flex gap-2">
-                            <Link className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4" href="/cms/products/create">
+                            <Link href={"/cms/users/create"} className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
                                 <IoIosAddCircleOutline className="w-5 h-5" />
                                 <span>Thêm mới</span>
                             </Link>
@@ -156,7 +148,7 @@ const CurrentProductsPage: React.FC = () => {
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead>
                                         <tr>
-                                            <th className="px-2 py-2 bg-gray-50">
+                                            <th className="px-2 py-2 bg-gray-50" >
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 group focus:outline-none">
                                                     <input type="checkbox" onChange={(e) => selectAll(e)} checked={checkAll} />
                                                 </button>
@@ -171,22 +163,22 @@ const CurrentProductsPage: React.FC = () => {
                                             </th>
                                             <th className="px-3 py-2 md:py-3 bg-gray-50 w-[120px]">
                                                 <span className="block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left">
-                                                    Ảnh
+                                                    Tên
                                                 </span>
                                             </th>
                                             <th className="px-3 py-2 md:py-3 bg-gray-50 w-1/3">
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
-                                                    <span>Tên</span>
+                                                    <span>Email</span>
                                                 </button>
                                             </th>
                                             <th className="px-3 py-2 md:py-3 bg-gray-50">
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
-                                                    <span>Giá</span>
+                                                    <span>Vai trò</span>
                                                 </button>
                                             </th>
                                             <th className="px-3 py-2  md:py-3 bg-gray-50">
                                                 <button className="flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline">
-                                                    <span>Số lượng</span>
+                                                    <span>SĐT</span>
                                                     <span className="relative flex items-center">
                                                         <FaChevronDown className="w-2 h-2" />
                                                     </span>
@@ -203,78 +195,76 @@ const CurrentProductsPage: React.FC = () => {
 
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {
-                                            products.length > 0 ?
-                                                products.map((v, i) => {
-                                                    return (
-                                                        <tr key={i} className="bg-white">
-                                                            <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
-                                                            </td>
-                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                {i}
-                                                            </td>
+                                            users.length > 0 || users != null ? users.map((v, i) => {
+                                                return (
+                                                    <tr key={i} className="bg-white">
+                                                        <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
+                                                        </td>
+                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            {i}
+                                                        </td>
 
-                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                <div className="h-24 w-20">
-                                                                    <img className="object-cover w-full h-full" srcSet={v.images[0]} />
-                                                                </div>
-                                                            </td>
+                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            <div className="text-gray-700">
+                                                                <span>{v.name}</span>
+                                                            </div>
+                                                        </td>
 
-                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
-                                                                    {v.name}
-                                                                </div>
-                                                            </td>
+                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            <span>{v.email}</span>
+                                                        </td>
 
-                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                <div className="text-gray-700">
-                                                                    <span className="font-medium">{formated.format(v.price)}</span>
-                                                                </div>
-                                                            </td>
+                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            <div className="text-gray-700">
+                                                                <span className="font-medium">{v.role}</span>
+                                                            </div>
+                                                        </td>
 
-                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                {v.stock}
-                                                            </td>
+                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            <span className="font-medium">{v.phone}</span>
+                                                        </td>
 
-                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                <div className="flex flex-wrap justify-start gap-1">
-                                                                    <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
-                                                                        <MdModeEdit className="w-5 h-5" />
-                                                                    </button>
-                                                                    <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
-                                                                        <FaRegTrashAlt onClick={() => deleteProductAction(v._id!)} className='w-5 h-5' />
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                }) :
-                                                <tr>
-                                                    <td colSpan={7}>
-                                                        <div className="mx-auto w-fit">
-                                                            <RotatingLines
-                                                                visible={true}
-                                                                width="96"
-                                                                strokeWidth="5"
-                                                                animationDuration="0.75"
-                                                                ariaLabel="rotating-lines-loading"
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                            <button className="flex items-center text-sm font-medium leading-5 text-center text-white bg-red-600 p-2 transition-colors duration-150 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                                                                onClick={() => v.isLocked ? unlockAccountAction(v._id!) : lockAccountAction(v._id!)}
+                                                            >
+                                                                {
+                                                                    v.isLocked ?
+                                                                        <CiUnlock className='w-5 h-5' title="Mở khóa" /> :
+                                                                        <CiLock className='w-5 h-5' title="Khóa" />
+                                                                }
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }) : <tr>
+                                                <td colSpan={7}>
+                                                    <div className="mx-auto w-fit">
+                                                        <RotatingLines
+                                                            visible={true}
+                                                            width="96"
+                                                            strokeWidth="5"
+                                                            animationDuration="0.75"
+                                                            ariaLabel="rotating-lines-loading"
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         }
                                     </tbody>
                                 </table>
                             </div>
                             {/* <div className="p-6 md:p-0">
-                                {{ $products->links() }}
-                            </div> */}
+                              {{ $products->links() }}
+                             </div> */}
                         </div>
                     </div>
                 </div>
             </main>
+
         </>
     )
 }
 
-export default CurrentProductsPage
+export default UsersPage

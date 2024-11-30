@@ -4,7 +4,7 @@ import { useState } from "react"
 import { AdminContext } from '@/app/hooks/admin.context';
 import { icons } from '@/app/common/icons';
 
-const Header: React.FC = () => {
+const AdminHeader: React.FC = () => {
     const [hideProfile, setHideProfile] = useState<boolean>(true)
     const { collapseMenu, setCollapseMenu } = useContext(AdminContext)!;
     const { FaChevronDown, CiBellOn } = icons
@@ -79,4 +79,4 @@ const Header: React.FC = () => {
     )
 }
 
-export default Header
+export default AdminHeader
