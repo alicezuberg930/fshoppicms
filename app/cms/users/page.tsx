@@ -2,10 +2,10 @@
 import { icons } from "@/app/common/icons";
 import { getUsers, lockAccount, unlockAccount } from "@/app/services/api";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const UsersPage: React.FC = () => {
@@ -13,26 +13,27 @@ const UsersPage: React.FC = () => {
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const { FaFilter, CiLock, CiUnlock, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     const [users, setUsers] = useState<User[]>([])
-    const { token } = useSelector((state: any) => state.login)
+    const { data, status } = useSession();
 
-    useEffect(() => {
-        const getUsersAction = async () => {
-            try {
-                const response = await getUsers(token);
-                if (response?.status === "OK") {
-                    toast.success(response.message)
-                    setUsers((response.data.users as User[]).filter(user => user.isAdmin != true))
-                } else {
-                    toast.error(response)
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
-                }
+    const getUsersAction = async () => {
+        try {
+            const response = await getUsers(data?.user.access_token ?? "");
+            if (response?.status === "OK") {
+                setUsers((response.data.users as User[]).filter(user => user.isAdmin != true))
+            } else {
+                toast.error(response)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
             }
         }
-        getUsersAction()
-    }, [])
+    }
+
+    useEffect(() => {
+        console.log(status);
+        if (status === "authenticated" && data != null) getUsersAction()
+    }, [data, status])
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         // if (e.target.checked) {
@@ -57,9 +58,10 @@ const UsersPage: React.FC = () => {
 
     const lockAccountAction = async (id: string) => {
         try {
-            const response = await lockAccount(token, id)
+            const response = await lockAccount(data?.user.access_token ?? "", id)
             if (response?.status === "OK") {
                 toast.success(response.message)
+                getUsersAction()
             } else {
                 toast.error(response.message | response)
             }
@@ -72,9 +74,10 @@ const UsersPage: React.FC = () => {
 
     const unlockAccountAction = async (id: string) => {
         try {
-            const response = await unlockAccount(token, id)
+            const response = await unlockAccount(data?.user.access_token ?? "", id)
             if (response?.status === "OK") {
                 toast.success(response.message)
+                getUsersAction()
             } else {
                 toast.error(response.message | response)
             }
@@ -195,7 +198,7 @@ const UsersPage: React.FC = () => {
 
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {
-                                            users.length > 0 || users != null ? users.map((v, i) => {
+                                            users.length > 0 ? users.map((v, i) => {
                                                 return (
                                                     <tr key={i} className="bg-white">
                                                         <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
@@ -255,6 +258,7 @@ const UsersPage: React.FC = () => {
                                     </tbody>
                                 </table>
                             </div>
+
                             {/* <div className="p-6 md:p-0">
                               {{ $products->links() }}
                              </div> */}

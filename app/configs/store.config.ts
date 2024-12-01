@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit"
-import { loginReducer } from "../services/loginSlice"
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import storageSession from "redux-persist/lib/storage/session";
@@ -18,7 +17,6 @@ const sessionPersistConfig = {
 
 export const store = configureStore({
     reducer: {
-        login: persistReducer(sessionPersistConfig, loginReducer),
         sidebar: persistReducer(localPersistConfig, sidebarReducer),
         dropdown: persistReducer(localPersistConfig, dropDownReducer),
     },

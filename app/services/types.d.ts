@@ -12,6 +12,7 @@ interface User {
     // orders: []
     createdAt?: string,
     updatedAt?: string,
+    access_token?: string
 }
 
 interface Variant {

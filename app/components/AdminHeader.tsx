@@ -3,8 +3,12 @@ import { useState } from "react"
 import { icons } from '@/app/common/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCollapseSidebar } from "../services/sidebar.slice";
+import { Session } from "next-auth";
+import Link from "next/link";
+import { PATH } from "../common/path";
+import { logout } from "../services/auth.action";
 
-const AdminHeader: React.FC = () => {
+const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {
     const [hideProfile, setHideProfile] = useState<boolean>(true)
     const { FaChevronDown, CiBellOn } = icons
     const { isCollapsed } = useSelector((state: any) => state.sidebar)
@@ -41,7 +45,7 @@ const AdminHeader: React.FC = () => {
                             >
                                 <img className="object-cover w-8 h-8 rounded-full"
                                     src="https://sobexpressacms.di4l.vn/images/user.png" alt="profile" />
-                                <p className="hidden md:block">{"Hatsune Miku"}</p>
+                                <p className="hidden md:block">{session?.user.name ?? ""}</p>
                                 <FaChevronDown className="w-5 h-5" />
                             </button>
                         </div>
@@ -49,8 +53,7 @@ const AdminHeader: React.FC = () => {
                             <div className={`${hideProfile ? "hidden" : ""} absolute right-0 mt-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:border-gray-700 dark:text-gray-300`}
                                 aria-label="submenu">
                                 <div className="flex">
-                                    <a className="inline-flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                        href="https://sobexpressacms.di4l.vn/profile">
+                                    <Link className="flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200" href={PATH.PROFILE}>
                                         <svg className="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                             strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -59,10 +62,12 @@ const AdminHeader: React.FC = () => {
                                             </path>
                                         </svg>
                                         <span>Profile</span>
-                                    </a>
+                                    </Link>
                                 </div>
-                                <div className="flex cursor-pointer">
-                                    <div className="inline-flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+                                <button className="flex" onClick={async () => {
+                                    await logout()
+                                }}>
+                                    <div className="flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200">
                                         <svg className="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                             strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -70,7 +75,7 @@ const AdminHeader: React.FC = () => {
                                         </svg>
                                         <span>Log out</span>
                                     </div>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>

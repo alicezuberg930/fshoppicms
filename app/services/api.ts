@@ -1,12 +1,12 @@
 import axios, { AxiosError, AxiosHeaders } from "axios";
 import instance from "../configs/axios.config"
+import { auth } from "../configs/auth.config";
 
 // người dùng
 export const login = async (phone: string, password: string) => {
     try {
         let response = await instance<any>({ url: "/user/login", method: "POST", data: { phone, password } })
-        console.log(response);
-        return response.data.token
+        return response.data
     } catch (error) {
         if (axios.isAxiosError(error)) {
             return error.response?.data.error
@@ -177,7 +177,6 @@ export const getUsers = async (token: string) => {
             headers: { Authorization: `Bearer ${token}` },
             id: "admin-getUsers"
         })
-        console.log(response.data);
         return response.data
     } catch (error) {
         if (axios.isAxiosError(error)) {

@@ -1,24 +1,20 @@
 "use client"
-
-import { login } from "@/app/services/api"
-import { saveToken } from "@/app/services/loginSlice"
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { useDispatch } from "react-redux"
 import { useRouter } from "next/navigation"
+import { login } from "../services/auth.action"
+import { PATH } from "../common/path"
 
 const LoginPage: React.FC = () => {
   const [phone, setPhone] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const dispatch = useDispatch()
   const router = useRouter()
 
-  const signIn = async () => {
+  const loginAction = async () => {
     try {
-      const data = await login(phone, password);
-      toast.success(data)
-      dispatch(saveToken(data))
-      router.push("/cms/products/current")
+      const response = await login(phone, password)
+      toast.success(response)
+      router.push(PATH.CATEGORIES)
     } catch (error) {
       toast.error(error as string)
     }
@@ -27,7 +23,7 @@ const LoginPage: React.FC = () => {
   return (
     <div className="w-full h-screen relative" style={{ background: "url('../assets/wall_1.jpg')" }}>
       <div className="w-1/4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="w-[220px] h-[50px] mx-auto" style={{ background: "url('../assets/login_logo.png')" }}></div>
+        <img className="mx-auto w-3/5" src="../logo.png" />
         <div className="mt-4 rounded-lg login-body bg-[rgba(255,255,255,0.2)] px-4 py-8">
           <div className="font-bold text-white text-xl border-double border-b-4">Site: fshoppii.com</div>
           {/* <form onSubmit={(e) => e.preventDefault()}> */}
@@ -42,7 +38,7 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-6 w-fit">
-            <div onClick={() => signIn()} className="text-white bg-[#5bc0de] px-16 py-2 rounded-md">
+            <div onClick={() => loginAction()} className="text-white bg-[#5bc0de] px-16 py-2 rounded-md">
               <button>Log In</button>
             </div>
           </div>

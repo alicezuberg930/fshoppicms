@@ -3,10 +3,10 @@ import { icons } from "@/app/common/icons";
 import ProductPageComponent from "@/app/components/ProductPage";
 import { deleteProduct, getProducts } from "@/app/services/api";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -20,18 +20,17 @@ const CurrentProductsPage: React.FC = () => {
     const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-    const { token } = useSelector((state: any) => state.login)
+    const { data, status } = useSession();
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
         dummy.push(i)
     };
 
-    const getProductsAction = async (showToast: boolean = true) => {
+    const getProductsAction = async () => {
         try {
-            const response = await getProducts(token);
+            const response = await getProducts(data?.user.access_token ?? "");
             if (response?.products != null) {
-                if (showToast) toast.success(response.message)
                 setProducts(response.products as Product[])
             } else {
                 toast.error(response)
@@ -81,10 +80,10 @@ const CurrentProductsPage: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await deleteProduct(token, id)
+                    const response = await deleteProduct(data?.user.access_token ?? "", id)
                     if (response?.status === "OK") {
                         toast.success(response.message)
-                        getProductsAction(false)
+                        getProductsAction()
                     } else {
                         toast.error(response.message)
                     }

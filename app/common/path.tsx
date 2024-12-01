@@ -4,5 +4,7 @@ export const PATH = {
     ORDERS_ALL: "/cms/orders",
     USERS: "/cms/users",
     PRODUCT_CURRENT: "/cms/products/current",
-    SITE_CONFIG: "/cms/config/site"
+    SITE_CONFIG: "/cms/config/site",
+    LOGIN: "/login",
+    PROFILE: "/cms/profile"
 }

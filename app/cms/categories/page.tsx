@@ -2,31 +2,30 @@
 import { icons } from "@/app/common/icons"
 import { deleteCategory, getCategories } from "@/app/services/api"
 import axios from "axios"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { ChangeEvent, useEffect, useState } from "react"
 import { RotatingLines } from "react-loader-spinner"
-import { useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 
 const CategoriesPage: React.FC = () => {
     const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
-    const { token } = useSelector((state: any) => state.login)
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const [categories, setCategories] = useState<Category[]>([])
+    const { data, status } = useSession();
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
         dummy.push(i)
     };
 
-    const getCategoriesAction = async (showToast: boolean = true) => {
+    const getCategoriesAction = async () => {
         try {
-            const response = await getCategories(token);
+            const response = await getCategories(data?.user.access_token ?? "");
             if (response.data?.status === "OK") {
-                if (showToast) toast.success(response.data.message)
                 setCategories(response.data.data.categories as Category[])
             } else {
                 toast.error(response.data)
@@ -37,10 +36,12 @@ const CategoriesPage: React.FC = () => {
             }
         }
     }
-
+    console.log(data)
     useEffect(() => {
-        getCategoriesAction()
-    }, [])
+        console.log(status);
+
+        if (status === "authenticated") getCategoriesAction()
+    }, [data, status])
 
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
@@ -77,11 +78,11 @@ const CategoriesPage: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await deleteCategory(token, id)
+                    const response = await deleteCategory(data?.user.access_token ?? "", id)
                     if (response.data?.status === "OK") {
                         toast.success(response.data.message)
-                        getCategoriesAction(false)
-                    } else { 
+                        getCategoriesAction()
+                    } else {
                         toast.error(response.data.message)
                     }
                 } catch (error) {
@@ -95,6 +96,7 @@ const CategoriesPage: React.FC = () => {
 
     return (
         <main className="h-full">
+            {/* {JSON.stringify(data)} */}
             <div className="mt-5 mb-5 px-6">
                 <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
                     <h2>Danh mục</h2>

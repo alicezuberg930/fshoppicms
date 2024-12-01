@@ -1,57 +1,46 @@
-// import NextAuth from "next-auth";
-// import Credentials from "next-auth/providers/credentials";
-// import { InvalidEmailPasswordError, InactiveAccountError } from "./utils/error_handling"
-// import { sendRequest } from "@/library/api"
-// import { IUser } from "@/types/next-auth"
-// export const { handlers, signIn, signOut, auth } = NextAuth({
-//     providers: [
-//         Credentials({
-//             credentials: {
-//                 email: {},
-//                 password: {}
-//             },
-//             authorize: async (credentials) => {
-//                 const response = await sendRequest<IBackendRes<ILogin>>({
-//                     method: "POST",
-//                     url: process.env.API_URL + "/auth/login",
-//                     body: {
-//                         username: credentials.email,
-//                         password: credentials.password
-//                     }
-//                 })
-//                 if (response.statusCode == 201) {
-//                     return {
-//                         _id: response.data?.user._id,
-//                         name: response.data?.user.name,
-//                         email: response.data?.user.email,
-//                         access_token: response.data?.access_token,
-//                     }
-//                 } else if (response.statusCode == 401) {
-//                     throw new InvalidEmailPasswordError()
-//                 } else if (response.statusCode == 400) {
-//                     throw new InactiveAccountError()
-//                 } else {
-//                     throw new Error("Internal server error")
-//                 }
-//             }
-//         }),
-//     ],
-//     pages: {
-//         signIn: "/cms/login"
-//     },
-//     callbacks: {
-//         jwt({ token, user }) {
-//             if (user) {
-//                 token.user = (user as IUser)
-//             }
-//             return token
-//         },
-//         session({ session, token }) {
-//             (session.user as IUser) = token.user
-//             return session
-//         },
-//         authorized: async ({ auth }) => {
-//             return !!auth
-//         },
-//     }
-// })
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { getProfile, login } from "../services/api";
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+    providers: [
+        Credentials({
+            credentials: {
+                phone: {},
+                password: {}
+            },
+            authorize: async (credentials) => {
+                const tokenResponse = await login(credentials.phone as string, credentials.password as string)
+                if (tokenResponse.token != null) {
+                    const response = await getProfile(tokenResponse.token)
+                    if (response.data != null) {
+                        response.data["access_token"] = tokenResponse.token
+                        return response.data as User
+                    } else {
+                        throw new Error(response.message)
+                    }
+                } else {
+                    throw new Error(tokenResponse.error)
+                }
+            }
+        }),
+    ],
+    pages: {
+        signIn: "/login",
+    },
+    callbacks: {
+        jwt({ token, user }) {
+            if (user) {
+                token.user = (user as User)
+            }
+            return token
+        },
+        session({ session, token }) {
+            (session.user as User) = token.user
+            return session
+        },
+        authorized: async ({ auth }) => {
+            return !auth
+        },
+    }
+})

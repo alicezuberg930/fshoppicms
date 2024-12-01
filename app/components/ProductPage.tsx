@@ -8,13 +8,13 @@ import CustomImagePicker from '@/app/components/ImagePicker'
 import { FormEvent, useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { createProduct, getCategories, updateProduct } from '@/app/services/api';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
+import { useSession } from 'next-auth/react';
 
 const ProductPageComponent: React.FC<{
-    product?: Product, setSelected?: (v: Product | null) => void, refreshData?: (v: boolean) => void
+    product?: Product, setSelected?: (v: Product | null) => void, refreshData?: () => void
 }> = ({ product, setSelected, refreshData }) => {
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
@@ -35,12 +35,12 @@ const ProductPageComponent: React.FC<{
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
-    const { token } = useSelector((state: any) => state.login)
+    const { data, status } = useSession();
 
     useEffect(() => {
         const getCategoriesAction = async () => {
             try {
-                const response = await getCategories(token);
+                const response = await getCategories(data?.user.access_token ?? "");
                 if (response.data?.status === "OK") {
                     setCategories(response.data.data.categories as Category[])
                 }
@@ -50,8 +50,8 @@ const ProductPageComponent: React.FC<{
                 }
             }
         }
-        getCategoriesAction()
-    }, [])
+        if (status === "authenticated") getCategoriesAction()
+    }, [status])
 
     const productAction = async () => {
         const p: Product = {
@@ -66,11 +66,11 @@ const ProductPageComponent: React.FC<{
         }
         if (product != null) {
             try {
-                const response = await updateProduct(token, product._id!, p)
+                const response = await updateProduct(data?.user.access_token ?? "", product._id!, p)
                 if (response?.status === "OK") {
                     toast.success(response.message)
                     setSelected!(null)
-                    refreshData!(false)
+                    refreshData!()
                 } else {
                     toast.error(response.message)
                 }
@@ -81,7 +81,7 @@ const ProductPageComponent: React.FC<{
             }
         } else {
             try {
-                const response = await createProduct(token, p)
+                const response = await createProduct(data?.user.access_token ?? "", p)
                 if (response?.status === "OK") {
                     toast.success(response.message)
                 } else {
