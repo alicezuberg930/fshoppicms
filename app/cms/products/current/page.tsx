@@ -1,5 +1,6 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import ProductPageComponent from "@/app/components/ProductPage";
 import { deleteProduct, getProducts } from "@/app/services/api";
 import axios from "axios";
 import Link from "next/link";
@@ -18,6 +19,7 @@ const CurrentProductsPage: React.FC = () => {
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     const [products, setProducts] = useState<Product[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
     const { token } = useSelector((state: any) => state.login)
 
     const dummy: number[] = [];
@@ -25,22 +27,23 @@ const CurrentProductsPage: React.FC = () => {
         dummy.push(i)
     };
 
-    useEffect(() => {
-        const getProductsAction = async () => {
-            try {
-                const response = await getProducts(token);
-                if (response?.products != null) {
-                    toast.success(response.message)
-                    setProducts(response.products as Product[])
-                } else {
-                    toast.error(response)
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
-                }
+    const getProductsAction = async (showToast: boolean = true) => {
+        try {
+            const response = await getProducts(token);
+            if (response?.products != null) {
+                if (showToast) toast.success(response.message)
+                setProducts(response.products as Product[])
+            } else {
+                toast.error(response)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
             }
         }
+    }
+
+    useEffect(() => {
         getProductsAction()
     }, [])
 
@@ -81,6 +84,7 @@ const CurrentProductsPage: React.FC = () => {
                     const response = await deleteProduct(token, id)
                     if (response?.status === "OK") {
                         toast.success(response.message)
+                        getProductsAction(false)
                     } else {
                         toast.error(response.message)
                     }
@@ -238,11 +242,15 @@ const CurrentProductsPage: React.FC = () => {
 
                                                             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                                 <div className="flex flex-wrap justify-start gap-1">
-                                                                    <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
+                                                                    <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit"
+                                                                        onClick={() => setSelectedProduct(v)}
+                                                                    >
                                                                         <MdModeEdit className="w-5 h-5" />
                                                                     </button>
-                                                                    <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
-                                                                        <FaRegTrashAlt onClick={() => deleteProductAction(v._id!)} className='w-5 h-5' />
+                                                                    <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete"
+                                                                        onClick={() => deleteProductAction(v._id!)}
+                                                                    >
+                                                                        <FaRegTrashAlt className='w-5 h-5' />
                                                                     </button>
                                                                 </div>
                                                             </td>
@@ -269,6 +277,23 @@ const CurrentProductsPage: React.FC = () => {
                             {/* <div className="p-6 md:p-0">
                                 {{ $products->links() }}
                             </div> */}
+                        </div>
+                    </div>
+                </div>
+                <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedProduct != null ? 'block' : 'hidden'}`}>
+                    <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0"
+                        onClick={(e) => {
+                            // if (e.target !== e.currentTarget) return;
+                            // setSelectedProduct(null)
+                        }}
+                    >
+                        <div className="fixed inset-0 transition-opacity">
+                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
+                        <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
+                            <div className="px-4 py-5 bg-white text-left rounded-md">
+                                <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} refreshData={getProductsAction} />
+                            </div>
                         </div>
                     </div>
                 </div>

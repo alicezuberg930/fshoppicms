@@ -1,11 +1,15 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { icons } from "../common/icons";
 
-const CustomImagePicker: React.FC = () => {
-  const [files, setFiles] = useState<string[]>([]);
+const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: FormData | null) => void }> = ({ images, setImages }) => {
+  const [files, setFiles] = useState<string[]>(images || []);
   const [fileEnter, setFileEnter] = useState<boolean>(false);
   const { IoImagesOutline } = icons
+
+  useEffect(() => {
+    setFiles(images || [])
+  }, [images])
 
   return (
     <div className="max-w-5xl">
@@ -26,18 +30,23 @@ const CustomImagePicker: React.FC = () => {
             onDrop={(e) => {
               e.preventDefault();
               setFileEnter(false);
+              const form = new FormData()
+              const blobUrls: string[] = [];
               if (e.dataTransfer.items) {
-                const blobUrls: string[] = [];
                 [...e.dataTransfer.items].forEach((item, i) => {
                   if (item.kind === "file") {
                     const file = item.getAsFile();
                     if (file) {
+                      form.append("photos[]", file)
                       blobUrls.push(URL.createObjectURL(file))
                     }
                     console.log(`items file[${i}].name = ${file?.name}`)
                   }
                 });
+                setImages(form)
                 setFiles(blobUrls)
+                console.log(form.get("photos[]"));
+
               } else {
                 [...e.dataTransfer.files].forEach((file, i) => {
                   console.log(`… file[${i}].name = ${file.name}`);
@@ -64,12 +73,15 @@ const CustomImagePicker: React.FC = () => {
               onChange={(e) => {
                 const files = e.target.files;
                 if (files) {
-                  console.log(e.target.files);
+                  const form = new FormData()
                   const blobUrls: string[] = []
                   for (let i = 0; i < files?.length; i++) {
+                    form.append("photos[]", files[i])
                     blobUrls.push(URL.createObjectURL(files[i]))
                   }
                   setFiles(blobUrls);
+                  setImages(form)
+                  console.log(form.getAll("photos[]"));
                 }
               }}
             />
@@ -92,7 +104,8 @@ const CustomImagePicker: React.FC = () => {
             </div>
             <button
               onClick={() => {
-                setFiles([]); console.log(files);
+                setFiles([]);
+                setImages(null)
               }}
               className="mt-6 p-3 py-2 bg-red-500 text-white rounded-md"
             >

@@ -9,16 +9,16 @@ const instance = setupCache(
 )
 
 // do something before requesting
-instance.interceptors.request.use(function (config) {
-    return config
-}, function (error) {
-    return Promise.reject(error)
-})
+// instance.interceptors.request.use(function (config) {
+//     return config
+// }, function (error) {
+//     return Promise.reject(error)
+// })
 // do something after responding
-instance.interceptors.response.use(function (config) {
-    return config
-}, function (error) {
-    return Promise.reject(error)
-})
+// instance.interceptors.response.use(function (config) {
+//     return config
+// }, function (error) {
+//     return Promise.reject(error)
+// })
 
 export default instance

@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Content from "./components/AdminContent";
-import Header from "./components/AdminHeader";
-import SideBar from "./components/AdminSideBar"
-import { AdminContextProvider } from "./hooks/admin.context"
 import CustomProvider from "./components/StoreProvider";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,19 +31,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AdminContextProvider>
-          <CustomProvider>
-            <div className='flex h-screen'>
-              <SideBar />
-              <div className='flex flex-col flex-1 w-full'>
-                <Header />
-                <Content>
-                  {children}
-                </Content>
-              </div>
-            </div>
-          </CustomProvider>
-        </AdminContextProvider>
+        <CustomProvider>
+          {children}
+        </CustomProvider>
         <ToastContainer
           closeOnClick
           draggable

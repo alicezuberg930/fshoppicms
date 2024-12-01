@@ -21,10 +21,10 @@ const CategoryPageComponent: React.FC = () => {
         }
         try {
             const response = await createCategory(token, category)
-            if (response?.status === "OK") {
-                toast.success(response.message)
+            if (response?.data.status === "OK") {
+                toast.success(response.data.message)
             } else {
-                toast.error(response.message)
+                toast.error(response.data.message)
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {

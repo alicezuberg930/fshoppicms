@@ -1,19 +1,20 @@
 'use client'
-import { useContext } from 'react';
 import { useState } from "react"
-import { AdminContext } from '@/app/hooks/admin.context';
 import { icons } from '@/app/common/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCollapseSidebar } from "../services/sidebar.slice";
 
 const AdminHeader: React.FC = () => {
     const [hideProfile, setHideProfile] = useState<boolean>(true)
-    const { collapseMenu, setCollapseMenu } = useContext(AdminContext)!;
     const { FaChevronDown, CiBellOn } = icons
+    const { isCollapsed } = useSelector((state: any) => state.sidebar)
+    const dispatch = useDispatch()
 
     return (
         <header className="z-10 py-4 bg-white shadow-md">
             <div className="container flex items-center justify-between h-full px-6 mx-auto">
                 <button className="p-1 rounded-md focus:outline-none text-blue-300"
-                    onClick={() => { setCollapseMenu(!collapseMenu) }}
+                    onClick={() => { dispatch(setCollapseSidebar(!isCollapsed)) }}
                 >
                     <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd"

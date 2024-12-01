@@ -8,7 +8,7 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
 
 const ConfigurationPage: React.FC = () => {
     const [companyInfo, setCompanyInfo] = useState<string>("")
-    
+
     return (
         <div className='w-full'>
             <div className=''>
@@ -84,7 +84,7 @@ const ConfigurationPage: React.FC = () => {
                                     <td className='py-2'>Thông tin công ty/Footer</td>
                                     <td className='py-2'>:</td>
                                     <td className='py-2'>
-                                        <CustomCKEditor value={setCompanyInfo} />
+                                        <CustomCKEditor value={setCompanyInfo} defaultValue="Nhập mô tả bạn muốn" />
                                     </td>
                                 </tr>
 

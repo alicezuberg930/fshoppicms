@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosHeaders } from "axios";
-import instance from "./axios.config"
+import instance from "../configs/axios.config"
 
 // người dùng
 export const login = async (phone: string, password: string) => {
@@ -66,11 +66,18 @@ export const createProduct = async (token: string, product: Product) => {
     }
 }
 
-export const updateProduct = async (id: string, product: Product) => {
+export const updateProduct = async (token: string, id: string, product: Product) => {
     try {
         let response = await instance<Product>({
-            url: `/product/update/${id}`, method: "PUT", data: { product },
-            headers: { Authorization: "Bearer ${token}" }
+            url: `/product/update/${id}`, method: "PUT", data: product,
+            headers: { Authorization: `Bearer ${token}` },
+            cache: {
+                update: {
+                    // Internally calls the storage.remove('/product/get_list') and lets the
+                    // next request be forwarded to the server without you having to do any checks.
+                    'product-get_list': 'delete'
+                }
+            }
         })
         return response.data
     } catch (error) {
@@ -181,58 +188,37 @@ export const getUsers = async (token: string) => {
 
 // danh mục
 export const getCategories = async (token: string) => {
-    try {
-        let response = await instance<any>({
-            url: "/category/all", method: "GET", data: {},
-            headers: { Authorization: `Bearer ${token}` },
-            id: "/category/all"
-        })
-        return response.data
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return error.response?.data.error
-        }
-    }
+    return await instance<any>({
+        url: "/category/all", method: "GET", data: {},
+        headers: { Authorization: `Bearer ${token}` },
+        id: "category-all"
+    })
 }
 
 export const createCategory = async (token: string, category: Category) => {
-    try {
-        let response = await instance<Category>({
-            url: "/category/create", method: "POST", data: category,
-            headers: { Authorization: `Bearer ${token}` },
-            cache: {
-                update: {
-                    // Internally calls the storage.remove('/category/all') and lets the
-                    // next request be forwarded to the server without you having to do any checks.
-                    '/category/all': 'delete'
-                }
+    return await instance<any>({
+        url: "/category/create", method: "POST", data: category,
+        headers: { Authorization: `Bearer ${token}` },
+        cache: {
+            update: {
+                // Internally calls the storage.remove('/category/all') and lets the
+                // next request be forwarded to the server without you having to do any checks.
+                'category-all': 'delete'
             }
-        })
-        return response.data
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return error.response?.data.error
         }
-    }
+    })
 }
 
 export const deleteCategory = async (token: string, id: string) => {
-    try {
-        let response = await instance<Category>({
-            url: `/category/del/${id}`, method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-            cache: {
-                update: {
-                    // Internally calls the storage.remove('/category/all') and lets the
-                    // next request be forwarded to the server without you having to do any checks.
-                    '/category/all': 'delete'
-                }
+    return await instance<any>({
+        url: `/category/del/${id}`, method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+        cache: {
+            update: {
+                // Internally calls the storage.remove('/category/all') and lets the
+                // next request be forwarded to the server without you having to do any checks.
+                'category-all': 'delete'
             }
-        })
-        return response.data
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return error.response?.data.error
         }
-    }
+    })
 }

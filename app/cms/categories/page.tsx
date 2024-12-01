@@ -22,22 +22,23 @@ const CategoriesPage: React.FC = () => {
         dummy.push(i)
     };
 
-    useEffect(() => {
-        const getCategoriesAction = async () => {
-            try {
-                const response = await getCategories(token);
-                if (response?.status === "OK") {
-                    toast.success(response.message)
-                    setCategories(response.data.categories as Category[])
-                } else {
-                    toast.error(response)
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
-                }
+    const getCategoriesAction = async (showToast: boolean = true) => {
+        try {
+            const response = await getCategories(token);
+            if (response.data?.status === "OK") {
+                if (showToast) toast.success(response.data.message)
+                setCategories(response.data.data.categories as Category[])
+            } else {
+                toast.error(response.data)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
             }
         }
+    }
+
+    useEffect(() => {
         getCategoriesAction()
     }, [])
 
@@ -77,10 +78,11 @@ const CategoriesPage: React.FC = () => {
             if (result.isConfirmed) {
                 try {
                     const response = await deleteCategory(token, id)
-                    if (response?.status === "OK") {
-                        toast.success(response.message)
-                    } else {
-                        toast.error(response.message)
+                    if (response.data?.status === "OK") {
+                        toast.success(response.data.message)
+                        getCategoriesAction(false)
+                    } else { 
+                        toast.error(response.data.message)
                     }
                 } catch (error) {
                     if (axios.isAxiosError(error)) {
