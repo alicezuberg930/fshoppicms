@@ -6,7 +6,7 @@ export const login = async (phone: string, password: string) => {
     try {
         return await signIn("credentials", { phone, password, redirect: false })
     } catch (error: any) {
-        return error
+        return { error: error.type }
     }
 }
 

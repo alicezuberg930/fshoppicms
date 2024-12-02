@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });
-import CustomDatePicker from '@/app/components/DatePicker';
+// import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/ImagePicker'
 import { FormEvent, useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';

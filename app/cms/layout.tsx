@@ -3,6 +3,7 @@ import AdminSideBar from "../components/AdminSideBar";
 import AdminHeader from "../components/AdminHeader";
 import AdminContent from "../components/AdminContent";
 import { auth } from "../configs/auth.config";
+import NextAuthSessionProvider from "../components/NextAuthSessionProvider";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -20,9 +21,11 @@ const RootLayout = async ({
             <AdminSideBar />
             <div className='flex flex-col flex-1 w-full'>
                 <AdminHeader session={session} />
-                <AdminContent>
-                    {children}
-                </AdminContent>
+                <NextAuthSessionProvider >
+                    <AdminContent>
+                        {children}
+                    </AdminContent>
+                </NextAuthSessionProvider>
             </div>
         </div>
     );

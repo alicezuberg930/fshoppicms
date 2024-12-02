@@ -1,6 +1,5 @@
-import axios, { AxiosError, AxiosHeaders } from "axios";
+import axios from "axios";
 import instance from "../configs/axios.config"
-import { auth } from "../configs/auth.config";
 
 // người dùng
 export const login = async (phone: string, password: string) => {
@@ -89,7 +88,7 @@ export const updateProduct = async (token: string, id: string, product: Product)
 
 export const deleteProduct = async (token: string, id: string) => {
     try {
-        let response = await instance<any>({
+        const response = await instance<any>({
             url: `/product/delete/${id}`, method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
             cache: {
@@ -111,7 +110,7 @@ export const deleteProduct = async (token: string, id: string) => {
 // admin 
 export const lockAccount = async (token: string, lockReason: string) => {
     try {
-        let response = await instance<Category>({
+        const response = await instance<Category>({
             url: "/admin/lock", method: "POST", data: { lockReason },
             headers: { Authorization: `Bearer ${token}` },
             cache: {
@@ -153,7 +152,7 @@ export const unlockAccount = async (token: string, lockReason: string) => {
 
 export const createUser = async (token: string, user: User) => {
     try {
-        let response = await instance<any>({
+        const response = await instance<any>({
             url: "/user/create", method: "POST", data: user,
             headers: { Authorization: `Bearer ${token}` },
             cache: {
@@ -172,7 +171,7 @@ export const createUser = async (token: string, user: User) => {
 
 export const getUsers = async (token: string) => {
     try {
-        let response = await instance<any>({
+        const response = await instance<any>({
             url: "/admin/getUsers", method: "GET", data: {},
             headers: { Authorization: `Bearer ${token}` },
             id: "admin-getUsers"

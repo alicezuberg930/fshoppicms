@@ -20,7 +20,7 @@ const CurrentProductsPage: React.FC = () => {
     const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-    const { data, status } = useSession();
+    const { data } = useSession();
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
@@ -281,10 +281,10 @@ const CurrentProductsPage: React.FC = () => {
                 </div>
                 <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedProduct != null ? 'block' : 'hidden'}`}>
                     <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0"
-                        onClick={(e) => {
-                            // if (e.target !== e.currentTarget) return;
-                            // setSelectedProduct(null)
-                        }}
+                    // onClick={(e) => {
+                    // if (e.target !== e.currentTarget) return;
+                    // setSelectedProduct(null)
+                    // }}
                     >
                         <div className="fixed inset-0 transition-opacity">
                             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>

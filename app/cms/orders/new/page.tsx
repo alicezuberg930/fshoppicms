@@ -3,7 +3,7 @@ import moment from "moment";
 import Link from "next/link";
 
 const AdminPage: React.FC = () => {
-    const { FaFilter, FaRegShareSquare, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    const { FaRegShareSquare, FaChevronDown } = icons
 
     const dummy: number[] = [];
     for (let i = 0; i <= 100; i++) {

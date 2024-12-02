@@ -1,5 +1,5 @@
 "use client"
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import ContactConfiguration from "@/app/components/ContactConfig";
 const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
@@ -84,6 +84,7 @@ const ConfigurationPage: React.FC = () => {
                                     <td className='py-2'>Thông tin công ty/Footer</td>
                                     <td className='py-2'>:</td>
                                     <td className='py-2'>
+                                        {companyInfo}
                                         <CustomCKEditor value={setCompanyInfo} defaultValue="Nhập mô tả bạn muốn" />
                                     </td>
                                 </tr>

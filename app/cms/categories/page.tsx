@@ -36,13 +36,12 @@ const CategoriesPage: React.FC = () => {
             }
         }
     }
-    console.log(data)
+
     useEffect(() => {
-        console.log(status);
+        console.log(status, data);
 
         if (status === "authenticated") getCategoriesAction()
     }, [data, status])
-
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         if (e.target.checked) {

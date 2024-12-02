@@ -1,5 +1,5 @@
-import axios, { AxiosHeaders } from "axios"
-import { buildWebStorage, setupCache } from "axios-cache-interceptor"
+import axios from "axios"
+import { setupCache } from "axios-cache-interceptor"
 
 const setup = axios.create({ baseURL: process.env.API_URL })
 

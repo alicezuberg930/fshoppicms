@@ -10,10 +10,10 @@ const localPersistConfig = {
     storage,
 };
 
-const sessionPersistConfig = {
-    key: "login",
-    storage: storageSession,
-};
+// const sessionPersistConfig = {
+//     key: "login",
+//     storage: storageSession,
+// };
 
 export const store = configureStore({
     reducer: {
