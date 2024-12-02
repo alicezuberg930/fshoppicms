@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getProfile, login } from "../services/api";
-import { AuthError, CredentialsSignin } from "next-auth"
+import { AuthError } from "next-auth"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [

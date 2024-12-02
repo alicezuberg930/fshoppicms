@@ -7,7 +7,7 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
 import CustomImagePicker from '@/app/components/ImagePicker'
 import { useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';
-import { createProduct, getCategories, updateProduct } from '@/app/services/api';
+import { createProduct, getCategories, updateProduct, uploadFile } from '@/app/services/api';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
@@ -22,15 +22,8 @@ const ProductPageComponent: React.FC<{
     const [stock, setStock] = useState<number>(0)
     const [formData, setFormData] = useState<FormData | null>(null)
     const [category, setCategory] = useState<string>("")
-    const [images, setImages] = useState<string[]>([
-        "https://i.ibb.co/mb1ZxZ9/Biostime-organic-2.png",
-        "https://i.ibb.co/xmJVLfY/Biostime-organic-3.png",
-        "https://i.ibb.co/nP8Kgdb/Biostime-organic-4.png",
-        "https://i.ibb.co/hcjSWKw/Biostime-organic-1.png",
-        "https://i.ibb.co/xmbHqH7/Biostime-organic-5.png",
-    ])
+    const [images, setImages] = useState<File[]>([])
     const [productCode, setProductCode] = useState<string>("")
-
     const [categories, setCategories] = useState<Category[]>([])
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
@@ -54,16 +47,40 @@ const ProductPageComponent: React.FC<{
     }, [status])
 
     const productAction = async () => {
+        if (images.length < 1 || images.length > 10) {
+            toast.error("Cần ít nhất 1 ảnh và không hơn 10 ảnh")
+            return
+        }
+        let form = new FormData()
+        let imageLinks: string[] = []
+        for (let i = 0; i < images.length; i++) {
+            form.set("file", images[i])
+            try {
+                const response = await uploadFile(data?.user.access_token ?? "", form)
+                if (response?.data.status === "OK") {
+                    imageLinks.push(response.data.url)
+                } else {
+                    toast.error(response.data.error)
+                }
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    toast.error(error?.response?.data.error)
+                }
+            }
+        }
+
         const p: Product = {
             name: name || (product?.name ?? ""),
             description: description || (product?.description ?? ""),
             price: price || (product?.price ?? 0),
             stock: stock || (product?.stock ?? 0),
             category: category || (product?.category ?? ""),
-            images: images,
+            images: imageLinks,
             productCode: productCode || (product?.productCode ?? categories[0]._id!),
             options: variantInfo()
         }
+        console.log(p);
+
         if (product != null) {
             try {
                 const response = await updateProduct(data?.user.access_token ?? "", product._id!, p)
@@ -177,7 +194,7 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <div className='mb-2'>
-                                            <CustomImagePicker images={product?.images} setImages={setFormData} />
+                                            <CustomImagePicker images={product?.images} setImages={setImages} />
                                         </div>
                                         <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
                                     </td>
