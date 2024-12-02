@@ -7,6 +7,7 @@ import { setCollapseSidebar } from '../services/sidebar.slice';
 import { PATH } from '../common/path';
 import { usePathname } from "next/navigation";
 import { setConfigDropDown, setOrderDropDown, setProductDropDown } from '../services/dropdown.slice';
+import { logout } from '../services/auth.action';
 
 const AdminSideBar: React.FC = () => {
     const {
@@ -31,7 +32,7 @@ const AdminSideBar: React.FC = () => {
                 </div>
                 <div className="my-2 bg-gray-600 h-[1px]"></div>
             </div>
-            {/* Danh mục */} 
+            {/* Danh mục */}
             <Link className={`${currentPath === PATH.CATEGORIES ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href={PATH.CATEGORIES}>
                 <PiShippingContainer className="w-5 h-5" />
                 <span className="text-[15px] ml-4 text-gray-200">Danh mục</span>
@@ -129,7 +130,9 @@ const AdminSideBar: React.FC = () => {
                 </div>
             </div>
             {/* Đăng xuất */}
-            <div className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white">
+            <div className="p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white"
+                onClick={async () => { await logout() }}
+            >
                 <MdLogout className="w-5 h-5" />
                 <span className="text-[15px] ml-4 text-gray-200">Đăng xuất</span>
             </div>

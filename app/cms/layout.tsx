@@ -15,13 +15,14 @@ const RootLayout = async ({
 }: Readonly<{
     children: React.ReactNode;
 }>) => {
+
     const session = await auth()
     return (
         <div className='flex h-screen'>
             <AdminSideBar />
             <div className='flex flex-col flex-1 w-full'>
                 <AdminHeader session={session} />
-                <NextAuthSessionProvider >
+                <NextAuthSessionProvider session={session}>
                     <AdminContent>
                         {children}
                     </AdminContent>

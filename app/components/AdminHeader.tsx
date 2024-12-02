@@ -64,9 +64,7 @@ const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {
                                         <span>Profile</span>
                                     </Link>
                                 </div>
-                                <button className="flex" onClick={async () => {
-                                    await logout()
-                                }}>
+                                <button className="flex" onClick={async () => { await logout() }}>
                                     <div className="flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200">
                                         <svg className="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                             strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
