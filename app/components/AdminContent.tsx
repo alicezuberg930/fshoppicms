@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const Content = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+const AdminContent = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     return (
         <main className="h-full overflow-y-auto">
             <div className="w-full mx-auto">
@@ -12,4 +12,4 @@ const Content = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     )
 }
 
-export default Content
+export default AdminContent

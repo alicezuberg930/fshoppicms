@@ -6,7 +6,7 @@ import { MdLogout, MdCancel, MdModeEdit, MdOutlineCancel } from "react-icons/md"
 import { FaUser, FaBox, FaChevronDown } from "react-icons/fa";
 import { SiChatbot } from "react-icons/si";
 import { TbLayoutDashboard } from "react-icons/tb";
-import { CiShoppingBasket, CiBellOn } from "react-icons/ci";
+import { CiShoppingBasket, CiBellOn, CiLock, CiUnlock } from "react-icons/ci";
 import { PiShippingContainer } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -39,4 +39,6 @@ export const icons = {
     IoIosAddCircleOutline,
     IoImagesOutline,
     FaRegShareSquare,
+    CiLock,
+    CiUnlock,
 }

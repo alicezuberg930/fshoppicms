@@ -1,6 +1,6 @@
 import "@/public/css/switch.css"
 
-const Switch: React.FC<{ setEnable: (v: boolean) => void }> = ({ setEnable }) => {
+const CustomSwitch: React.FC<{ setEnable: (v: boolean) => void }> = ({ setEnable }) => {
     return (
         <label className="switch">
             <input type="checkbox" onChange={(e) => {
@@ -11,4 +11,4 @@ const Switch: React.FC<{ setEnable: (v: boolean) => void }> = ({ setEnable }) =>
     )
 }
 
-export default Switch
+export default CustomSwitch

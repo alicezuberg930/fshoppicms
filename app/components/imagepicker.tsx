@@ -1,11 +1,15 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { icons } from "../common/icons";
 
-const CustomImagePicker: React.FC = () => {
-  const [files, setFiles] = useState<string[]>([]);
+const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) => void, isMultiple?: boolean }> = ({ images, setImages, isMultiple = true }) => {
+  const [files, setFiles] = useState<string[]>(images || []);
   const [fileEnter, setFileEnter] = useState<boolean>(false);
   const { IoImagesOutline } = icons
+
+  useEffect(() => {
+    setFiles(images || [])
+  }, [images])
 
   return (
     <div className="max-w-5xl">
@@ -26,17 +30,20 @@ const CustomImagePicker: React.FC = () => {
             onDrop={(e) => {
               e.preventDefault();
               setFileEnter(false);
+              const tempFiles: File[] = []
+              const blobUrls: string[] = [];
               if (e.dataTransfer.items) {
-                const blobUrls: string[] = [];
                 [...e.dataTransfer.items].forEach((item, i) => {
                   if (item.kind === "file") {
                     const file = item.getAsFile();
                     if (file) {
+                      tempFiles.push(file)
                       blobUrls.push(URL.createObjectURL(file))
                     }
                     console.log(`items file[${i}].name = ${file?.name}`)
                   }
                 });
+                setImages(tempFiles)
                 setFiles(blobUrls)
               } else {
                 [...e.dataTransfer.files].forEach((file, i) => {
@@ -56,7 +63,7 @@ const CustomImagePicker: React.FC = () => {
               </span>
             </label>
             <input
-              multiple
+              multiple={isMultiple}
               id="file"
               type="file"
               accept="image/*"
@@ -64,12 +71,14 @@ const CustomImagePicker: React.FC = () => {
               onChange={(e) => {
                 const files = e.target.files;
                 if (files) {
-                  console.log(e.target.files);
+                  const tempFiles: File[] = []
                   const blobUrls: string[] = []
                   for (let i = 0; i < files?.length; i++) {
+                    tempFiles.push(files[i])
                     blobUrls.push(URL.createObjectURL(files[i]))
                   }
                   setFiles(blobUrls);
+                  setImages(tempFiles)
                 }
               }}
             />
@@ -92,7 +101,8 @@ const CustomImagePicker: React.FC = () => {
             </div>
             <button
               onClick={() => {
-                setFiles([]); console.log(files);
+                setFiles([]);
+                setImages([])
               }}
               className="mt-6 p-3 py-2 bg-red-500 text-white rounded-md"
             >

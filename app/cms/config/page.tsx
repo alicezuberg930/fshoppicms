@@ -1,39 +1,14 @@
 "use client"
-import { useReducer } from "react";
-import { useGetPokemonByNameQuery } from "@/app/services/api";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import ContactConfiguration from "@/app/components/admin/ContactConfig";
-const CustomCKEditor = dynamic(() => import('@/app/components/ckeditor'), {
+import ContactConfiguration from "@/app/components/ContactConfig";
+const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });
 
-function Bulbasaur() {
-    const { data, isError, isLoading } = useGetPokemonByNameQuery("bulbasaur");
+const ConfigurationPage: React.FC = () => {
+    const [companyInfo, setCompanyInfo] = useState<string>("")
 
-    return (
-        <div>
-            {isError ? (
-                <>Oh no, there was an error</>
-            ) : isLoading ? (
-                <>Loading...</>
-            ) : data ? (
-                <>
-                    <h3>{data.species.name}</h3>
-                    <h3>{data.weight}</h3>
-                    <h3>{data.order}</h3>
-                    <h3>{data.height}</h3>
-                    <img src={data.sprites.front_shiny} alt={data.species.name} />
-                </>
-            ) : null}
-        </div>
-    );
-}
-
-const ConfigurationPage = () => {
-    // const [isBulbasaurMounted, toggleIsBulbasaurMounted] = useReducer(
-    //     (state) => !state,
-    //     true
-    // );
     return (
         <div className='w-full'>
             <div className=''>
@@ -109,7 +84,8 @@ const ConfigurationPage = () => {
                                     <td className='py-2'>Thông tin công ty/Footer</td>
                                     <td className='py-2'>:</td>
                                     <td className='py-2'>
-                                        <CustomCKEditor />
+                                        {companyInfo}
+                                        <CustomCKEditor value={setCompanyInfo} defaultValue="Nhập mô tả bạn muốn" />
                                     </td>
                                 </tr>
 

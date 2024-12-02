@@ -1,17 +1,50 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import ProductPageComponent from "@/app/components/ProductPage";
+import { deleteProduct, getProducts } from "@/app/services/api";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { RotatingLines } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const config: Intl.NumberFormatOptions = { style: 'currency', currency: 'VND', maximumFractionDigits: 9 }
+const formated = new Intl.NumberFormat('vi-VN', config);
 
 const CurrentProductsPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    const [products, setProducts] = useState<Product[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+    const { data } = useSession();
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
         dummy.push(i)
     };
+
+    const getProductsAction = async () => {
+        try {
+            const response = await getProducts(data?.user.access_token ?? "");
+            if (response?.products != null) {
+                setProducts(response.products as Product[])
+            } else {
+                toast.error(response)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+            }
+        }
+    }
+
+    useEffect(() => {
+        getProductsAction()
+    }, [])
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         if (e.target.checked) {
@@ -32,6 +65,35 @@ const CurrentProductsPage: React.FC = () => {
         } else {
             setCheckBoxes([])
         }
+    }
+
+    const deleteProductAction = async (id: string) => {
+        withReactContent(Swal).fire({
+            title: "Bạn có chắc chắn không?",
+            text: "Bạn sẽ không thể đảo ngược hành động",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await deleteProduct(data?.user.access_token ?? "", id)
+                    if (response?.status === "OK") {
+                        toast.success(response.message)
+                        getProductsAction()
+                    } else {
+                        toast.error(response.message)
+                    }
+                } catch (error) {
+                    if (axios.isAxiosError(error)) {
+                        toast.error(error?.response?.data.error)
+                    }
+                }
+            }
+        })
     }
 
     return (
@@ -144,52 +206,69 @@ const CurrentProductsPage: React.FC = () => {
 
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {
-                                            dummy.map((v, i) => {
-                                                return (
-                                                    <tr key={i} className="bg-white">
-                                                        <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
-                                                        </td>
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            {i}
-                                                        </td>
+                                            products.length > 0 ?
+                                                products.map((v, i) => {
+                                                    return (
+                                                        <tr key={i} className="bg-white">
+                                                            <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
+                                                            </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                {i}
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="h-24 w-20">
-                                                                <img className="object-cover w-full h-full" srcSet="/logo.png" />
-                                                            </div>
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="h-24 w-20">
+                                                                    <img className="object-cover w-full h-full" srcSet={v.images[0]} />
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
-                                                                Tên sản phẩm {i * 1000000}
-                                                            </div>
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
+                                                                    {v.name}
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-gray-700">
-                                                                <span className="font-medium">{100000 * i} đ</span>
-                                                            </div>
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="text-gray-700">
+                                                                    <span className="font-medium">{formated.format(v.price)}</span>
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            {(i * 6)}
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                {v.stock}
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="flex flex-wrap justify-start gap-1">
-                                                                <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
-                                                                    <MdModeEdit className="w-5 h-5" />
-                                                                </button>
-                                                                <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
-                                                                    <FaRegTrashAlt className='w-5 h-5' />
-                                                                </button>
-
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="flex flex-wrap justify-start gap-1">
+                                                                    <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit"
+                                                                        onClick={() => setSelectedProduct(v)}
+                                                                    >
+                                                                        <MdModeEdit className="w-5 h-5" />
+                                                                    </button>
+                                                                    <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete"
+                                                                        onClick={() => deleteProductAction(v._id!)}
+                                                                    >
+                                                                        <FaRegTrashAlt className='w-5 h-5' />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }) :
+                                                <tr>
+                                                    <td colSpan={7}>
+                                                        <div className="mx-auto w-fit">
+                                                            <RotatingLines
+                                                                visible={true}
+                                                                width="96"
+                                                                strokeWidth="5"
+                                                                animationDuration="0.75"
+                                                                ariaLabel="rotating-lines-loading"
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                         }
                                     </tbody>
                                 </table>
@@ -197,6 +276,23 @@ const CurrentProductsPage: React.FC = () => {
                             {/* <div className="p-6 md:p-0">
                                 {{ $products->links() }}
                             </div> */}
+                        </div>
+                    </div>
+                </div>
+                <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedProduct != null ? 'block' : 'hidden'}`}>
+                    <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0"
+                    // onClick={(e) => {
+                    // if (e.target !== e.currentTarget) return;
+                    // setSelectedProduct(null)
+                    // }}
+                    >
+                        <div className="fixed inset-0 transition-opacity">
+                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
+                        <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
+                            <div className="px-4 py-5 bg-white text-left rounded-md">
+                                <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} refreshData={getProductsAction} />
+                            </div>
                         </div>
                     </div>
                 </div>

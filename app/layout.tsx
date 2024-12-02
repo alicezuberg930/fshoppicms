@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Content from "./components/admin/content";
-import Header from "./components/admin/header";
-import SideBar from "./components/admin/sidebar"
-import { AdminContextProvider } from "./hooks/admin.context"
-import CustomProvider from "./components/StoreProvider";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import ReduxStoreProvider from "./components/ReduxStoreProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,19 +31,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AdminContextProvider>
-          <CustomProvider>
-            <div className='flex h-screen'>
-              <SideBar />
-              <div className='flex flex-col flex-1 w-full'>
-                <Header />
-                <Content>
-                  {children}
-                </Content>
-              </div>
-            </div>
-          </CustomProvider>
-        </AdminContextProvider>
+        <ReduxStoreProvider>
+          {children}
+        </ReduxStoreProvider>
+        <ToastContainer
+          closeOnClick
+          draggable
+          pauseOnHover
+          pauseOnFocusLoss
+        />
       </body>
     </html>
   );
