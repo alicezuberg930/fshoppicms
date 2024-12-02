@@ -74,7 +74,7 @@ const ProductPageComponent: React.FC<{
             description: description || (product?.description ?? ""),
             price: price || (product?.price ?? 0),
             stock: stock || (product?.stock ?? 0),
-            category: category || (product?.category ?? ""),
+            category: category || product?.category || categories[0]._id!,
             images: imageLinks,
             productCode: productCode || (product?.productCode ?? categories[0]._id!),
             options: variantInfo()
