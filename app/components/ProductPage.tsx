@@ -5,7 +5,7 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
 });
 // import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/ImagePicker'
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { createProduct, getCategories, updateProduct } from '@/app/services/api';
 import { toast } from 'react-toastify';
@@ -56,7 +56,7 @@ const ProductPageComponent: React.FC<{
     const productAction = async () => {
         const p: Product = {
             name: name || (product?.name ?? ""),
-            description: description || (product?.description! ?? ""),
+            description: description || (product?.description ?? ""),
             price: price || (product?.price ?? 0),
             stock: stock || (product?.stock ?? 0),
             category: category || (product?.category ?? ""),
@@ -98,12 +98,12 @@ const ProductPageComponent: React.FC<{
     const variantInfo = () => {
         const variantsEls = document.getElementsByClassName('variant')
         let attributes = []
-        let variants: Variant[] = []
+        const variants: Variant[] = []
         for (let i = 0; i < variantsEls.length; i++) {
-            let variant = (variantsEls[i].children[0] as HTMLInputElement).value
-            let attribute = (variantsEls[i].children[1] as HTMLInputElement).value
-            let stock = +(variantsEls[i].children[2] as HTMLInputElement).value
-            let isDuplicate = variants.find(value => value.key.toLowerCase() === variant.toLowerCase());
+            const variant = (variantsEls[i].children[0] as HTMLInputElement).value
+            const attribute = (variantsEls[i].children[1] as HTMLInputElement).value
+            const stock = +(variantsEls[i].children[2] as HTMLInputElement).value
+            const isDuplicate = variants.find(value => value.key.toLowerCase() === variant.toLowerCase());
             if (isDuplicate) {
                 isDuplicate.value.push({ val: attribute, quantity: stock })
             } else {

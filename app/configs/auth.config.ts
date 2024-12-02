@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getProfile, login } from "../services/api";
+import { AuthError, CredentialsSignin } from "next-auth"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
@@ -17,10 +18,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         response.data["access_token"] = tokenResponse.token
                         return response.data as User
                     } else {
-                        throw new Error(response.message)
+                        throw new CustomError("Access token không hợp lệ")
                     }
                 } else {
-                    throw new Error(tokenResponse.error)
+                    throw new CustomError("Sai thông tin đăng nhập")
                 }
             }
         }),
@@ -44,3 +45,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
     }
 })
+
+export class CustomError extends AuthError {
+    static type: string
+    static message: string
+
+    constructor(message: any) {
+        super()
+        this.type = message
+    }
+}

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link'
 import { icons } from '@/app/common/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,8 +11,7 @@ import { logout } from '../services/auth.action';
 
 const AdminSideBar: React.FC = () => {
     const {
-        MdCancel, FaUser, FaBox, SiChatbot, FaChevronDown, MdLogout, FaBoxOpen,
-        TbLayoutDashboard, CiShoppingBasket, PiShippingContainer, VscSettings
+        MdCancel, FaUser, FaChevronDown, MdLogout, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings
     } = icons
     // const [paymentsDropDown, setPaymentsDropDown] = useState<boolean>(false)
     const { isCollapsed } = useSelector((state: any) => state.sidebar)

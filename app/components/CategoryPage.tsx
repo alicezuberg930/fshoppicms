@@ -1,16 +1,36 @@
 "use client"
-import { useState } from "react"
-import { createCategory } from "../services/api"
+import { useEffect, useState } from "react"
+import { createCategory, getCategories } from "../services/api"
 import { toast } from "react-toastify"
 import axios from "axios"
-import { useSelector } from 'react-redux';
+import { useSession } from "next-auth/react"
 
 const CategoryPageComponent: React.FC = () => {
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
     const [thumbnail, setThumbnail] = useState<string>("")
     const [parentCategory, setParentCategory] = useState<string | null>(null)
-    const { token } = useSelector((state: any) => state.login)
+    const [categories, setCategories] = useState<Category[]>([])
+    const { data, status } = useSession();
+
+    const getCategoriesAction = async () => {
+        try {
+            const response = await getCategories(data?.user.access_token ?? "");
+            if (response.data?.status === "OK") {
+                setCategories(response.data.data.categories as Category[])
+            } else {
+                toast.error(response.data)
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+            }
+        }
+    }
+
+    useEffect(() => {
+        getCategoriesAction()
+    }, [status])
 
     const createCategoryAction = async () => {
         const category: Category = {
@@ -20,7 +40,7 @@ const CategoryPageComponent: React.FC = () => {
             parentCategory: parentCategory == "" ? null : parentCategory,
         }
         try {
-            const response = await createCategory(token, category)
+            const response = await createCategory(data?.user.access_token ?? "", category)
             if (response?.data.status === "OK") {
                 toast.success(response.data.message)
             } else {
@@ -74,7 +94,17 @@ const CategoryPageComponent: React.FC = () => {
                                         <td className='py-3 w-32'>Danh mục cha<b className='text-red-500'>*</b></td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <input onChange={(e) => setParentCategory(e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' />
+                                            <select onChange={(e) => setParentCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none'>
+                                                {
+                                                    categories.length > 0 ?
+                                                        categories?.map(v => {
+                                                            return (
+                                                                <option key={v._id} value={v._id}>{v.name}</option>
+                                                            )
+                                                        }) :
+                                                        <option value="" disabled>Không có dữ liệu</option>
+                                                }
+                                            </select>
                                         </td>
                                     </tr>
                                     <tr>

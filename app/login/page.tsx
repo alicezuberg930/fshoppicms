@@ -12,6 +12,8 @@ const LoginPage: React.FC = () => {
 
   const loginAction = async () => {
     const response = await login(phone, password)
+    console.log(response);
+
     if (response?.error) {
       toast.error(response.error)
     } else {
