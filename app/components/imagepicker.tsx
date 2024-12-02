@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { icons } from "../common/icons";
 
-const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) => void }> = ({ images, setImages }) => {
+const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) => void, isMultiple?: boolean }> = ({ images, setImages, isMultiple = true }) => {
   const [files, setFiles] = useState<string[]>(images || []);
   const [fileEnter, setFileEnter] = useState<boolean>(false);
   const { IoImagesOutline } = icons
@@ -63,7 +63,7 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
               </span>
             </label>
             <input
-              multiple
+              multiple={isMultiple}
               id="file"
               type="file"
               accept="image/*"

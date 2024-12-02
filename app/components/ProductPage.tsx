@@ -20,7 +20,7 @@ const ProductPageComponent: React.FC<{
     const [description, setDescription] = useState<string>("")
     const [price, setPrice] = useState<number>(0)
     const [stock, setStock] = useState<number>(0)
-    const [formData, setFormData] = useState<FormData | null>(null)
+    // const [formData, setFormData] = useState<FormData | null>(null)
     const [category, setCategory] = useState<string>("")
     const [images, setImages] = useState<File[]>([])
     const [productCode, setProductCode] = useState<string>("")

@@ -1,9 +1,10 @@
 "use client"
 import { useEffect, useState } from "react"
-import { createCategory, getCategories } from "../services/api"
+import { createCategory, getCategories, uploadFile } from "../services/api"
 import { toast } from "react-toastify"
 import axios from "axios"
 import { useSession } from "next-auth/react"
+import CustomImagePicker from "./ImagePicker"
 
 const CategoryPageComponent: React.FC = () => {
     const [name, setName] = useState<string>("")
@@ -12,6 +13,7 @@ const CategoryPageComponent: React.FC = () => {
     const [parentCategory, setParentCategory] = useState<string | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
     const { data, status } = useSession();
+    const [images, setImages] = useState<File[]>([])
 
     const getCategoriesAction = async () => {
         try {
@@ -33,10 +35,32 @@ const CategoryPageComponent: React.FC = () => {
     }, [status])
 
     const createCategoryAction = async () => {
+        if (images.length < 1) {
+            toast.error("Cần ít nhất 1 ảnh cho danh mục")
+            return
+        }
+        let form = new FormData()
+        let imageLink: string = ""
+        form.set("file", images[0])
+        try {
+            const response = await uploadFile(data?.user.access_token ?? "", form)
+            if (response?.data.status === "OK") {
+                imageLink = response.data.url
+            } else {
+                toast.error(response.data.error)
+                return
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+                return
+            }
+        }
+
         const category: Category = {
             name: name,
             description: description,
-            thumnail: thumbnail,
+            thumnail: imageLink,
             parentCategory: parentCategory == "" ? null : parentCategory,
         }
         try {
@@ -84,10 +108,13 @@ const CategoryPageComponent: React.FC = () => {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className='py-3 w-32'>Ảnh<b className='text-red-500'>*</b></td>
+                                        <td className='py-3 w-32'>Hình</td>
                                         <td className='py-3'>:</td>
                                         <td className='py-3'>
-                                            <input onChange={(e) => setThumbnail(e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' />
+                                            <div className='mb-2'>
+                                                <CustomImagePicker setImages={setImages} isMultiple={false} />
+                                            </div>
+                                            <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
                                         </td>
                                     </tr>
                                     <tr>
