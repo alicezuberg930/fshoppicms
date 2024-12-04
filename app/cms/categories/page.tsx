@@ -100,7 +100,7 @@ const CategoriesPage: React.FC = () => {
 
     return (
         <main className='h-full'>
-            {/* {JSON.stringify(data)} */}
+            {JSON.stringify(data)}
             <div className='mt-5 mb-5 px-6'>
                 <div className='flex items-center justify-between mb-2 text-2xl font-semibold'>
                     <h2>Danh mục</h2>
