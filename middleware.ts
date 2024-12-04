@@ -5,28 +5,29 @@ import { PATH } from './app/common/path'
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-    console.log("middleware");
-    const session = await auth()
-    const isAuthenticated = !!session?.user
-    const path = request.nextUrl.pathname
+    // const session = await auth()
+    // const isAuthenticated = !!session?.user
+    // const path = request.nextUrl.pathname
 
-    if (isAuthenticated && path.startsWith(PATH.LOGIN)) {
-        return NextResponse.redirect(new URL(PATH.CATEGORIES, request.url))
-    } else if (!isAuthenticated && path.startsWith("/cms")) {
-        return NextResponse.redirect(new URL(PATH.LOGIN, request.url))
-    } else if (isAuthenticated && !session.user.isAdmin && path.startsWith(PATH.USERS)) {
-        // redirect user to the previous page if their role is not admin
-        // Use the Referer header to get the previous URL
-        const referer = request.headers.get('referer') || PATH.LOGIN; // Default to '/login' if no Referer header
-        return NextResponse.redirect(new URL(referer, request.url));
-    }
+    // if (isAuthenticated && path.startsWith(PATH.LOGIN)) {
+    //     return NextResponse.redirect(new URL(PATH.CATEGORIES, request.url))
+    // } else if (!isAuthenticated && path.startsWith("/cms")) {
+    //     return NextResponse.redirect(new URL(PATH.LOGIN, request.url))
+    // } else if (isAuthenticated && !session.user.isAdmin && path.startsWith(PATH.USERS)) {
+    //     // redirect user to the previous page if their role is not admin
+    //     // Use the Referer header to get the previous URL
+    //     const referer = request.headers.get('referer') || PATH.LOGIN; // Default to '/login' if no Referer header
+    //     return NextResponse.redirect(new URL(referer, request.url));
+    // }
+    return NextResponse.redirect(new URL('/home', request.url))
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
     matcher: [
-        "/login",
-        "/cms/:path*"
+        "/about"
+        // "/login",
+        // "/cms/:path*"
     ]
 }
 
