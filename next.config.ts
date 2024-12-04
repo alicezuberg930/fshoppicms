@@ -5,10 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'fshoppii.com',
-        port: '',
-        pathname: '/uploads/**',
+        protocol: "https",
+        hostname: "res.cloudinary.com",
       },
     ],
   },
