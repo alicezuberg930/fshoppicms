@@ -1,6 +1,6 @@
 const DashboardPage: React.FC = () => {
     return (
-        <>dashboard</>
+        <div></div>
     )
 }
 

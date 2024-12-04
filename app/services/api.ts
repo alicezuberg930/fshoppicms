@@ -95,30 +95,11 @@ export const unlockAccount = async (token: string, lockReason: string) => {
     }
 }
 
-export const createUser = async (token: string, user: User) => {
-    try {
-        const response = await axioInstance<any>({
-            url: API.CREATE_USER, method: "POST", data: user,
-            headers: { Authorization: `Bearer ${token}` },
-        })
-        return response.data
-    } catch (error) {
-        return error
-    }
-}
-
 export const getUsers = async (token: string) => {
-    try {
-        const response = await axioInstance<any>({
-            url: API.READ_USERS, method: "GET", data: {},
-            headers: { Authorization: `Bearer ${token}` },
-        })
-        return response.data
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return error.response?.data.error
-        }
-    }
+    return await axioInstance<any>({
+        url: API.READ_USERS, method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+    })
 }
 
 // danh mục

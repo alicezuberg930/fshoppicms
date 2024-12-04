@@ -10,9 +10,7 @@ import { setConfigDropDown, setOrderDropDown, setProductDropDown } from '../serv
 import { logout } from '../services/auth.action';
 
 const AdminSideBar: React.FC = () => {
-    const {
-        MdCancel, FaUser, FaChevronDown, MdLogout, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings
-    } = icons
+    const { MdCancel, FaUser, FaChevronDown, MdLogout, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
     // const [paymentsDropDown, setPaymentsDropDown] = useState<boolean>(false)
     const { isCollapsed } = useSelector((state: any) => state.sidebar)
     const { isOrder, isProduct, isConfig } = useSelector((state: any) => state.dropdown)
@@ -31,6 +29,11 @@ const AdminSideBar: React.FC = () => {
                 </div>
                 <div className="my-2 bg-gray-600 h-[1px]"></div>
             </div>
+            {/* Thống kê - dashboard */}
+            <Link className={`${currentPath.indexOf(PATH.DASHBOARD) ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href={PATH.CATEGORIES}>
+                <LuLayoutDashboard className="w-5 h-5" />
+                <span className="text-[15px] ml-4 text-gray-200">Thống kê</span>
+            </Link>
             {/* Danh mục */}
             <Link className={`${currentPath === PATH.CATEGORIES ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href={PATH.CATEGORIES}>
                 <PiShippingContainer className="w-5 h-5" />

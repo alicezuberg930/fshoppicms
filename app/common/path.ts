@@ -6,7 +6,8 @@ export const PATH = {
     PRODUCT_CURRENT: "/cms/products/current",
     SITE_CONFIG: "/cms/config/site",
     LOGIN: "/login",
-    PROFILE: "/cms/profile"
+    PROFILE: "/cms/profile",
+    DASHBOARD: "/cms/dashboard"
 }
 
 export const API = {
@@ -30,4 +31,6 @@ export const API = {
     READ_CATEGORIES: "/category/all",
     UPDATE_CATEGORY: "???",
     DELETE_CATEGORY: "/category/del",
+    // Kho 
+    READ_STORAGE: "/storage"
 }

@@ -2,7 +2,7 @@ import ProductPageComponent from "@/app/components/ProductPage"
 
 const CreateProductPage: React.FC = () => {
     return (
-        <ProductPageComponent />
+        <ProductPageComponent page={1} />
     )
 }
 

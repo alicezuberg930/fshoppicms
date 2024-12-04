@@ -1,12 +1,13 @@
 'use client'
 import { icons } from '@/app/common/icons'
 import { API } from '@/app/common/path'
+import { isAxiosError } from '@/app/common/utils'
+import LoadingComponent from '@/app/components/LoadingComponent'
 import { deleteCategory, getCategories } from '@/app/services/api'
-import axios from 'axios'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { RotatingLines } from 'react-loader-spinner'
+import { ChangeEvent, useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -15,38 +16,26 @@ const CategoriesPage: React.FC = () => {
     const { FaChevronLeft, FaChevronRight, FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
-    const [categories, setCategories] = useState<Category[]>([])
     const { data, status } = useSession();
-    const [paginate, setPaginate] = useState<{
-        totalProducts: number, totalPages: number, currentPage: number
-    }>({ totalProducts: 0, totalPages: 0, currentPage: 0 })
+    const queryClient = useQueryClient()
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const { data: categories, isLoading } = useQuery({
+        queryKey: [API.READ_CATEGORIES, currentPage],
+        queryFn: () => getCategories(data?.user.access_token ?? ""),
+        staleTime: 2000 * 1000,
+        placeholderData: (previousData, previousQuery) => previousData,
+    })
+    const mutation = useMutation({
+        mutationFn: (id: string) => deleteCategory(data?.user.access_token ?? "", id),
+        onSuccess(_) {
+            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, currentPage] })
+        },
+    })
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
         dummy.push(i)
     };
-
-    const getCategoriesAction = async () => {
-        try {
-            const response = await getCategories(data?.user.access_token ?? '');
-            if (response.data?.status === 'OK') {
-                setCategories(response.data.data.categories as Category[])
-                setPaginate({ totalPages: +(response.data.data.total / response.data.data.limit), totalProducts: +(response.data.data.total), currentPage: +(response.data.data.page) })
-            } else {
-                toast.error(response.data)
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                toast.error(error?.response?.data.error)
-            }
-        }
-    }
-
-    // if(status === 'authenticated') return <div>authenticated</div>
-    // useEffect(() => {
-    //     console.log(status, data);
-    //     if (status === 'authenticated') getCategoriesAction()
-    // }, [status])
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         if (e.target.checked) {
@@ -81,26 +70,20 @@ const CategoriesPage: React.FC = () => {
             cancelButtonText: 'Hủy'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                try {
-                    const response = await deleteCategory(data?.user.access_token ?? '', id)
-                    if (response.data?.status === 'OK') {
-                        toast.success(response.data.message)
-                        getCategoriesAction()
-                    } else {
-                        toast.error(response.data.message)
-                    }
-                } catch (error) {
-                    if (axios.isAxiosError(error)) {
-                        toast.error(error?.response?.data.error)
-                    }
-                }
+                mutation.mutate(id, {
+                    onError(error) {
+                        if (isAxiosError(error)) toast.error(error.response?.data.message)
+                    },
+                    onSuccess(data) {
+                        toast.success(data.data.message)
+                    },
+                })
             }
         })
     }
 
     return (
         <main className='h-full'>
-            {JSON.stringify(data)}
             <div className='mt-5 mb-5 px-6'>
                 <div className='flex items-center justify-between mb-2 text-2xl font-semibold'>
                     <h2>Danh mục</h2>
@@ -200,8 +183,15 @@ const CategoriesPage: React.FC = () => {
 
                                 <tbody className='bg-white divide-y divide-gray-200'>
                                     {
-                                        categories.length > 0 ?
-                                            categories.map((v, i) => {
+                                        isLoading ?
+                                            <tr>
+                                                <td colSpan={7}>
+                                                    <div className="w-full p-3">
+                                                        <LoadingComponent />
+                                                    </div>
+                                                </td>
+                                            </tr> :
+                                            (categories?.data.data.categories as Category[]).map((v, i) => {
                                                 return (
                                                     <tr key={i} className='bg-white'>
                                                         <td className='px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
@@ -225,7 +215,7 @@ const CategoriesPage: React.FC = () => {
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                             {/* {categories.find(c => c._id === v.parentCategory)?.name} */}
-                                                            {v.parentCategory}
+                                                            {v.subcategories[0]?.name || ''}
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
@@ -240,20 +230,7 @@ const CategoriesPage: React.FC = () => {
                                                         </td>
                                                     </tr>
                                                 )
-                                            }) :
-                                            <tr>
-                                                <td colSpan={7}>
-                                                    <div className='mx-auto w-fit'>
-                                                        <RotatingLines
-                                                            visible={true}
-                                                            width='96'
-                                                            strokeWidth='5'
-                                                            animationDuration='0.75'
-                                                            ariaLabel='rotating-lines-loading'
-                                                        />
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            })
                                     }
                                 </tbody>
                             </table>
@@ -293,7 +270,7 @@ const CategoriesPage: React.FC = () => {
                                                 </button>
                                             </span>
                                             {
-                                                Array.from({ length: paginate.totalPages }).map((v, i) => {
+                                                Array.from({ length: 1 }).map((v, i) => {
                                                     return (
                                                         <span key={i}>
                                                             <button type='button' className='relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>

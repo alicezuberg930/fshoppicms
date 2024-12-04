@@ -12,13 +12,13 @@ import { toast } from 'react-toastify';
 import axios, { AxiosResponse } from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
-import { QueryClient, useMutation, UseMutationResult, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { API } from '@/app/common/path';
 import { isAxiosError } from '../common/utils';
 
 const ProductPageComponent: React.FC<{
-    product?: Product, setSelected?: (v: Product | null) => void, mutation?: UseMutationResult<AxiosResponse<any, any>, Error, Product, unknown>
-}> = ({ product, setSelected, mutation }) => {
+    product?: Product, setSelected?: (v: Product | null) => void, page: number
+}> = ({ product, setSelected, page }) => {
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
     const [price, setPrice] = useState<number>(0)
@@ -30,7 +30,13 @@ const ProductPageComponent: React.FC<{
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
     const { data } = useSession();
-    const queryClient = new QueryClient()
+    const queryClient = useQueryClient()
+    const mutation = useMutation({
+        mutationFn: (body: Product) => product != null ? updateProduct(data?.user.access_token ?? "", product!._id!, body) : createProduct(data?.user.access_token ?? "", body),
+        onSuccess(_) {
+            queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
+        },
+    })
 
     const { data: categories, isLoading } = useQuery({
         queryKey: [API.READ_CATEGORIES],
@@ -74,12 +80,9 @@ const ProductPageComponent: React.FC<{
         }
         // console.log(p);
         mutation!.mutate(p, {
-            onError(error) {
-                if (isAxiosError(error)) toast.error(error.response?.data.message)
-            },
-            onSuccess(data, variables, context) {
+            onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.message) },
+            onSuccess(data) {
                 toast.success(data.data.message)
-                // queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, { page: 1 }] })
                 setSelected!(null)
             },
         })

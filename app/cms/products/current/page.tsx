@@ -2,14 +2,13 @@
 import { icons } from "@/app/common/icons";
 import { API } from "@/app/common/path";
 import { isAxiosError } from "@/app/common/utils";
+import LoadingComponent from "@/app/components/LoadingComponent";
 import ProductPageComponent from "@/app/components/ProductPage";
-import { createProduct, deleteProduct, getProducts, updateProduct } from "@/app/services/api";
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { deleteProduct, getProducts, updateProduct } from "@/app/services/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
-import { RotatingLines } from "react-loader-spinner";
+import { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -24,23 +23,17 @@ const CurrentProductsPage: React.FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
     const { data } = useSession();
     const [currentPage, setCurrentPage] = useState<number>(1)
+    const queryClient = useQueryClient()
     const { data: products, isLoading } = useQuery({
-        queryKey: ["READ_PRODUCTS", currentPage],
+        queryKey: [API.READ_PRODUCTS, currentPage],
         queryFn: () => getProducts(data?.user.access_token ?? "", { page: currentPage }),
         staleTime: 2000 * 1000,
         placeholderData: (previousData, previousQuery) => previousData,
     })
-    const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationFn: (id: string) => deleteProduct(data?.user.access_token ?? "", id),
-        onSuccess(data, variables, context) {
-            queryClient.invalidateQueries({ queryKey: ["READ_PRODUCTS", currentPage] })
-        },
-    })
-    const cuMutation = useMutation({
-        mutationFn: (body: Product) => selectedProduct != null ? updateProduct(data?.user.access_token ?? "", selectedProduct!._id!, body) : createProduct(data?.user.access_token ?? "", body),
-        onSuccess(data) {
-            queryClient.invalidateQueries({ queryKey: ["READ_PRODUCTS", currentPage] })
+        onSuccess(_) {
+            queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, currentPage] })
         },
     })
 
@@ -86,7 +79,7 @@ const CurrentProductsPage: React.FC = () => {
                     onError(error) {
                         if (isAxiosError(error)) toast.error(error.response?.data.message)
                     },
-                    onSuccess(data, variables, context) {
+                    onSuccess(data) {
                         toast.success(data.data.message)
                     },
                 })
@@ -207,14 +200,8 @@ const CurrentProductsPage: React.FC = () => {
                                             isLoading ?
                                                 <tr>
                                                     <td colSpan={7}>
-                                                        <div className="mx-auto w-fit">
-                                                            <RotatingLines
-                                                                visible={true}
-                                                                width="96"
-                                                                strokeWidth="5"
-                                                                animationDuration="0.75"
-                                                                ariaLabel="rotating-lines-loading"
-                                                            />
+                                                        <div className="w-full p-3">
+                                                            <LoadingComponent />
                                                         </div>
                                                     </td>
                                                 </tr> :
@@ -321,7 +308,7 @@ const CurrentProductsPage: React.FC = () => {
                         </div>
                         <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
                             <div className="px-4 py-5 bg-white text-left rounded-md">
-                                <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} mutation={cuMutation} />
+                                <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} />
                             </div>
                         </div>
                     </div>
