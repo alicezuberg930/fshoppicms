@@ -61,7 +61,7 @@ const CategoryPageComponent: React.FC = () => {
             name: name,
             description: description,
             thumnail: imageLink,
-            parentCategory: parentCategory == "" ? null : parentCategory,
+            parentCategory: parentCategory,
         }
         try {
             const response = await createCategory(data?.user.access_token ?? "", category)

@@ -50,7 +50,8 @@ interface Category {
     _id?: string,
     name: string,
     description: string,
-    subcategories: Category[],
+    parentCategory?: string | null,
+    subcategories?: Category[],
     thumnail?: string,
 }
 

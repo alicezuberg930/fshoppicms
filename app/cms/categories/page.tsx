@@ -215,7 +215,7 @@ const CategoriesPage: React.FC = () => {
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                             {/* {categories.find(c => c._id === v.parentCategory)?.name} */}
-                                                            {v.subcategories[0]?.name || ''}
+                                                            {v.subcategories![0]?.name || ''}
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
