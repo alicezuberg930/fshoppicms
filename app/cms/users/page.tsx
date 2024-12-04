@@ -1,6 +1,8 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import { API } from "@/app/common/path";
 import { getUsers, lockAccount, unlockAccount } from "@/app/services/api";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -12,14 +14,14 @@ const UsersPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const { FaFilter, CiLock, CiUnlock, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
-    const [users, setUsers] = useState<User[]>([])
+    // const [users, setUsers] = useState<User[]>([])
     const { data, status } = useSession();
 
     const getUsersAction = async () => {
         try {
             const response = await getUsers(data?.user.access_token ?? "");
             if (response?.status === "OK") {
-                setUsers((response.data.users as User[]).filter(user => user.isAdmin != true))
+                // setUsers((response.data.users as User[]).filter(user => user.isAdmin != true))
             } else {
                 toast.error(response)
             }
@@ -30,10 +32,21 @@ const UsersPage: React.FC = () => {
         }
     }
 
-    useEffect(() => {
-        console.log(status);
-        if (status === "authenticated" && data != null) getUsersAction()
-    }, [data, status])
+    // useEffect(() => {
+    //     console.log(status);
+    //     if (status === "authenticated" && data != null) getUsersAction()
+    // }, [data, status])
+
+    if (status === 'authenticated') {
+        const { data: users, isLoading } = useQuery({
+            queryKey: [API.READ_USERS],
+            queryFn: () => getUsers(data?.user.access_token ?? "")
+        })
+        console.log(users);
+    }
+
+
+
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         // if (e.target.checked) {
@@ -198,62 +211,62 @@ const UsersPage: React.FC = () => {
 
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {
-                                            users.length > 0 ? users.map((v, i) => {
-                                                return (
-                                                    <tr key={i} className="bg-white">
-                                                        <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
-                                                        </td>
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            {i}
-                                                        </td>
+                                            // users.length > 0 ? users.map((v, i) => {
+                                            //     return (
+                                            //         <tr key={i} className="bg-white">
+                                            //             <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
+                                            //             </td>
+                                            //             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 {i}
+                                            //             </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-gray-700">
-                                                                <span>{v.name}</span>
-                                                            </div>
-                                                        </td>
+                                            //             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 <div className="text-gray-700">
+                                            //                     <span>{v.name}</span>
+                                            //                 </div>
+                                            //             </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <span>{v.email}</span>
-                                                        </td>
+                                            //             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 <span>{v.email}</span>
+                                            //             </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-gray-700">
-                                                                <span className="font-medium">{v.role}</span>
-                                                            </div>
-                                                        </td>
+                                            //             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 <div className="text-gray-700">
+                                            //                     <span className="font-medium">{v.role}</span>
+                                            //                 </div>
+                                            //             </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <span className="font-medium">{v.phone}</span>
-                                                        </td>
+                                            //             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 <span className="font-medium">{v.phone}</span>
+                                            //             </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <button className="flex items-center text-sm font-medium leading-5 text-center text-white bg-red-600 p-2 transition-colors duration-150 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                                                onClick={() => v.isLocked ? unlockAccountAction(v._id!) : lockAccountAction(v._id!)}
-                                                            >
-                                                                {
-                                                                    v.isLocked ?
-                                                                        <CiUnlock className='w-5 h-5' title="Mở khóa" /> :
-                                                                        <CiLock className='w-5 h-5' title="Khóa" />
-                                                                }
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }) : <tr>
-                                                <td colSpan={7}>
-                                                    <div className="mx-auto w-fit">
-                                                        <RotatingLines
-                                                            visible={true}
-                                                            width="96"
-                                                            strokeWidth="5"
-                                                            animationDuration="0.75"
-                                                            ariaLabel="rotating-lines-loading"
-                                                        />
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            //             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                            //                 <button className="flex items-center text-sm font-medium leading-5 text-center text-white bg-red-600 p-2 transition-colors duration-150 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                                            //                     onClick={() => v.isLocked ? unlockAccountAction(v._id!) : lockAccountAction(v._id!)}
+                                            //                 >
+                                            //                     {
+                                            //                         v.isLocked ?
+                                            //                             <CiUnlock className='w-5 h-5' title="Mở khóa" /> :
+                                            //                             <CiLock className='w-5 h-5' title="Khóa" />
+                                            //                     }
+                                            //                 </button>
+                                            //             </td>
+                                            //         </tr>
+                                            //     )
+                                            // }) : <tr>
+                                            //     <td colSpan={7}>
+                                            //         <div className="mx-auto w-fit">
+                                            //             <RotatingLines
+                                            //                 visible={true}
+                                            //                 width="96"
+                                            //                 strokeWidth="5"
+                                            //                 animationDuration="0.75"
+                                            //                 ariaLabel="rotating-lines-loading"
+                                            //             />
+                                            //         </div>
+                                            //     </td>
+                                            // </tr>
                                         }
                                     </tbody>
                                 </table>

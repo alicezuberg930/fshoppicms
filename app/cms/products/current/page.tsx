@@ -1,7 +1,10 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import { API } from "@/app/common/path";
+import { isAxiosError } from "@/app/common/utils";
 import ProductPageComponent from "@/app/components/ProductPage";
-import { deleteProduct, getProducts } from "@/app/services/api";
+import { createProduct, deleteProduct, getProducts, updateProduct } from "@/app/services/api";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -17,34 +20,34 @@ const formated = new Intl.NumberFormat('vi-VN', config);
 const CurrentProductsPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
-    const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
-    const [products, setProducts] = useState<Product[]>([]);
+    const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline, FaChevronLeft, FaChevronRight, FaRegShareSquare } = icons
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
     const { data } = useSession();
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const { data: products, isLoading } = useQuery({
+        queryKey: ["READ_PRODUCTS", currentPage],
+        queryFn: () => getProducts(data?.user.access_token ?? "", { page: currentPage }),
+        staleTime: 2000 * 1000,
+        placeholderData: (previousData, previousQuery) => previousData,
+    })
+    const queryClient = useQueryClient()
+    const mutation = useMutation({
+        mutationFn: (id: string) => deleteProduct(data?.user.access_token ?? "", id),
+        onSuccess(data, variables, context) {
+            queryClient.invalidateQueries({ queryKey: ["READ_PRODUCTS", currentPage] })
+        },
+    })
+    const cuMutation = useMutation({
+        mutationFn: (body: Product) => selectedProduct != null ? updateProduct(data?.user.access_token ?? "", selectedProduct!._id!, body) : createProduct(data?.user.access_token ?? "", body),
+        onSuccess(data) {
+            queryClient.invalidateQueries({ queryKey: ["READ_PRODUCTS", currentPage] })
+        },
+    })
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
         dummy.push(i)
     };
-
-    const getProductsAction = async () => {
-        try {
-            const response = await getProducts(data?.user.access_token ?? "");
-            if (response?.products != null) {
-                setProducts(response.products as Product[])
-            } else {
-                toast.error(response)
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                toast.error(error?.response?.data.error)
-            }
-        }
-    }
-
-    useEffect(() => {
-        getProductsAction()
-    }, [])
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         if (e.target.checked) {
@@ -79,19 +82,14 @@ const CurrentProductsPage: React.FC = () => {
             cancelButtonText: "Hủy"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                try {
-                    const response = await deleteProduct(data?.user.access_token ?? "", id)
-                    if (response?.status === "OK") {
-                        toast.success(response.message)
-                        getProductsAction()
-                    } else {
-                        toast.error(response.message)
-                    }
-                } catch (error) {
-                    if (axios.isAxiosError(error)) {
-                        toast.error(error?.response?.data.error)
-                    }
-                }
+                mutation.mutate(id, {
+                    onError(error) {
+                        if (isAxiosError(error)) toast.error(error.response?.data.message)
+                    },
+                    onSuccess(data, variables, context) {
+                        toast.success(data.data.message)
+                    },
+                })
             }
         })
     }
@@ -206,8 +204,21 @@ const CurrentProductsPage: React.FC = () => {
 
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {
-                                            products.length > 0 ?
-                                                products.map((v, i) => {
+                                            isLoading ?
+                                                <tr>
+                                                    <td colSpan={7}>
+                                                        <div className="mx-auto w-fit">
+                                                            <RotatingLines
+                                                                visible={true}
+                                                                width="96"
+                                                                strokeWidth="5"
+                                                                animationDuration="0.75"
+                                                                ariaLabel="rotating-lines-loading"
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                </tr> :
+                                                (products?.data.products as Product[]).map((v, i) => {
                                                     return (
                                                         <tr key={i} className="bg-white">
                                                             <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
@@ -251,31 +262,50 @@ const CurrentProductsPage: React.FC = () => {
                                                                     >
                                                                         <FaRegTrashAlt className='w-5 h-5' />
                                                                     </button>
+                                                                    <Link href={`/cms/products/details/${v._id}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
+                                                                        <FaRegShareSquare className='w-5 h-5' />
+                                                                    </Link>
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                     )
-                                                }) :
-                                                <tr>
-                                                    <td colSpan={7}>
-                                                        <div className="mx-auto w-fit">
-                                                            <RotatingLines
-                                                                visible={true}
-                                                                width="96"
-                                                                strokeWidth="5"
-                                                                animationDuration="0.75"
-                                                                ariaLabel="rotating-lines-loading"
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                })
                                         }
                                     </tbody>
                                 </table>
                             </div>
-                            {/* <div className="p-6 md:p-0">
-                                {{ $products->links() }}
-                            </div> */}
+                            {
+                                isLoading ? null :
+                                    <div className='text-center'>
+                                        <div>
+                                            <span className='relative z-0 inline-flex rounded-md shadow-sm'>
+                                                <span>
+                                                    <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
+                                                        <FaChevronLeft className='w-5 h-5  p-1' />
+                                                    </button>
+                                                </span>
+                                                {
+                                                    Array.from({ length: products?.data.totalPages }).map((v, i) => {
+                                                        return (
+                                                            <span key={i + 1}>
+                                                                <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700`}>
+                                                                    {i + 1}
+                                                                </button>
+                                                            </span>
+                                                        )
+                                                    })
+                                                }
+                                                <span>
+                                                    <span>
+                                                        <span className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
+                                                            <FaChevronRight className='w-5 h-5 p-1' />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -291,7 +321,7 @@ const CurrentProductsPage: React.FC = () => {
                         </div>
                         <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
                             <div className="px-4 py-5 bg-white text-left rounded-md">
-                                <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} refreshData={getProductsAction} />
+                                <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} mutation={cuMutation} />
                             </div>
                         </div>
                     </div>

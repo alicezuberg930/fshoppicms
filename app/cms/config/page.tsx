@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import ContactConfiguration from "@/app/components/ContactConfig";
-const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
+const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });
 

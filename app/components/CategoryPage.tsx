@@ -4,12 +4,12 @@ import { createCategory, getCategories, uploadFile } from "../services/api"
 import { toast } from "react-toastify"
 import axios from "axios"
 import { useSession } from "next-auth/react"
-import CustomImagePicker from "./ImagePicker"
+import CustomImagePicker from "@/app/components/CustomImagePicker"
 
 const CategoryPageComponent: React.FC = () => {
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
-    const [thumbnail, setThumbnail] = useState<string>("")
+    // const [thumbnail, setThumbnail] = useState<string>("")
     const [parentCategory, setParentCategory] = useState<string | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
     const { data, status } = useSession();
@@ -39,7 +39,7 @@ const CategoryPageComponent: React.FC = () => {
             toast.error("Cần ít nhất 1 ảnh cho danh mục")
             return
         }
-        let form = new FormData()
+        const form = new FormData()
         let imageLink: string = ""
         form.set("file", images[0])
         try {

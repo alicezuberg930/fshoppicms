@@ -11,6 +11,8 @@ import { PiShippingContainer } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoImagesOutline } from "react-icons/io5";
+import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
 
 export const icons = {
     FaLaravel,
@@ -41,4 +43,6 @@ export const icons = {
     FaRegShareSquare,
     CiLock,
     CiUnlock,
+    FaChevronLeft,
+    FaChevronRight
 }

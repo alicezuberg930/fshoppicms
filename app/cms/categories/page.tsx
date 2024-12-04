@@ -1,5 +1,6 @@
 'use client'
 import { icons } from '@/app/common/icons'
+import { API } from '@/app/common/path'
 import { deleteCategory, getCategories } from '@/app/services/api'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
@@ -11,7 +12,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 const CategoriesPage: React.FC = () => {
-    const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    const { FaChevronLeft, FaChevronRight, FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const [categories, setCategories] = useState<Category[]>([])
@@ -30,7 +31,7 @@ const CategoriesPage: React.FC = () => {
             const response = await getCategories(data?.user.access_token ?? '');
             if (response.data?.status === 'OK') {
                 setCategories(response.data.data.categories as Category[])
-                setPaginate({ totalPages: +(response.data.data.page), totalProducts: +(response.data.data.total), currentPage: +(response.data.data.page) })
+                setPaginate({ totalPages: +(response.data.data.total / response.data.data.limit), totalProducts: +(response.data.data.total), currentPage: +(response.data.data.page) })
             } else {
                 toast.error(response.data)
             }
@@ -41,11 +42,11 @@ const CategoriesPage: React.FC = () => {
         }
     }
 
-    useEffect(() => {
-        console.log(status, data);
-
-        if (status === 'authenticated') getCategoriesAction()
-    }, [data, status])
+    // if(status === 'authenticated') return <div>authenticated</div>
+    // useEffect(() => {
+    //     console.log(status, data);
+    //     if (status === 'authenticated') getCategoriesAction()
+    // }, [status])
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         if (e.target.checked) {
@@ -223,7 +224,8 @@ const CategoriesPage: React.FC = () => {
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                            {categories.find(c => c._id === v.parentCategory)?.name}
+                                                            {/* {categories.find(c => c._id === v.parentCategory)?.name} */}
+                                                            {v.parentCategory}
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
@@ -286,22 +288,15 @@ const CategoriesPage: React.FC = () => {
                                     <div>
                                         <span className='relative z-0 inline-flex rounded-md shadow-sm'>
                                             <span>
-                                                <button type='button'
-                                                    className='relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'
-                                                    aria-label='&amp;laquo; Trước'>
-                                                    <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
-                                                        <path fill-rule='evenodd'
-                                                            d='M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z'
-                                                            clip-rule='evenodd'></path>
-                                                    </svg>
+                                                <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
+                                                    <FaChevronLeft className='w-5 h-5  p-1' />
                                                 </button>
                                             </span>
                                             {
-                                                Array.from({ length: 5 }).map((v, i) => {
+                                                Array.from({ length: paginate.totalPages }).map((v, i) => {
                                                     return (
-                                                        <span>
-                                                            <button type='button'
-                                                                className='relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>
+                                                        <span key={i}>
+                                                            <button type='button' className='relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>
                                                                 {i}
                                                             </button>
                                                         </span>
@@ -309,15 +304,9 @@ const CategoriesPage: React.FC = () => {
                                                 })
                                             }
                                             <span>
-                                                <span aria-disabled='true' aria-label='Tiếp &amp;raquo;'>
-                                                    <span className='relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'
-                                                        aria-hidden='true'>
-                                                        <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
-                                                            <path fillRule='evenodd'
-                                                                d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
-                                                                clipRule='evenodd'>
-                                                            </path>
-                                                        </svg>
+                                                <span>
+                                                    <span className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
+                                                        <FaChevronRight className='w-5 h-5 p-1' />
                                                     </span>
                                                 </span>
                                             </span>

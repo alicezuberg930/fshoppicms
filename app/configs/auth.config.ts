@@ -12,9 +12,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
             authorize: async (credentials) => {
                 const tokenResponse = await login(credentials.phone as string, credentials.password as string)
-                if (tokenResponse.token != null) {
+                if (tokenResponse?.token != null) {
                     const response = await getProfile(tokenResponse.token)
-                    if (response.data != null) {
+                    if (response?.data != null) {
                         response.data["access_token"] = tokenResponse.token
                         return response.data as User
                     } else {

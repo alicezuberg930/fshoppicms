@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCollapseSidebar } from "../services/sidebar.slice";
 import { Session } from "next-auth";
 import Link from "next/link";
-import { PATH } from "../common/path";
+import { PATH } from "@/app/common/path";
 import { logout } from "../services/auth.action";
 
 const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {

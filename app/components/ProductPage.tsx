@@ -1,118 +1,91 @@
 'use client'
 import dynamic from 'next/dynamic'
-const CustomCKEditor = dynamic(() => import('@/app/components/CKEditor'), {
+const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });
 // import CustomDatePicker from '@/app/components/DatePicker';
-import CustomImagePicker from '@/app/components/ImagePicker'
-import { useEffect, useState } from 'react';
+import CustomImagePicker from '@/app/components/CustomImagePicker'
+import { useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { createProduct, getCategories, updateProduct, uploadFile } from '@/app/services/api';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
+import { QueryClient, useMutation, UseMutationResult, useQuery } from '@tanstack/react-query';
+import { API } from '@/app/common/path';
+import { isAxiosError } from '../common/utils';
 
 const ProductPageComponent: React.FC<{
-    product?: Product, setSelected?: (v: Product | null) => void, refreshData?: () => void
-}> = ({ product, setSelected, refreshData }) => {
+    product?: Product, setSelected?: (v: Product | null) => void, mutation?: UseMutationResult<AxiosResponse<any, any>, Error, Product, unknown>
+}> = ({ product, setSelected, mutation }) => {
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
     const [price, setPrice] = useState<number>(0)
     const [stock, setStock] = useState<number>(0)
-    // const [formData, setFormData] = useState<FormData | null>(null)
     const [category, setCategory] = useState<string>("")
     const [images, setImages] = useState<File[]>([])
     const [productCode, setProductCode] = useState<string>("")
-    const [categories, setCategories] = useState<Category[]>([])
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
-    const { data, status } = useSession();
+    const { data } = useSession();
+    const queryClient = new QueryClient()
 
-    useEffect(() => {
-        const getCategoriesAction = async () => {
-            try {
-                const response = await getCategories(data?.user.access_token ?? "");
-                if (response.data?.status === "OK") {
-                    setCategories(response.data.data.categories as Category[])
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
-                }
-            }
-        }
-        if (status === "authenticated") getCategoriesAction()
-    }, [status])
+    const { data: categories, isLoading } = useQuery({
+        queryKey: [API.READ_CATEGORIES],
+        queryFn: () => getCategories(data?.user.access_token ?? ""),
+    })
 
     const productAction = async () => {
-        if (images.length < 1 || images.length > 10) {
+        let imageLinks: string[] = []
+        if (product?.images != null && product?.images.length > 0) imageLinks = product.images
+        if ((images.length < 1 && images.length > 10) && product == null) {
             toast.error("Cần ít nhất 1 ảnh và không hơn 10 ảnh")
             return
         }
-        let form = new FormData()
-        let imageLinks: string[] = []
-        for (let i = 0; i < images.length; i++) {
-            form.set("file", images[i])
-            try {
-                const response = await uploadFile(data?.user.access_token ?? "", form)
-                if (response?.data.status === "OK") {
-                    imageLinks.push(response.data.url)
-                } else {
-                    toast.error(response.data.error)
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
+        if (images.length > 0) {
+            const form = new FormData()
+            for (let i = 0; i < images.length; i++) {
+                form.set("file", images[i])
+                try {
+                    const response = await uploadFile(data?.user.access_token ?? "", form)
+                    if (response?.data.status === "OK") {
+                        imageLinks.push(response.data.url)
+                    } else {
+                        toast.error(response.data.error)
+                    }
+                } catch (error) {
+                    if (axios.isAxiosError(error)) {
+                        toast.error(error?.response?.data.error)
+                    }
                 }
             }
         }
-
         const p: Product = {
-            name: name || (product?.name ?? ""),
-            description: description || (product?.description ?? ""),
-            price: price || (product?.price ?? 0),
-            stock: stock || (product?.stock ?? 0),
-            category: category || product?.category || categories[0]._id!,
+            name: name || product?.name || "",
+            description: description || product?.description || "",
+            price: price || product?.price || 0,
+            stock: stock || product?.stock || 0,
+            category: category || product?.category || categories?.data.data.categories[0]._id,
             images: imageLinks,
-            productCode: productCode || (product?.productCode ?? categories[0]._id!),
+            productCode: productCode || product?.productCode,
             options: variantInfo()
         }
-        console.log(p);
-
-        if (product != null) {
-            try {
-                const response = await updateProduct(data?.user.access_token ?? "", product._id!, p)
-                if (response?.status === "OK") {
-                    toast.success(response.message)
-                    setSelected!(null)
-                    refreshData!()
-                } else {
-                    toast.error(response.message)
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
-                }
-            }
-        } else {
-            try {
-                const response = await createProduct(data?.user.access_token ?? "", p)
-                if (response?.status === "OK") {
-                    toast.success(response.message)
-                } else {
-                    toast.error(response.message)
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    toast.error(error?.response?.data.error)
-                }
-            }
-        }
+        // console.log(p);
+        mutation!.mutate(p, {
+            onError(error) {
+                if (isAxiosError(error)) toast.error(error.response?.data.message)
+            },
+            onSuccess(data, variables, context) {
+                toast.success(data.data.message)
+                // queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, { page: 1 }] })
+                setSelected!(null)
+            },
+        })
     }
 
-    const variantInfo = () => {
+    const variantInfo = (): Variant[] => {
         const variantsEls = document.getElementsByClassName('variant')
         let attributes = []
         const variants: Variant[] = []
@@ -157,13 +130,14 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>
                                         <select onChange={(e) => setCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' autoComplete='off'>
                                             {
-                                                categories.length > 0 ?
-                                                    categories?.map(v => {
+
+                                                isLoading ?
+                                                    <option value="" disabled>Không có dữ liệu</option> :
+                                                    (categories?.data.data.categories as Category[])?.map(v => {
                                                         return (
                                                             <option key={v._id} value={v._id}>{v.name}</option>
                                                         )
-                                                    }) :
-                                                    <option value="" disabled>Không có dữ liệu</option>
+                                                    })
                                             }
                                         </select>
                                         {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'

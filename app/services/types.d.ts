@@ -32,7 +32,7 @@ interface Product {
     stock: number,
     category: string,
     images: string[],
-    productCode: string,
+    productCode?: string,
     options: Variant[],
     // extras
     _id?: string,
@@ -59,6 +59,7 @@ interface FilterProducts {
     search?: string,
     category?: string,
     priceMin?: number,
+    page: number,
 }
 
 interface Paginate {

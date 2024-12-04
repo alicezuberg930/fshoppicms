@@ -20,12 +20,11 @@ export const store = configureStore({
         sidebar: persistReducer(localPersistConfig, sidebarReducer),
         dropdown: persistReducer(localPersistConfig, dropDownReducer),
     },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
-            },
-        }),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: {
+            ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        },
+    }),
 })
 export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof persistor.getState>
