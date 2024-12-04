@@ -23,9 +23,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 } else {
                     throw new CustomError("Sai thông tin đăng nhập")
                 }
-            }
+            },
         }),
     ],
+    secret: process.env.AUTH_SECRET,
+    session: {
+        maxAge: 24 * 60 * 60,
+        strategy: 'jwt',
+    },
     pages: {
         signIn: "/login",
     },

@@ -1,5 +1,4 @@
-import { FaChevronRight, FaChevronLeft, FaUser, FaBox, FaChevronDown, FaRegShareSquare, FaBan, FaGithub, FaLaravel, FaFilter, FaEye, FaRegTrashAlt, FaBoxOpen } from "react-icons/fa";
-import { FaPhp } from "react-icons/fa6";
+import { FaArrowUp, FaArrowDown, FaChevronRight, FaChevronLeft, FaUser, FaBox, FaChevronDown, FaRegShareSquare, FaBan, FaGithub, FaLaravel, FaFilter, FaEye, FaRegTrashAlt, FaBoxOpen } from "react-icons/fa";
 import { MdLogout, MdCancel, MdModeEdit, MdOutlineCancel } from "react-icons/md";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { CiShoppingBasket, CiBellOn, CiLock, CiUnlock } from "react-icons/ci";
@@ -12,7 +11,6 @@ import { LuLayoutDashboard } from "react-icons/lu";
 export const icons = {
     FaLaravel,
     FaGithub,
-    FaPhp,
     MdCancel,
     FaUser,
     FaBox,
@@ -37,5 +35,7 @@ export const icons = {
     CiUnlock,
     FaChevronLeft,
     FaChevronRight,
-    LuLayoutDashboard
+    LuLayoutDashboard,
+    FaArrowUp,
+    FaArrowDown,
 }
