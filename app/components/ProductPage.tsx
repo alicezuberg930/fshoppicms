@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import axios, { AxiosResponse } from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
-import { QueryClient, useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import { API } from '@/app/common/path';
 import { isAxiosError } from '../common/utils';
 
