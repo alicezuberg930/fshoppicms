@@ -1,6 +1,6 @@
 'use client'
 import { icons } from '@/app/common/icons'
-import { API } from '@/app/common/path'
+import { API } from '@/app/common/api'
 import { isAxiosError } from '@/app/common/utils'
 import LoadingComponent from '@/app/components/LoadingComponent'
 import { deleteCategory, getCategories } from '@/app/services/api'
@@ -191,7 +191,7 @@ const CategoriesPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            (categories?.data.data.categories as Category[]).map((v, i) => {
+                                            (categories?.data.categories as Category[]).map((v, i) => {
                                                 return (
                                                     <tr key={i} className='bg-white'>
                                                         <td className='px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>

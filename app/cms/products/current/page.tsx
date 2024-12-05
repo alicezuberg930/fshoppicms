@@ -1,10 +1,10 @@
 "use client"
 import { icons } from "@/app/common/icons";
-import { API } from "@/app/common/path";
+import { API } from "@/app/common/api";
 import { isAxiosError } from "@/app/common/utils";
 import LoadingComponent from "@/app/components/LoadingComponent";
 import ProductPageComponent from "@/app/components/ProductPage";
-import { deleteProduct, getProducts, updateProduct } from "@/app/services/api";
+import { deleteProduct, getProducts } from "@/app/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -205,7 +205,7 @@ const CurrentProductsPage: React.FC = () => {
                                                         </div>
                                                     </td>
                                                 </tr> :
-                                                (products?.data.products as Product[]).map((v, i) => {
+                                                (products?.products as Product[]).map((v, i) => {
                                                     return (
                                                         <tr key={i} className="bg-white">
                                                             <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
@@ -266,13 +266,13 @@ const CurrentProductsPage: React.FC = () => {
                                     <div className='text-center'>
                                         <div>
                                             <span className='relative z-0 inline-flex rounded-md shadow-sm'>
-                                                <span>
+                                                <span onClick={() => currentPage > 1 ? setCurrentPage(currentPage - 1) : {}}>
                                                     <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
                                                         <FaChevronLeft className='w-5 h-5  p-1' />
                                                     </button>
                                                 </span>
                                                 {
-                                                    Array.from({ length: products?.data.totalPages }).map((v, i) => {
+                                                    Array.from({ length: products?.totalPages }).map((v, i) => {
                                                         return (
                                                             <span key={i + 1}>
                                                                 <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700`}>
@@ -282,11 +282,9 @@ const CurrentProductsPage: React.FC = () => {
                                                         )
                                                     })
                                                 }
-                                                <span>
-                                                    <span>
-                                                        <span className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
-                                                            <FaChevronRight className='w-5 h-5 p-1' />
-                                                        </span>
+                                                <span onClick={() => currentPage < products?.totalPages ? setCurrentPage(currentPage + 1) : {}}>
+                                                    <span className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
+                                                        <FaChevronRight className='w-5 h-5 p-1' />
                                                     </span>
                                                 </span>
                                             </span>

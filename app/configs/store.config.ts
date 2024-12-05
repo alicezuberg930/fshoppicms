@@ -17,8 +17,8 @@ const localPersistConfig = {
 
 export const store = configureStore({
     reducer: {
-        sidebar: persistReducer(localPersistConfig, sidebarReducer),
         dropdown: persistReducer(localPersistConfig, dropDownReducer),
+        sidebar: persistReducer(localPersistConfig, sidebarReducer),
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {

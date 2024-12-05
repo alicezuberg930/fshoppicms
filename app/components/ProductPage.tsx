@@ -9,11 +9,11 @@ import { useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { createProduct, getCategories, updateProduct, uploadFile } from '@/app/services/api';
 import { toast } from 'react-toastify';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
-import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
-import { API } from '@/app/common/path';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { API } from '@/app/common/api';
 import { isAxiosError } from '../common/utils';
 
 const ProductPageComponent: React.FC<{

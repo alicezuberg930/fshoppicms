@@ -1,6 +1,6 @@
 "use client"
 import { icons } from "@/app/common/icons";
-import { API } from "@/app/common/path";
+import { API } from "@/app/common/api";
 import { isAxiosError } from "@/app/common/utils";
 import LoadingComponent from "@/app/components/LoadingComponent";
 import { getUsers, lockAccount, unlockAccount } from "@/app/services/api";
@@ -29,6 +29,8 @@ const UsersPage: React.FC = () => {
         onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.error) },
         onSuccess(data) {
             toast.success(data.message)
+            console.log(data);
+
             queryClient.invalidateQueries({ queryKey: [API.READ_USERS, currentPage] })
         },
     })
@@ -177,7 +179,7 @@ const UsersPage: React.FC = () => {
                                             </tr> :
                                             isAxiosError(error) ?
                                                 <tr><td className="text-center font-bold text-lg p-6" colSpan={7}>{error.response?.data.error}</td></tr> :
-                                                (users?.data?.data?.users as User[])?.map((v, i) => {
+                                                (users?.data?.data?.users as User[])?.filter(e => !e.isAdmin).map((v, i) => {
                                                     return (
                                                         <tr key={i} className="bg-white">
                                                             <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">

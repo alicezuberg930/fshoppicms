@@ -18,7 +18,7 @@ const AdminSideBar: React.FC = () => {
     const currentPath = usePathname();
 
     return (
-        <aside className={`${isCollapsed ? '-left-[250px] absolute transition-all duration-300' : 'absolute left-0 transition-all duration-300'} select-none z-20 flex-shrink-0 w-[250px] p-1 overflow-y-auto text-center bg-gray-800 h-full`}>
+        <aside className={`${!isCollapsed ? '-left-[250px] absolute transition-all duration-300' : 'absolute left-0 transition-all duration-300'} select-none z-20 flex-shrink-0 w-[250px] p-1 overflow-y-auto text-center bg-gray-800 h-full`}>
             <div className="text-xl">
                 <div className="p-3 flex items-center justify-between text-white">
                     <div className="flex items-center">
