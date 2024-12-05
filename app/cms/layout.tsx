@@ -20,11 +20,9 @@ const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>)
                 <AdminSideBar />
                 <div className='flex flex-col flex-1 w-full'>
                     <AdminHeader session={null} />
-                    <NextAuthSessionProvider session={null}>
-                        <AdminContent>
-                            {children}
-                        </AdminContent>
-                    </NextAuthSessionProvider>
+                    <AdminContent>
+                        {children}
+                    </AdminContent>
                 </div>
             </div>
         </CustomQueryClientProvider>

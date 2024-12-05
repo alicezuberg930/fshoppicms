@@ -4,6 +4,7 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import ReduxStoreProvider from "./components/ReduxStoreProvider";
+import NextAuthSessionProvider from "./components/NextAuthSessionProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,12 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ReduxStoreProvider>
-          {children}
-        </ReduxStoreProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NextAuthSessionProvider session={null}>
+          <ReduxStoreProvider>
+            {children}
+          </ReduxStoreProvider>
+        </NextAuthSessionProvider>
         <ToastContainer
           closeOnClick
           draggable
