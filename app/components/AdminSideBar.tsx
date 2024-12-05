@@ -60,11 +60,11 @@ const AdminSideBar: React.FC = () => {
                         </div>
                         <div className='px-2 bg-red-500 rounded-lg text-sm'>15</div>
                     </Link>
-                    <Link className="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-3 flex items-center" href="/cms/orders/processing">
+                    <Link className="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-3 flex items-center" href="/login">
                         <FaBoxOpen className="w-5 h-5" />
                         <span className="text-[15px] ml-4 text-gray-200">Đơn hàng đang xử lý</span>
                     </Link>
-                    <Link className="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-3 flex items-center" href="/cms/orders/success">
+                    <Link className="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-3 flex items-center" href="/login">
                         <FaBoxOpen className="w-5 h-5" />
                         <span className="text-[15px] ml-4 text-gray-200">Đơn hàng thành công</span>
                     </Link>
@@ -125,7 +125,7 @@ const AdminSideBar: React.FC = () => {
                         <FaBoxOpen className="w-5 h-5" />
                         <span className="text-[15px] ml-4 text-gray-200">Cấu hình site</span>
                     </Link>
-                    <Link className="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-3 flex items-center" href="/cms/orders/processing">
+                    <Link className="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-3 flex items-center" href="/login">
                         <FaBoxOpen className="w-5 h-5" />
                         <span className="text-[15px] ml-4 text-gray-200">Cấu hình email</span>
                     </Link>

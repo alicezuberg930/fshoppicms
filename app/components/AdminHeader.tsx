@@ -53,7 +53,7 @@ const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {
                             <div className={`${hideProfile ? "hidden" : ""} absolute right-0 mt-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:border-gray-700 dark:text-gray-300`}
                                 aria-label="submenu">
                                 <div className="flex">
-                                    <Link className="flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200" href={PATH.PROFILE}>
+                                    <Link href={PATH.PROFILE} className="flex items-center w-full px-6 py-3 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200">
                                         <svg className="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                             strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                             viewBox="0 0 24 24" stroke="currentColor">

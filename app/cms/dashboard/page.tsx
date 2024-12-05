@@ -36,9 +36,6 @@ const DashboardPage: React.FC = () => {
 
     const options: ChartOptions<"bar"> = {
         responsive: true,
-        onHover(event, elements, chart) {
-            console.log(elements);
-        },
         // hoverBackgroundColor: 'rgba(255, 99, 132, 0.8)', // Color on hover
         plugins: {
             legend: {
@@ -283,9 +280,9 @@ const DashboardPage: React.FC = () => {
                                             </td>
 
                                             <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
-                                                <Link href={`/cms/orders/details/NX${2411080009 * i}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
+                                                {/* <Link href={`/cms/orders/details/NX${2411080009 * i}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
                                                     <FaRegShareSquare className='w-5 h-5' />
-                                                </Link>
+                                                </Link> */}
                                             </td>
                                         </tr>
                                     )

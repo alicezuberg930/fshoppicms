@@ -88,7 +88,7 @@ const CategoriesPage: React.FC = () => {
                 <div className='flex items-center justify-between mb-2 text-2xl font-semibold'>
                     <h2>Danh mục</h2>
                     <div className='flex gap-2'>
-                        <Link className='flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4' href='/cms/categories/create'>
+                        <Link href='/cms/categories/create' className='flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4'>
                             <IoIosAddCircleOutline className='w-5 h-5' />
                             <span>Thêm mới</span>
                         </Link>

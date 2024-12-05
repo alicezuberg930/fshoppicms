@@ -94,7 +94,7 @@ const CurrentProductsPage: React.FC = () => {
                     <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
                         <h2>Sản phẩm</h2>
                         <div className="flex gap-2">
-                            <Link className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4" href="/cms/products/create">
+                            <Link href="/cms/products/create" className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
                                 <IoIosAddCircleOutline className="w-5 h-5" />
                                 <span>Thêm mới</span>
                             </Link>
@@ -249,9 +249,9 @@ const CurrentProductsPage: React.FC = () => {
                                                                     >
                                                                         <FaRegTrashAlt className='w-5 h-5' />
                                                                     </button>
-                                                                    <Link href={`/cms/products/details/${v._id}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
+                                                                    {/* <Link href={`/cms/products/details/${v._id}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
                                                                         <FaRegShareSquare className='w-5 h-5' />
-                                                                    </Link>
+                                                                    </Link> */}
                                                                 </div>
                                                             </td>
                                                         </tr>

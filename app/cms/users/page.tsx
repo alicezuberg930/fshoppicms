@@ -64,7 +64,7 @@ const UsersPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
                     <h2>Người dùng</h2>
                     <div className="flex gap-2">
-                        <Link href={"/cms/users/create"} className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
+                        <Link href="/login" className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
                             <IoIosAddCircleOutline className="w-5 h-5" />
                             <span>Thêm mới</span>
                         </Link>
