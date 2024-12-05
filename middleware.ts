@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
     const isAuthenticated = !!session?.user
     const path = request.nextUrl.pathname
 
-    if (isAuthenticated && path.startsWith(PATH.LOGIN)) {
+    if (isAuthenticated && path === PATH.LOGIN) {
         return NextResponse.redirect(new URL(PATH.CATEGORIES, request.url))
     } else if (!isAuthenticated && path.startsWith("/cms")) {
         return NextResponse.redirect(new URL(PATH.LOGIN, request.url))
