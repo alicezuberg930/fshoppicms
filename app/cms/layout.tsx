@@ -3,7 +3,6 @@ import AdminSideBar from "../components/AdminSideBar";
 import AdminHeader from "../components/AdminHeader";
 import AdminContent from "../components/AdminContent";
 import { auth } from "../configs/auth.config";
-import NextAuthSessionProvider from "../components/NextAuthSessionProvider";
 import CustomQueryClientProvider from "../components/CustomQueryClientProvider";
 
 export const metadata: Metadata = {
@@ -12,14 +11,14 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>) => {
-    // const session = await auth()
+    const session = await auth()
 
     return (
         <CustomQueryClientProvider>
             <div className='flex h-screen'>
                 <AdminSideBar />
                 <div className='flex flex-col flex-1 w-full'>
-                    <AdminHeader session={null} />
+                    <AdminHeader session={session} />
                     <AdminContent>
                         {children}
                     </AdminContent>
