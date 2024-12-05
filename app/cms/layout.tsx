@@ -12,15 +12,15 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>) => {
-    const session = await auth()
+    // const session = await auth()
 
     return (
         <CustomQueryClientProvider>
             <div className='flex h-screen'>
                 <AdminSideBar />
                 <div className='flex flex-col flex-1 w-full'>
-                    <AdminHeader session={session} />
-                    <NextAuthSessionProvider session={session}>
+                    <AdminHeader session={null} />
+                    <NextAuthSessionProvider session={null}>
                         <AdminContent>
                             {children}
                         </AdminContent>
