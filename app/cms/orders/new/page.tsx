@@ -31,13 +31,13 @@ const AdminPage: React.FC = () => {
                         <div className="space-y-4">
                             <div className="flex lg:flex-row flex-col justify-between gap-2">
                                 <div className="border-gray-300 border rounded-md font-semibold text-gray-600 text-sm table">
-                                    <Link href="/login" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
+                                    <Link href="/" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
                                         Đơn hàng mới
                                     </Link>
-                                    <Link href="/login" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
+                                    <Link href="/" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
                                         <span>Đang xử lý</span>
                                     </Link>
-                                    <Link href="/login" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
+                                    <Link href="/" className="border-gray-300 px-3 py-2 border-r w-[1%] whitespace-nowrap align-middle table-cell">
                                         <span>Thành công</span>
                                     </Link>
                                     <Link href="/cms/orders/new" className="px-3 py-2 w-[1%] whitespace-nowrap align-middle table-cell">

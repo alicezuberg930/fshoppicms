@@ -5,7 +5,7 @@ export const PATH = {
     USERS: "/cms/users",
     PRODUCT_CURRENT: "/cms/products/current",
     SITE_CONFIG: "/cms/config/site",
-    LOGIN: "/login",
+    LOGIN: "/",
     PROFILE: "/cms/profile",
     DASHBOARD: "/cms/dashboard"
 }

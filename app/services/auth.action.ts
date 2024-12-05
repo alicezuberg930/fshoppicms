@@ -11,5 +11,5 @@ export const login = async (phone: string, password: string) => {
 }
 
 export const logout = async () => {
-    await signOut({ redirectTo: "/login" })
+    await signOut({ redirectTo: "/" })
 }   
