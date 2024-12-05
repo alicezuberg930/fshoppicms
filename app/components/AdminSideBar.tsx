@@ -30,7 +30,7 @@ const AdminSideBar: React.FC = () => {
                 <div className="my-2 bg-gray-600 h-[1px]"></div>
             </div>
             {/* Thống kê - dashboard */}
-            <Link className={`${currentPath === PATH.DASHBOARD ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href={PATH.DASHBOARD}>
+            <Link className={`${currentPath === PATH.DASHBOARD ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href="/cms/dashboard">
                 <LuLayoutDashboard className="w-5 h-5" />
                 <span className="text-[15px] ml-4 text-gray-200">Thống kê</span>
             </Link>
