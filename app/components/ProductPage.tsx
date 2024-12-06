@@ -12,13 +12,14 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { API } from '@/app/common/api';
-import { isAxiosError } from '../common/utils';
+import { updateProductHook } from '../hooks/product.hooks';
+import { readCategoryHook } from '../hooks/category.hooks';
 
 const ProductPageComponent: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
-}> = ({ product, setSelected, page }) => {
+}> = ({ product = null, setSelected, page }) => {
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
     const [price, setPrice] = useState<number>(0)
@@ -30,20 +31,10 @@ const ProductPageComponent: React.FC<{
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
     const { data } = useSession();
-    const queryClient = useQueryClient()
-    const mutation = useMutation({
-        mutationFn: (body: Product) => product != null ? updateProduct(data?.user.access_token ?? "", product!._id!, body) : createProduct(data?.user.access_token ?? "", body),
-        onSuccess(_) {
-            queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
-        },
-    })
+    const mutation = updateProductHook(page)
+    const { data: categories, isLoading } = readCategoryHook(1)
 
-    const { data: categories, isLoading } = useQuery({
-        queryKey: [API.READ_CATEGORIES],
-        queryFn: () => getCategories(data?.user.access_token ?? ""),
-    })
-
-    const productAction = async () => {
+    const handleProduct = async () => {
         let imageLinks: string[] = []
         if (product?.images != null && product?.images.length > 0) imageLinks = product.images
         if ((images.length < 1 && images.length > 10) && product == null) {
@@ -79,13 +70,8 @@ const ProductPageComponent: React.FC<{
             options: variantInfo()
         }
         // console.log(p);
-        mutation!.mutate(p, {
-            onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.message) },
-            onSuccess(data) {
-                toast.success(data.data.message)
-                setSelected!(null)
-            },
-        })
+        mutation!.mutate({ body: p, product })
+        if (product != null) setSelected!(null)
     }
 
     const variantInfo = (): Variant[] => {
@@ -437,7 +423,7 @@ const ProductPageComponent: React.FC<{
                                     <td colSpan={2}>&nbsp;</td>
                                     <td>
                                         <div className='space-x-3 font-bold text-md'>
-                                            <input type='submit' onClick={() => productAction()} className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
+                                            <input type='submit' onClick={handleProduct} className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
                                             <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
                                             {product != null ? <button onClick={() => setSelected!(null)} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button> : null}
                                         </div>

@@ -1,14 +1,8 @@
 'use client'
 import { icons } from '@/app/common/icons'
-import { API } from '@/app/common/api'
-import { isAxiosError } from '@/app/common/utils'
 import LoadingComponent from '@/app/components/LoadingComponent'
-import { deleteCategory, getCategories } from '@/app/services/api'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { ChangeEvent, useState } from 'react'
-import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { deleteCategoryHook, readCategoryHook } from '@/app/hooks/category.hooks'
@@ -187,7 +181,7 @@ const CategoriesPage: React.FC = () => {
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                             <div className='h-24 w-20'>
-                                                                <img className='object-cover w-full h-full' srcSet={v.thumnail ?? ''} />
+                                                                <img className='object-cover w-full h-full' srcSet={v.thumnail ?? '/logo.png'} />
                                                             </div>
                                                         </td>
 
