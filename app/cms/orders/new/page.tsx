@@ -13,7 +13,7 @@ const AdminPage: React.FC = () => {
     return (
         <>
             <main className="h-full">
-                <div className="mt-5 mb-5 px-6">
+                <div className="py-5 px-2 md:px-6">
                     <div className="flex justify-between items-center mb-2 font-semibold text-2xl">
                         <h2>Danh sách đặt hàng</h2>
                         {/* <div className="flex gap-2">

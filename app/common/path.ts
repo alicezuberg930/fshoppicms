@@ -1,4 +1,5 @@
 export const PATH = {
+    CREATE_USER: "/cms/users/create",
     CATEGORIES: "/cms/categories",
     ORDERS_NEW: "/cms/orders/new",
     ORDERS_ALL: "/cms/orders",
@@ -7,5 +8,5 @@ export const PATH = {
     SITE_CONFIG: "/cms/config/site",
     LOGIN: "/",
     PROFILE: "/cms/profile",
-    DASHBOARD: "/cms/dashboard"
+    DASHBOARD: "/cms/dashboard",
 }

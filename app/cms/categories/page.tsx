@@ -84,7 +84,7 @@ const CategoriesPage: React.FC = () => {
 
     return (
         <main className='h-full'>
-            <div className='mt-5 mb-5 px-6'>
+            <div className='py-5 px-2 md:px-6'>
                 <div className='flex items-center justify-between mb-2 text-2xl font-semibold'>
                     <h2>Danh mục</h2>
                     <div className='flex gap-2'>

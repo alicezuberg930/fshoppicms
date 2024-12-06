@@ -21,11 +21,11 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-screen relative" style={{ background: "url('../assets/wall_1.jpg')" }}>
-      <div className="w-1/4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <img className="mx-auto w-3/5" src="../logo.png" />
-        <div className="mt-4 rounded-lg login-body bg-[rgba(255,255,255,0.2)] px-4 py-8">
-          <div className="font-bold text-white text-xl border-double border-b-4">Site: fshoppii.com</div>
+    <div className="h-screen relative" style={{ background: "url('../assets/wall_1.jpg')" }}>
+      <div className="mx-auto pt-24 px-8 md:w-1/2 lg:w-1/3">
+        <img className="mx-auto w-[150px]" src="../logo.png" />
+        <div className="mt-4 w-full rounded-lg login-body bg-[rgba(255,255,255,0.2)] px-4 py-8">
+          <div className="font-bold text-white text-lg border-double border-b-4">Site: fshoppii.com</div>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="mt-6">
               <div className="">
@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
               </div>
             </div>
             <div className="mt-6 w-fit">
-              <div onClick={() => loginAction()} className="text-white bg-[#5bc0de] px-16 py-2 rounded-md">
+              <div onClick={() => loginAction()} className="text-white bg-[#5bc0de] px-12 py-2 rounded-md">
                 <button>Log In</button>
               </div>
             </div>
