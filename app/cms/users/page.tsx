@@ -1,39 +1,18 @@
 "use client"
 import { icons } from "@/app/common/icons";
-import { API } from "@/app/common/api";
 import { isAxiosError } from "@/app/common/utils";
 import LoadingComponent from "@/app/components/LoadingComponent";
-import { getUsers, lockAccount, unlockAccount } from "@/app/services/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
-import { toast } from "react-toastify";
+import { handleUserHook, readUserHook } from "@/app/hooks/user_hooks";
 
 const UsersPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
-    const { FaFilter, CiLock, CiUnlock, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    const { FaFilter, CiLock, CiUnlock, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline, FaChevronLeft, FaChevronRight } = icons
     const [currentPage, setCurrentPage] = useState<number>(1)
-    const queryClient = useQueryClient()
-    const { data, status } = useSession();
-    const { data: users, isLoading, isError, error } = useQuery({
-        queryKey: [API.READ_USERS, currentPage],
-        queryFn: () => getUsers(data?.user.access_token ?? ""),
-        staleTime: 2000 * 1000,
-        placeholderData: (previousData, previousQuery) => previousData,
-        // refetchOnWindowFocus:false,
-    })
-    const mutation = useMutation({
-        mutationFn: ({ id, type }: { id: string, type: string }) => type === "lock" ? lockAccount(data?.user.access_token ?? "", id) : unlockAccount(data?.user.access_token ?? "", id),
-        onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.error) },
-        onSuccess(data) {
-            toast.success(data.message)
-            console.log(data);
-
-            queryClient.invalidateQueries({ queryKey: [API.READ_USERS, currentPage] })
-        },
-    })
+    const { data: users, isLoading, error } = readUserHook(currentPage)
+    const mutation = handleUserHook(currentPage)
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         // if (e.target.checked) {
@@ -56,17 +35,13 @@ const UsersPage: React.FC = () => {
         // }
     }
 
-    console.log({ err: isError });
-
-    if (status !== 'authenticated') return <div>Bạn không có quyền</div>
-
     return (
         <main className="h-full">
-            <div className="mt-5 mb-5 px-6">
+            <div className="py-5 px-2 md:px-6">
                 <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
                     <h2>Người dùng</h2>
                     <div className="flex gap-2">
-                        <Link href="/" className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
+                        <Link href="/cms/users/create" className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
                             <IoIosAddCircleOutline className="w-5 h-5" />
                             <span>Thêm mới</span>
                         </Link>
@@ -179,7 +154,7 @@ const UsersPage: React.FC = () => {
                                             </tr> :
                                             isAxiosError(error) ?
                                                 <tr><td className="text-center font-bold text-lg p-6" colSpan={7}>{error.response?.data.error}</td></tr> :
-                                                (users?.data?.data?.users as User[])?.filter(e => !e.isAdmin).map((v, i) => {
+                                                (users?.data?.users as User[])?.filter(e => !e.isAdmin).map((v, i) => {
                                                     return (
                                                         <tr key={i} className="bg-white">
                                                             <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
@@ -227,10 +202,36 @@ const UsersPage: React.FC = () => {
                                 </tbody>
                             </table>
                         </div>
-
-                        {/* <div className="p-6 md:p-0">
-                              {{ $products->links() }}
-                             </div> */}
+                        {
+                            isLoading ? null :
+                                <div className='text-center'>
+                                    <div>
+                                        <span className='relative z-0 inline-flex rounded-md shadow-sm'>
+                                            <span onClick={() => currentPage > 1 ? setCurrentPage(currentPage - 1) : {}}>
+                                                <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
+                                                    <FaChevronLeft className='w-5 h-5  p-1' />
+                                                </button>
+                                            </span>
+                                            {
+                                                Array.from({ length: users?.data?.pagination.totalPages }).map((v, i) => {
+                                                    return (
+                                                        <span key={i + 1}>
+                                                            <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700`}>
+                                                                {i + 1}
+                                                            </button>
+                                                        </span>
+                                                    )
+                                                })
+                                            }
+                                            <span onClick={() => currentPage < users?.data?.pagination.totalPages ? setCurrentPage(currentPage + 1) : {}}>
+                                                <span className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
+                                                    <FaChevronRight className='w-5 h-5 p-1' />
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                        }
                     </div>
                 </div>
             </div>

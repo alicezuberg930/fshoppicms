@@ -1,9 +1,9 @@
 interface User {
-    name: string,
-    email: string,
-    password: string,
+    name?: string,
+    email?: string,
+    password?: string,
     confirmPassword?: string,
-    phone: string,
+    phone?: string,
     // extras
     _id?: string,
     isAdmin?: boolean,
@@ -61,6 +61,10 @@ interface FilterProducts {
     category?: string,
     priceMin?: number,
     page: number,
+}
+
+interface FilterUsers {
+    page: number
 }
 
 interface Paginate {

@@ -1,4 +1,3 @@
-import axios from "axios";
 import axioInstance from "../configs/axios.config"
 import { API } from "../common/api";
 // common
@@ -63,11 +62,18 @@ export const unlockAccount = async (token: string, lockReason: string) => {
     }).then(res => res.data)
 }
 
-export const getUsers = async (token: string) => {
+export const getUsers = async (token: string, filter?: FilterUsers) => {
     return await axioInstance<any>({
-        url: API.READ_USERS, method: "GET",
+        url: API.READ_USERS, method: "GET", params: filter,
         headers: { Authorization: `Bearer ${token}` },
-    })
+    }).then(res => res.data)
+}
+
+export const createUser = async (token: string, user: User) => {
+    return await axioInstance<any>({
+        url: API.CREATE_USER, method: "POST", data: user,
+        headers: { Authorization: `Bearer ${token}` },
+    }).then(res => res.data)
 }
 
 // danh mục
