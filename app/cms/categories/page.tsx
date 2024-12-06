@@ -11,26 +11,17 @@ import { ChangeEvent, useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { deleteCategoryHook, readCategoryHook } from '@/app/hooks/category.hooks'
 
 const CategoriesPage: React.FC = () => {
+    // icons
     const { FaChevronLeft, FaChevronRight, FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    // hooks
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
-    const { data, status } = useSession();
-    const queryClient = useQueryClient()
     const [currentPage, setCurrentPage] = useState<number>(1)
-    const { data: categories, isLoading } = useQuery({
-        queryKey: [API.READ_CATEGORIES, currentPage],
-        queryFn: () => getCategories(data?.user.access_token ?? ""),
-        staleTime: 2000 * 1000,
-        placeholderData: (previousData, previousQuery) => previousData,
-    })
-    const mutation = useMutation({
-        mutationFn: (id: string) => deleteCategory(data?.user.access_token ?? "", id),
-        onSuccess(_) {
-            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, currentPage] })
-        },
-    })
+    const { data: categories, isLoading } = readCategoryHook(currentPage)
+    const mutation = deleteCategoryHook(currentPage)
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
@@ -58,7 +49,7 @@ const CategoriesPage: React.FC = () => {
         }
     }
 
-    const deleteCategoryAction = async (id: string) => {
+    const handleDeleteCategory = async (id: string) => {
         withReactContent(Swal).fire({
             title: 'Bạn có chắc chắn không?',
             text: 'Bạn sẽ không thể đảo ngược hành động',
@@ -70,14 +61,7 @@ const CategoriesPage: React.FC = () => {
             cancelButtonText: 'Hủy'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                mutation.mutate(id, {
-                    onError(error) {
-                        if (isAxiosError(error)) toast.error(error.response?.data.message)
-                    },
-                    onSuccess(data) {
-                        toast.success(data.data.message)
-                    },
-                })
+                mutation.mutate(id)
             }
         })
     }
@@ -203,19 +187,18 @@ const CategoriesPage: React.FC = () => {
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                             <div className='h-24 w-20'>
-                                                                <img className='object-cover w-full h-full' srcSet={v.thumnail} />
+                                                                <img className='object-cover w-full h-full' srcSet={v.thumnail ?? ''} />
                                                             </div>
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                             <div className='text-gray-700 text-ellipsis overflow-hidden line-clamp-2'>
-                                                                {v.name}
+                                                                {v.name ?? ''}
                                                             </div>
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                            {/* {categories.find(c => c._id === v.parentCategory)?.name} */}
-                                                            {v.subcategories![0]?.name || ''}
+                                                            {v.subcategories![0]?.name ?? ''}
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
@@ -223,7 +206,7 @@ const CategoriesPage: React.FC = () => {
                                                                 <button className='p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none' title='Edit'>
                                                                     <MdModeEdit className='w-5 h-5' />
                                                                 </button>
-                                                                <button onClick={() => deleteCategoryAction(v._id!)} className='flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700' title='Delete'>
+                                                                <button onClick={() => handleDeleteCategory(v._id!)} className='flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700' title='Delete'>
                                                                     <FaRegTrashAlt className='w-5 h-5' />
                                                                 </button>
                                                             </div>
@@ -236,61 +219,33 @@ const CategoriesPage: React.FC = () => {
                             </table>
                         </div>
                         <div className='p-6 md:p-0'>
-                            <nav role='navigation' className='flex items-center justify-between'>
-                                <div className='flex justify-between flex-1 sm:hidden'>
-                                    <span>
-                                        <button type='button' className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>
-                                            « Trước
-                                        </button>
-                                    </span>
-                                    <span>
-                                        <span
-                                            className='relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md select-none'>
-                                            Tiếp »
+                            <div className='text-center'>
+                                <div>
+                                    <span className='relative z-0 inline-flex rounded-md shadow-sm'>
+                                        <span>
+                                            <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
+                                                <FaChevronLeft className='w-5 h-5 p-1' />
+                                            </button>
                                         </span>
-                                    </span>
-                                </div>
-                                <div className='sm:flex-1 flex items-center justify-center'>
-                                    {/* <div>
-                                        <p className='text-sm text-gray-700 leading-5'>
-                                            <span>Hiển thị</span>
-                                            <span className='font-medium'>11</span>
-                                            <span>đến</span>
-                                            <span className='font-medium'>11</span>
-                                            <span>của</span>
-                                            <span className='font-medium'>11</span>
-                                            <span>kết quả</span>
-                                        </p>
-                                    </div> */}
-                                    <div>
-                                        <span className='relative z-0 inline-flex rounded-md shadow-sm'>
-                                            <span>
-                                                <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
-                                                    <FaChevronLeft className='w-5 h-5  p-1' />
-                                                </button>
-                                            </span>
-                                            {
-                                                Array.from({ length: 1 }).map((v, i) => {
-                                                    return (
-                                                        <span key={i}>
-                                                            <button type='button' className='relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>
-                                                                {i}
-                                                            </button>
-                                                        </span>
-                                                    )
-                                                })
-                                            }
-                                            <span>
-                                                <span>
-                                                    <span className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
-                                                        <FaChevronRight className='w-5 h-5 p-1' />
+                                        {
+                                            Array.from({ length: 1 }).map((v, i) => {
+                                                return (
+                                                    <span key={i}>
+                                                        <button type='button' className='relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>
+                                                            {i + 1}
+                                                        </button>
                                                     </span>
-                                                </span>
-                                            </span>
+                                                )
+                                            })
+                                        }
+                                        <span>
+                                            <button className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
+                                                <FaChevronRight className='w-5 h-5 p-1' />
+                                            </button>
                                         </span>
-                                    </div>
+                                    </span>
                                 </div>
-                            </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
