@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react"
 import { useMutation } from "@tanstack/react-query"
 import { createUser } from "@/app/services/api"
 import { isAxiosError } from "@/app/common/utils"
-import { createUserHook } from "@/app/hooks/user_hooks"
+import { createUserHook } from "@/app/hooks/user.hooks"
 
 const CreateUserPage: React.FC = () => {
     const { data } = useSession();

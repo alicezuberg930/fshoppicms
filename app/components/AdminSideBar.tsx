@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { icons } from '@/app/common/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCollapseSidebar } from '../services/sidebar.slice';
-import { PATH } from '../common/path';
+import { PATH } from "@/app/common/path";
 import { usePathname } from "next/navigation";
 import { setConfigDropDown, setOrderDropDown, setProductDropDown } from '../services/dropdown.slice';
 import { logout } from '../services/auth.action';

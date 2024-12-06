@@ -48,11 +48,11 @@ interface Product {
 
 interface Category {
     _id?: string,
-    name: string,
-    description: string,
+    name?: string,
+    description?: string,
     parentCategory?: string | null,
     subcategories?: Category[],
-    thumnail?: string,
+    thumnail?: string | null,
 }
 
 interface FilterProducts {

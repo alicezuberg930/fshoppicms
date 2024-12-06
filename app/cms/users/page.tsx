@@ -4,7 +4,7 @@ import { isAxiosError } from "@/app/common/utils";
 import LoadingComponent from "@/app/components/LoadingComponent";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
-import { handleUserHook, readUserHook } from "@/app/hooks/user_hooks";
+import { handleUserHook, readUserHook } from "@/app/hooks/user.hooks";
 
 const UsersPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])

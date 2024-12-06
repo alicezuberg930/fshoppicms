@@ -3,7 +3,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
 import { login } from "./services/auth.action"
-import { PATH } from "./common/path"
+import { PATH } from "@/app/common/path";
 
 const LoginPage: React.FC = () => {
   const [phone, setPhone] = useState<string>("")

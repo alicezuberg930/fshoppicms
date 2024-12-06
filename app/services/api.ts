@@ -5,7 +5,7 @@ export const uploadFile = async (token: string, file: FormData) => {
     return await axioInstance<any>({
         url: API.UPLOAD_FILE, method: "POST", data: file,
         headers: { Authorization: `Bearer ${token}` }
-    })
+    }).then(res => res.data)
 }
 
 // người dùng
@@ -88,12 +88,12 @@ export const createCategory = async (token: string, category: Category) => {
     return await axioInstance<any>({
         url: API.CREATE_CATEGORY, method: "POST", data: category,
         headers: { Authorization: `Bearer ${token}` },
-    })
+    }).then(res => res.data)
 }
 
 export const deleteCategory = async (token: string, id: string) => {
     return await axioInstance<any>({
         url: `${API.DELETE_CATEGORY}/${id}`, method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
-    })
+    }).then(res => res.data)
 }

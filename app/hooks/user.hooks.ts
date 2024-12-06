@@ -20,7 +20,7 @@ export const handleUserHook = (page: number) => {
     const queryClient = useQueryClient()
     const { data } = useSession()
     return useMutation({
-        mutationFn: ({ id, type }: { id: string, type: string }) => type === "lock" ? lockAccount("", id) : unlockAccount(data?.user.access_token ?? "", id),
+        mutationFn: ({ id, type }: { id: string, type: string }) => type === "lock" ? lockAccount(data?.user.access_token ?? "", id) : unlockAccount(data?.user.access_token ?? "", id),
         onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.error) },
         onSuccess(data) {
             toast.success(data.message)
