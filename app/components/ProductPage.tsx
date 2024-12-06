@@ -73,7 +73,7 @@ const ProductPageComponent: React.FC<{
             description: description || product?.description || "",
             price: price || product?.price || 0,
             stock: stock || product?.stock || 0,
-            category: category || product?.category || categories?.data.data.categories[0]._id,
+            category: category || product?.category || categories?.data.categories[0]._id,
             images: imageLinks,
             productCode: productCode || product?.productCode,
             options: variantInfo()
@@ -136,7 +136,7 @@ const ProductPageComponent: React.FC<{
 
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
-                                                    (categories?.data.data.categories as Category[])?.map(v => {
+                                                    (categories?.data.categories as Category[])?.map(v => {
                                                         return (
                                                             <option key={v._id} value={v._id}>{v.name}</option>
                                                         )
