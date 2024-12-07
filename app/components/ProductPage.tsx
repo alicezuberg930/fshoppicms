@@ -7,13 +7,11 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), 
 import CustomImagePicker from '@/app/components/CustomImagePicker'
 import { useState } from 'react';
 import { icons } from '@/app/common/icons';
-import { createProduct, getCategories, updateProduct, uploadFile } from '@/app/services/api';
+import { uploadFile } from '@/app/services/api';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { API } from '@/app/common/api';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
 
