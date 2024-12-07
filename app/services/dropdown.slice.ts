@@ -4,13 +4,15 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 export interface DropDownState {
     isOrder: boolean,
     isProduct: boolean,
-    isConfig: boolean
+    isConfig: boolean,
+    isPayment: boolean,
 }
 
 const initialState: DropDownState = {
     isOrder: false,
     isProduct: false,
-    isConfig: false
+    isConfig: false,
+    isPayment: false,
 }
 export const sidebarSlice = createSlice({
     name: 'dropdown',
@@ -25,8 +27,11 @@ export const sidebarSlice = createSlice({
         setConfigDropDown: (state, action: PayloadAction<boolean>) => {
             state.isConfig = action.payload
         },
+        setPaymentDropDown: (state, action: PayloadAction<boolean>) => {
+            state.isPayment = action.payload
+        },
     }
 })
 
-export const { setOrderDropDown, setProductDropDown, setConfigDropDown } = sidebarSlice.actions
+export const { setOrderDropDown, setProductDropDown, setConfigDropDown, setPaymentDropDown } = sidebarSlice.actions
 export const dropDownReducer = sidebarSlice.reducer

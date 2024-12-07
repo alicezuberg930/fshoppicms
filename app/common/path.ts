@@ -9,4 +9,6 @@ export const PATH = {
     LOGIN: "/",
     PROFILE: "/cms/profile",
     DASHBOARD: "/cms/dashboard",
+    PAYMENT_METHODS: "/cms/payments/methods",
+    BANNERS: "/cms/banners"
 }

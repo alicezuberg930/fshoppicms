@@ -25,7 +25,6 @@ export const readProductsHook = (page: number) => {
     return useQuery({
         queryKey: [API.READ_PRODUCTS, page],
         queryFn: () => getProducts(data?.user.access_token ?? "", { page }),
-        staleTime: 2000 * 1000,
         placeholderData: (previousData, previousQuery) => previousData,
     })
 }

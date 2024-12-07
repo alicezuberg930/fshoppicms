@@ -1,20 +1,46 @@
 import { icons } from "@/app/common/icons";
-import moment from "moment";
-import Link from "next/link";
 
 const PaymentMethodsPage: React.FC = () => {
-    const { FaRegShareSquare, FaChevronDown, IoIosAddCircleOutline } = icons
+    const { MdCancel, IoIosAddCircleOutline, MdModeEdit, FaCheck, CiCircleCheck } = icons
 
-    const dummy: number[] = [];
-    for (let i = 0; i <= 100; i++) {
-        dummy.push(i)
-    };
+    const dummy = [
+        {
+            name: "Momo",
+            active: true,
+            image: "https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-MoMo-Square.png"
+        },
+        {
+            name: "OnePay",
+            active: true,
+            image: "https://play-lh.googleusercontent.com/z8gjl9SDDP4yBWus4KtwLVXHhxxkEzfg83gLhFqp94y7tYcFcxEXpdSaB1iqSM04emdi"
+        },
+        {
+            name: "VNPay",
+            active: true,
+            image: "https://vinadesign.vn/uploads/images/2023/05/vnpay-logo-vinadesign-25-12-57-55.jpg"
+        },
+        {
+            name: "ZaloPay",
+            active: false,
+            image: "https://cardtot.com/wp-content/uploads/2020/01/zalopay.png"
+        },
+        {
+            name: "E-Wallet",
+            active: true,
+            image: "https://static.vecteezy.com/system/resources/previews/019/623/336/original/ewallet-icon-free-vector.jpg"
+        },
+        {
+            name: "COD",
+            active: false,
+            image: "https://cdn-icons-png.flaticon.com/512/8948/8948757.png"
+        }
+    ];
 
     return (
         <main className="h-full">
             <div className="py-5 px-2 md:px-6">
                 <div className="flex justify-between items-center mb-2 font-semibold text-2xl">
-                    <h2>Danh sách phương thức thanh toán</h2>
+                    <h2>Phương thức thanh toán</h2>
                     <button className="flex items-center gap-1 bg-blue-300 px-4 py-2 rounded-xl font-medium text-sm text-white">
                         <IoIosAddCircleOutline className="w-5 h-5" />
                         <span>Thêm mới</span>
@@ -45,43 +71,27 @@ const PaymentMethodsPage: React.FC = () => {
                                     <tr>
                                         <th className="bg-gray-50 px-3 py-2 md:py-3 w-36">
                                             <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Code</span>
-                                            </button>
-                                        </th>
-                                        <th className="hidden bg-gray-50 px-3 py-2 md:py-3 w-1/3 lg:table-cell">
-                                            <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Thông tin người mua</span>
+                                                <span>ID</span>
                                             </button>
                                         </th>
                                         <th className="bg-gray-50 px-3 py-2 md:py-3">
                                             <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Tổng tiền</span>
-                                                <span className="relative flex items-center">
-                                                    <FaChevronDown className="w-2 h-2" />
-                                                </span>
+                                                <span>Tên</span>
                                             </button>
                                         </th>
                                         <th className="bg-gray-50 px-3 py-2 md:py-3">
                                             <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Ngày đặt</span>
-                                                <span className="relative flex items-center">
-                                                    <FaChevronDown className="w-2 h-2" />
-                                                </span>
+                                                <span>Ảnh</span>
                                             </button>
                                         </th>
                                         <th className="bg-gray-50 px-3 py-2 md:py-3">
                                             <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Trạng thái</span>
+                                                <span>Kích hoạt</span>
                                             </button>
                                         </th>
-                                        <th className="hidden bg-gray-50 px-3 py-2 md:py-3 lg:table-cell">
+                                        <th className="bg-gray-50 px-3 py-2 md:py-3">
                                             <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Thanh toán</span>
-                                            </button>
-                                        </th>
-                                        <th className="bg-gray-50 px-3 py-2 md:py-3 w-12">
-                                            <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
-                                                <span>Xem</span>
+                                                <span>Hành động</span>
                                             </button>
                                         </th>
                                     </tr>
@@ -94,63 +104,47 @@ const PaymentMethodsPage: React.FC = () => {
                                                 <tr key={i} className="bg-white">
                                                     <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                         <div className="text-gray-700">
-                                                            <span className="font-medium">NX{2411080009 * i}</span>
-                                                        </div>
-                                                    </td>
-
-                                                    <td className="hidden px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal lg:table-cell">
-                                                        <div className="line-clamp-3 text-ellipsis text-gray-700 overflow-hidden">
-                                                            <a href="https://fshoppii.com/cms/cart/view/10/nx2411080010/">
-                                                                <h4>
-                                                                    <b className="text-primary">Tiến Nguyễn Vĩnh</b> - <b>Phone: 0932430072</b>
-                                                                </h4>
-                                                                <p><b>Địa chỉ: </b>Ho Chi Minh City, Viet Nam</p>
-                                                                <p className="font-semibold text-green-700">Chuyển khoản ngân hàng</p>
-                                                            </a>
+                                                            <span className="font-medium">{i}</span>
                                                         </div>
                                                     </td>
 
                                                     <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                         <div className="text-gray-700">
-                                                            <span className="font-medium">{100000 * i}đ</span>
+                                                            <span className="font-medium">{v.name}</span>
                                                         </div>
                                                     </td>
 
                                                     <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
-                                                        <div className="text-gray-700">
-                                                            <span className="font-medium">{moment().format('HH:mm D/M/YYYY')}</span>
+                                                        <div className="h-24 w-20">
+                                                            <img className="object-cover w-full h-full" src={v.image ?? '/logo.png'} />
                                                         </div>
                                                     </td>
 
                                                     <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
-                                                        <div className="text-white text-xs">
-                                                            {
-                                                                i % 2 == 0 ?
-                                                                    <span className="bg-blue-300 p-1.5 rounded-md">Đơn hàng mới</span>
-                                                                    : i % 3 == 0 ?
-                                                                        <span className="bg-[#347ab6] p-1.5 rounded-md">Đang xử lý</span>
-                                                                        : i % 5 == 0 ?
-                                                                            <span className="bg-[#5eb95b] p-1.5 rounded-md">Thành công</span>
-                                                                            :
-                                                                            <span className="bg-red-500 p-1.5 rounded-md">Thất bại</span>
+                                                        {v.active ?
+                                                            <div className="text-green-500">
+                                                                <CiCircleCheck className="w-5 h-5" />
+                                                            </div> :
+                                                            <div className="text-red-500">
+                                                                <MdCancel className="w-5 h-5" />
+                                                            </div>
+                                                        }
+                                                    </td>
+
+                                                    <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                        <div className="flex flex-wrap justify-start gap-1">
+                                                            <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
+                                                                <MdModeEdit className="w-5 h-5" />
+                                                            </button>
+                                                            {v.active ?
+                                                                <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
+                                                                    <MdCancel className='w-5 h-5' />
+                                                                </button> :
+                                                                <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
+                                                                    <FaCheck className='w-5 h-5' />
+                                                                </button>
                                                             }
                                                         </div>
-                                                    </td>
-
-                                                    <td className="hidden px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal lg:table-cell">
-                                                        <div className="text-white text-xs">
-                                                            {
-                                                                i % 2 == 0 ?
-                                                                    <span className="bg-[#5eb95b] p-1.5 rounded-md">Đã thanh toán</span> :
-                                                                    <span className="bg-red-500 p-1.5 rounded-md">Chưa thanh toán</span>
-                                                            }
-                                                        </div>
-                                                    </td>
-
-                                                    <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
-                                                        <Link href={`/cms/orders/details/NX${2411080009 * i}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
-                                                            <FaRegShareSquare className='w-5 h-5' />
-                                                        </Link>
                                                     </td>
                                                 </tr>
                                             )

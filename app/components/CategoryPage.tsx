@@ -1,17 +1,11 @@
 "use client"
 import { FormEvent, useState } from "react"
-import { createCategory, uploadFile } from "../services/api"
 import { toast } from "react-toastify"
-import axios from "axios"
-import { useSession } from "next-auth/react"
 import CustomImagePicker from "@/app/components/CustomImagePicker"
 import { createCategoryHook, readCategoryHook } from "../hooks/category.hooks"
 import { uploadFilesHook } from "../hooks/common.hooks"
 
 const CategoryPageComponent: React.FC = () => {
-    const [name, setName] = useState<string>("")
-    const [description, setDescription] = useState<string>("")
-    const [parentCategory, setParentCategory] = useState<string | null>(null)
     const [images, setImages] = useState<File[]>([])
     const { data: categories, isLoading } = readCategoryHook(1)
     const mutation = createCategoryHook()
@@ -52,14 +46,14 @@ const CategoryPageComponent: React.FC = () => {
                                     <td className='py-3 w-32'>Tên danh mục<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setName(e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="name" />
+                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="name" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className='py-3 w-32'>Mô tả<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <textarea onChange={(e) => setDescription(e.target.value)} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={6} required autoComplete='off' name="description" />
+                                        <textarea className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={6} required autoComplete='off' name="description" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -76,7 +70,7 @@ const CategoryPageComponent: React.FC = () => {
                                     <td className='py-3 w-32'>Danh mục cha<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <select onChange={(e) => setParentCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
+                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
                                             {
                                                 !isLoading ?
                                                     (categories.data.categories as Category[])?.map(v => {

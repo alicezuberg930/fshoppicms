@@ -34,7 +34,6 @@ export const readUserHook = (page: number) => {
     return useQuery({
         queryKey: [API.READ_USERS, page],
         queryFn: () => getUsers(data?.user.access_token ?? "", { page }),
-        staleTime: 2000 * 1000,
         placeholderData: (previousData, previousQuery) => previousData,
     })
 }

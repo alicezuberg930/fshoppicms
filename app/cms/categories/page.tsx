@@ -53,11 +53,7 @@ const CategoriesPage: React.FC = () => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Xóa',
             cancelButtonText: 'Hủy'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                mutation.mutate(id)
-            }
-        })
+        }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
     }
 
     return (

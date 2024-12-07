@@ -1,8 +1,8 @@
-import { FaArrowUp, FaArrowDown, FaChevronRight, FaChevronLeft, FaUser, FaBox, FaChevronDown, FaRegShareSquare, FaBan, FaGithub, FaLaravel, FaFilter, FaEye, FaRegTrashAlt, FaBoxOpen } from "react-icons/fa";
-import { MdLogout, MdCancel, MdModeEdit, MdOutlineCancel } from "react-icons/md";
+import { FaCheck, FaArrowUp, FaArrowDown, FaChevronRight, FaChevronLeft, FaUser, FaBox, FaChevronDown, FaRegShareSquare, FaBan, FaGithub, FaLaravel, FaFilter, FaEye, FaRegTrashAlt, FaBoxOpen } from "react-icons/fa";
+import { MdOutlinePayments, MdLogout, MdCancel, MdModeEdit, MdOutlineCancel, MdOutlinePayment } from "react-icons/md";
 import { TbLayoutDashboard } from "react-icons/tb";
-import { CiShoppingBasket, CiBellOn, CiLock, CiUnlock } from "react-icons/ci";
-import { PiShippingContainer } from "react-icons/pi";
+import { CiShoppingBasket, CiBellOn, CiLock, CiUnlock, CiCircleCheck } from "react-icons/ci";
+import { PiShippingContainer, PiFlagBanner } from "react-icons/pi";
 import { VscSettings } from "react-icons/vsc";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoImagesOutline } from "react-icons/io5";
@@ -38,4 +38,9 @@ export const icons = {
     LuLayoutDashboard,
     FaArrowUp,
     FaArrowDown,
+    MdOutlinePayment,
+    MdOutlinePayments,
+    CiCircleCheck,
+    FaCheck,
+    PiFlagBanner
 }

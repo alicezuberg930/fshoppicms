@@ -10,7 +10,6 @@ export const readCategoryHook = (page: number) => {
     return useQuery({
         queryKey: [API.READ_CATEGORIES, page],
         queryFn: () => getCategories(data?.user.access_token ?? ""),
-        staleTime: 2000 * 1000,
         placeholderData: (previousData, previousQuery) => previousData,
     })
 }
