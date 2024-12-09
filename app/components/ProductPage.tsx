@@ -14,6 +14,7 @@ import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
+import { uploadFilesHook } from '../hooks/common.hooks';
 
 const ProductPageComponent: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
@@ -31,6 +32,7 @@ const ProductPageComponent: React.FC<{
     const { data } = useSession();
     const mutation = updateProductHook(page)
     const { data: categories, isLoading } = readCategoryHook(1)
+    const uploadHook = uploadFilesHook()
 
     const handleProduct = async () => {
         let imageLinks: string[] = []
@@ -42,13 +44,13 @@ const ProductPageComponent: React.FC<{
         if (images.length > 0) {
             const form = new FormData()
             for (let i = 0; i < images.length; i++) {
-                form.set("file", images[i])
                 try {
+                    form.set("file", images[i])
                     const response = await uploadFile(data?.user.access_token ?? "", form)
-                    if (response?.data.status === "OK") {
-                        imageLinks.push(response.data.url)
+                    if (response?.status === "OK") {
+                        imageLinks.push(response.url)
                     } else {
-                        toast.error(response.data.error)
+                        toast.error(response.error)
                     }
                 } catch (error) {
                     if (axios.isAxiosError(error)) {
@@ -57,6 +59,7 @@ const ProductPageComponent: React.FC<{
                 }
             }
         }
+
         const p: Product = {
             name: name || product?.name || "",
             description: description || product?.description || "",
@@ -67,7 +70,6 @@ const ProductPageComponent: React.FC<{
             productCode: productCode || product?.productCode,
             options: variantInfo()
         }
-        // console.log(p);
         mutation!.mutate({ body: p, product })
         if (product != null) setSelected!(null)
     }
