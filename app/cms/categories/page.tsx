@@ -152,11 +152,11 @@ const CategoriesPage: React.FC = () => {
                                                 <span>Danh mục cha</span>
                                             </button>
                                         </th>
-                                        <th className='px-3 py-2 md:py-3 bg-gray-50'>
+                                        {/* <th className='px-3 py-2 md:py-3 bg-gray-50'>
                                             <button className='flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline'>
                                                 <span>Danh mục con</span>
                                             </button>
-                                        </th>
+                                        </th> */}
                                         <th className='px-3 py-2 md:py-3 bg-gray-50 flex items-center'>
                                             <span className='block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left'>
                                                 Hành động
@@ -202,11 +202,11 @@ const CategoriesPage: React.FC = () => {
                                                                 {/* {v.subcategories![0]?.name ?? ''} */}
                                                             </td>
 
-                                                            <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
+                                                            {/* <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                                 <button onClick={(e) => showSubCategories(e)} className="subcategories bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Danh mục con">
                                                                     <FaRegShareSquare className='w-5 h-5' />
                                                                 </button>
-                                                            </td>
+                                                            </td> */}
 
                                                             <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                                 <div className='flex flex-wrap justify-start gap-1'>
@@ -245,11 +245,11 @@ const CategoriesPage: React.FC = () => {
                                                                         {v?.name ?? ''}
                                                                     </td>
 
-                                                                    <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
+                                                                    {/* <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                                         <button onClick={(e) => showSubCategories(e)} className="subcategories bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Danh mục con">
                                                                             <FaRegShareSquare className='w-5 h-5' />
                                                                         </button>
-                                                                    </td>
+                                                                    </td> */}
 
                                                                     <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                                         <div className='flex flex-wrap justify-start gap-1'>
