@@ -11,8 +11,6 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
     setFiles(images || [])
   }, [images])
 
-  console.log(files);
-
   return (
     <div className="max-w-5xl">
       <div
@@ -42,8 +40,6 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
                 }
                 const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
                 fileInput.files = e.dataTransfer.files
-                // console.log(fileInput.files);
-                // console.log(`items file[${i}].name = ${file?.name}`)
               }
             });
             setImages(tempFiles)

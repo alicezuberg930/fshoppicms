@@ -32,6 +32,7 @@ export const readProductsHook = (page: number) => {
 export const updateProductHook = (page: number) => {
     const { data } = useSession()
     const queryClient = useQueryClient()
+    console.log("token----", data?.user.access_token);
     return useMutation({
         mutationFn: ({ body, product }: { body: Product, product: Product | null }) => product != null ? updateProduct(data?.user.access_token ?? "", product!._id!, body) : createProduct(data?.user.access_token ?? "", body),
         onSuccess(data) {

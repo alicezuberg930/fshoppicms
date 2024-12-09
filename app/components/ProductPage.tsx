@@ -32,7 +32,7 @@ const ProductPageComponent: React.FC<{
     const { data } = useSession();
     const mutation = updateProductHook(page)
     const { data: categories, isLoading } = readCategoryHook(1)
-    const uploadHook = uploadFilesHook()
+    // const uploadHook = uploadFilesHook()
 
     const handleProduct = async () => {
         let imageLinks: string[] = []
