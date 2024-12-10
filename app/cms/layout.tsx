@@ -17,7 +17,7 @@ const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>)
         <CustomQueryClientProvider>
             <div className='flex h-screen'>
                 <AdminSideBar />
-                <div className='flex flex-col flex-1 w-full'>
+                <div className='flex flex-col flex-1 w-full bg-white'>
                     <AdminHeader session={session} />
                     <AdminContent>
                         {children}
