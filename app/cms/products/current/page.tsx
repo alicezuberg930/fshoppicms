@@ -8,6 +8,8 @@ import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteProductHook, readProductsHook } from "@/app/hooks/product.hooks";
+import { FaRegShareSquare } from "react-icons/fa";
+import ProductDetailsComponent from "@/app/components/ProductDetailsComponent";
 
 const CurrentProductsPage: React.FC = () => {
     // icons
@@ -19,6 +21,7 @@ const CurrentProductsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const { data: products, isLoading } = readProductsHook(currentPage)
     const mutation = deleteProductHook(currentPage)
+    const [showDetails, setShowDetails] = useState<boolean>(false)
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
@@ -220,9 +223,9 @@ const CurrentProductsPage: React.FC = () => {
                                                                 >
                                                                     <FaRegTrashAlt className='w-5 h-5' />
                                                                 </button>
-                                                                {/* <Link href={`/cms/products/details/${v._id}`} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
-                                                                        <FaRegShareSquare className='w-5 h-5' />
-                                                                    </Link> */}
+                                                                <button onClick={() => { setSelectedProduct(v); setShowDetails(true) }} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
+                                                                    <FaRegShareSquare className='w-5 h-5' />
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -277,7 +280,8 @@ const CurrentProductsPage: React.FC = () => {
                     </div>
                     <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
                         <div className="px-4 py-5 bg-white text-left rounded-md">
-                            <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} />
+                            {!showDetails && selectedProduct ? <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} /> : null}
+                            {showDetails ? <ProductDetailsComponent product={selectedProduct!} setSelected={setSelectedProduct} setShow={setShowDetails} /> : null}
                         </div>
                     </div>
                 </div>
