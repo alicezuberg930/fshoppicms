@@ -118,15 +118,30 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <select onChange={(e) => setCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' autoComplete='off'>
+                                            <option value="">Không chọn</option>
                                             {
-
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
                                                     (categories?.data.categories as Category[])?.map(v => {
                                                         return (
-                                                            <option key={v._id} value={v._id}>{v.name}</option>
+                                                            <optgroup label={v.name} key={v._id}>
+                                                                {
+                                                                    v.subcategories?.map(sub => {
+                                                                        return (
+                                                                            <option key={sub._id} value={sub._id}>{sub.name}</option>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </optgroup>
                                                         )
                                                     })
+                                                // isLoading ?
+                                                //     <option value="" disabled>Không có dữ liệu</option> :
+                                                //     (categories?.data.categories as Category[])?.map(v => {
+                                                //         return (
+                                                //             <option key={v._id} value={v._id}>{v.name}</option>
+                                                //         )
+                                                //     })
                                             }
                                         </select>
                                         {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
