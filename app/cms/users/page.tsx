@@ -134,8 +134,7 @@ const UsersPage: React.FC = () => {
                                             </button>
                                         </th>
                                         <th className="px-3 py-2 md:py-3 bg-gray-50 flex items-center">
-                                            <span
-                                                className="block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left">
+                                            <span className="block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left">
                                                 Hành động
                                             </span>
                                         </th>

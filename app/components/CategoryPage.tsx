@@ -19,6 +19,7 @@ const CategoryPageComponent: React.FC = () => {
         }
         const formData = new FormData(e.currentTarget);
         const category: Category = Object.fromEntries(formData.entries()); // Convert FormData to an object
+        if (category.parentCategory == "") category.parentCategory = null
         uploadHook.mutate(formData, {
             onSuccess(data) {
                 category["thumnail"] = data.url
@@ -71,6 +72,7 @@ const CategoryPageComponent: React.FC = () => {
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
+                                            <option value="">Không chọn</option>
                                             {
                                                 !isLoading ?
                                                     (categories.data.categories as Category[])?.map(v => {
