@@ -99,7 +99,7 @@ const ProductPageComponent: React.FC<{
 
     return (
         <div className='w-full'>
-            <div className=''>
+            <div className='text-black'>
                 <div className='bg-[#f5f5f5] p-3'>
                     <h3 className='font-semibold text-red-500'>{product != null ? 'Sửa' : 'Thêm'} sản phẩm</h3>
                 </div>
@@ -108,7 +108,7 @@ const ProductPageComponent: React.FC<{
                         <table className='w-full'>
                             <tbody>
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td className='bg-primary w-32'></td>
+                                    <td className='bg-primary'></td>
                                     <td className='py-3 font-bold text-sm'>Phân loại sản phẩm</td>
                                 </tr>
 
@@ -355,7 +355,7 @@ const ProductPageComponent: React.FC<{
                                     </tr> */}
 
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td>&nbsp;</td>
+                                    <td></td>
                                     <td className='py-3 font-bold text-sm'>Chi tiết sản phẩm</td>
                                 </tr>
                                 {/* <tr>
@@ -375,7 +375,7 @@ const ProductPageComponent: React.FC<{
                                     </tr> */}
 
                                 <tr>
-                                    <td className='py-3'>Chi tiết sản phẩm</td>
+                                    <td className='py-3 whitespace-nowrap'>Chi tiết sản phẩm</td>
                                     <td className='py-3'>
                                         <CustomCKEditor value={setDescription} defaultValue={product?.description || description} />
                                     </td>

@@ -39,7 +39,7 @@ const UsersPage: React.FC = () => {
         <main className="h-full">
             <div className="py-5 px-2 md:px-6">
                 <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
-                    <h2>Người dùng</h2>
+                    <h2 className="text-black">Người dùng</h2>
                     <div className="flex gap-2">
                         <Link href="/cms/users/create" className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
                             <IoIosAddCircleOutline className="w-5 h-5" />
@@ -51,7 +51,7 @@ const UsersPage: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <div className="flex-col">
+                <div className="flex-col text-black">
                     <div className="space-y-4">
                         <div className="">
                             <div className="w-full mb-4 md:mb-0 flex items-center gap-4">
