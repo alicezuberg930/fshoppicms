@@ -124,13 +124,9 @@ const ProductPageComponent: React.FC<{
                                                                 {
                                                                     v.subcategories?.map(sub => {
                                                                         return (
-                                                                            <>
-                                                                                {
-                                                                                    product != null && sub._id === product?._id ?
-                                                                                        <option selected key={sub._id} value={sub._id}>{sub.name}</option> :
-                                                                                        <option key={sub._id} value={sub._id}>{sub.name}</option>
-                                                                                }
-                                                                            </>
+                                                                            product != null && sub._id === product?._id ?
+                                                                                <option selected key={sub._id} value={sub._id}>{sub.name}</option> :
+                                                                                <option key={sub._id} value={sub._id}>{sub.name}</option>
                                                                         )
                                                                     })
                                                                 }
