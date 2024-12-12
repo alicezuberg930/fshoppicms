@@ -5,7 +5,7 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), 
 });
 // import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { uploadFile } from '@/app/services/api';
 import { toast } from 'react-toastify';
@@ -24,6 +24,7 @@ const ProductPageComponent: React.FC<{
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
     const { data } = useSession();
+    const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
     const { data: categories, isLoading } = readCategoryHook(1)
 
@@ -55,8 +56,7 @@ const ProductPageComponent: React.FC<{
                 }
             }
         }
-
-        console.log(Object.fromEntries(formData.entries()));
+        // console.log(Object.fromEntries(formData.entries()));
         const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
         tempProduct["description"] = description || product?.description
         tempProduct["images"] = imageLinks
@@ -65,6 +65,7 @@ const ProductPageComponent: React.FC<{
             onSuccess(_) {
                 currentTarget.reset()
                 setImages([])
+                setResetAll(true)
                 setDescription("")
                 setVariantElements([])
                 if (product != null) setSelected!(null)
@@ -114,26 +115,39 @@ const ProductPageComponent: React.FC<{
                                 <tr>
                                     <td className='py-3'>Thương hiệu<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
+                                        <select defaultValue={product?.category ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
                                             {
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
                                                     (categories?.data.categories as Category[])?.map(v => {
                                                         return (
-                                                            <optgroup label={v.name} key={v._id}>
+                                                            <React.Fragment key={v._id}>
+                                                                <option className='font-bold text-lg' value={v._id}>{v.name}</option>
                                                                 {
                                                                     v.subcategories?.map(sub => {
                                                                         return (
-                                                                            product != null && sub._id === product?._id ?
-                                                                                <option selected key={sub._id} value={sub._id}>{sub.name}</option> :
-                                                                                <option key={sub._id} value={sub._id}>{sub.name}</option>
+                                                                            <option className='pl-4 text-md' key={sub._id} value={sub._id}>{sub.name}</option>
                                                                         )
                                                                     })
                                                                 }
-                                                            </optgroup>
+                                                            </React.Fragment>
                                                         )
                                                     })
                                             }
+                                            {/* {
+                                                isLoading ? <></> :
+                                                    (categories?.data.categories as Category[])?.map(v => {
+                                                        return (
+                                                            v.subcategories?.map(sub => {
+                                                                return (
+                                                                    product != null && sub._id === product?._id ?
+                                                                        <option className='pl-4 text-md' selected key={sub._id} value={sub._id}>{sub.name}</option> :
+                                                                        <option className='pl-4 text-md' key={sub._id} value={sub._id}>{sub.name}</option>
+                                                                )
+                                                            })
+                                                        )
+                                                    })
+                                            } */}
                                         </select>
                                         {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
                                                 data-select2-id='4'>
@@ -161,8 +175,8 @@ const ProductPageComponent: React.FC<{
                                 <tr>
                                     <td className='py-3'>Hình</td>
                                     <td className='py-3'>
-                                        <div className='mb-2'>
-                                            <CustomImagePicker images={product?.images} setImages={setImages} imageFiles={images} />
+                                        <div className='mb-2 image-container'>
+                                            <CustomImagePicker images={product?.images} setImages={setImages} resetAll={resetAll} />
                                         </div>
                                         <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
                                     </td>

@@ -1,60 +1,113 @@
 "use client"
-import { useEffect, useState } from "react";
+import { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
 import { icons } from "../common/icons";
 
-const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) => void, isMultiple?: boolean, imageFiles?: File[] }> = ({ images, setImages, isMultiple = true, imageFiles }) => {
-  const [files, setFiles] = useState<string[]>(images || []);
+const CustomImagePicker: React.FC<{
+  images?: string[],
+  setImages: Dispatch<SetStateAction<File[]>>,
+  isMultiple?: boolean,
+  resetAll?: boolean,
+}> = ({ images, setImages, isMultiple = true, resetAll = false }) => {
+  const [files, setFiles] = useState<{ file: File; url: string }[]>([]);
   const [fileEnter, setFileEnter] = useState<boolean>(false);
-  const { IoImagesOutline } = icons
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const { IoImagesOutline } = icons;
 
   useEffect(() => {
-    if (imageFiles?.length == 0) setFiles([])
-  }, [imageFiles])
+    // Load initial images if provided
+    if (images) {
+      const initialFiles = images.map((image, i) => ({
+        file: new File([], `file-${i}`), // Dummy File for existing images
+        url: image,
+      }));
+      setFiles(initialFiles);
+    }
+  }, [images]);
 
   useEffect(() => {
-    setFiles(images || [])
-  }, [images])
+    if (resetAll == true) resetImages()
+  }, [resetAll])
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setFileEnter(false);
+
+    const newFiles: { file: File; url: string }[] = [];
+    if (e.dataTransfer.items) {
+      [...e.dataTransfer.items].forEach((item) => {
+        if (item.kind === "file") {
+          const file = item.getAsFile();
+          if (file) {
+            const url = URL.createObjectURL(file);
+            newFiles.push({ file, url });
+          }
+        }
+      });
+    } else {
+      [...e.dataTransfer.files].forEach((file) => {
+        const url = URL.createObjectURL(file);
+        newFiles.push({ file, url });
+      });
+    }
+
+    setFiles((prev) => [...prev, ...newFiles]);
+    setImages((prev) => [...prev, ...newFiles.map(({ file }) => file)]);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles: { file: File; url: string }[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const url = URL.createObjectURL(file);
+        newFiles.push({ file, url });
+      }
+      setFiles((prev) => [...prev, ...newFiles]);
+      setImages((prev) => [...prev, ...newFiles.map(({ file }) => file)]);
+    }
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    setFiles((prev) => {
+      const updatedFiles = [...prev];
+      const [draggedFile] = updatedFiles.splice(draggedIndex, 1);
+      updatedFiles.splice(index, 0, draggedFile);
+      return updatedFiles;
+    });
+
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setImages(files.map(({ file }) => file));
+  };
+
+  const resetImages = () => {
+    files.forEach(({ url }) => URL.revokeObjectURL(url));
+    setFiles([]);
+    setImages([]);
+  };
 
   return (
     <div className="max-w-5xl">
+      {/* Dropzone */}
       <div
         onDragOver={(e) => {
           e.preventDefault();
           setFileEnter(true);
         }}
-        onDragLeave={() => {
-          setFileEnter(false);
-        }}
-        onDragEnd={(e) => {
-          e.preventDefault();
-          setFileEnter(false);
-        }}
-        onDrop={(e) => {
-          e.preventDefault();
-          setFileEnter(false);
-          const tempFiles: File[] = []
-          const blobUrls: string[] = [];
-          if (e.dataTransfer.items) {
-            [...e.dataTransfer.items].forEach((item, i) => {
-              if (item.kind === "file") {
-                const file = item.getAsFile();
-                if (file) {
-                  tempFiles.push(file)
-                  blobUrls.push(URL.createObjectURL(file))
-                }
-                const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
-                fileInput.files = e.dataTransfer.files
-              }
-            });
-            setImages(tempFiles)
-            setFiles(blobUrls)
-          } else {
-            [...e.dataTransfer.files].forEach((file, i) => {
-              console.log(`… file[${i}].name = ${file.name}`);
-            });
-          }
-        }}
-        className={`${fileEnter ? "border-4" : "border-2"} ${files.length < 1 ? 'block' : 'hidden'} bg-white flex flex-col w-full max-w-64 h-72 border-dashed items-center justify-center`}
+        onDragLeave={() => setFileEnter(false)}
+        onDrop={handleDrop}
+        className={`${fileEnter ? "border-4" : "border-2"} ${files.length < 1 ? "block" : "hidden"} bg-white flex flex-col w-full max-w-64 h-72 border-dashed items-center justify-center`}
       >
         <label htmlFor="file" className="h-full flex flex-col gap-6 justify-center items-center text-center">
           <IoImagesOutline className="w-16 h-16" fill="#347ab6" />
@@ -66,49 +119,39 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={(e) => {
-            const files = e.target.files;
-            if (files) {
-              const tempFiles: File[] = []
-              const blobUrls: string[] = []
-              for (let i = 0; i < files?.length; i++) {
-                tempFiles.push(files[i])
-                blobUrls.push(URL.createObjectURL(files[i]))
-              }
-              setFiles(blobUrls);
-              setImages(tempFiles)
-            }
-          }}
+          onChange={handleFileChange}
         />
       </div>
 
-      <div className={`${files.length > 0 ? 'block' : 'hidden'}`}>
-        <div className="flex flex-wrap overflow-scroll gap-2 h-72">
-          {
-            files.map((file, i) => {
-              return (
-                <object
-                  key={i}
-                  className="object-cover rounded-md w-full max-w-64 h-72"
-                  data={file}
-                  type="image/png" //need to be updated based on type of file
-                />
-              )
-            })
-          }
+      {/* Images */}
+      <div className={`${files.length > 0 ? "block" : "hidden"}`}>
+        <div className="flex flex-wrap overflow-scroll gap-2 h-72 image-container">
+          {files.map(({ url }, index) => (
+            <div
+              key={index}
+              className="w-full max-w-64 h-72"
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragEnd={handleDragEnd}
+            >
+              <img
+                src={url}
+                alt={`Uploaded file ${index}`}
+                className="w-full h-full object-cover rounded-md"
+              />
+            </div>
+          ))}
         </div>
-        <button
-          onClick={() => {
-            setFiles([]);
-            setImages([])
-          }}
-          className="mt-6 p-3 py-2 bg-red-500 text-white rounded-md"
+        <div
+          onClick={resetImages}
+          className="cursor-pointer w-fit mt-6 p-3 py-2 bg-red-500 text-white rounded-md"
         >
           Đặt lại
-        </button>
+        </div>
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default CustomImagePicker
+export default CustomImagePicker;

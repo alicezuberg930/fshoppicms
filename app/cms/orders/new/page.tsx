@@ -145,16 +145,9 @@ const AdminPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                             <div className="text-white text-xs">
-                                                                {
-                                                                    i % 2 == 0 ?
-                                                                        <span className="bg-blue-300 p-1.5 rounded-md">Đơn hàng mới</span>
-                                                                        : i % 3 == 0 ?
-                                                                            <span className="bg-[#347ab6] p-1.5 rounded-md">Đang xử lý</span>
-                                                                            : i % 5 == 0 ?
-                                                                                <span className="bg-[#5eb95b] p-1.5 rounded-md">Thành công</span>
-                                                                                :
-                                                                                <span className="bg-red-500 p-1.5 rounded-md">Thất bại</span>
-                                                                }
+                                                                <div className={`w-fit p-1.5 rounded-md ${i % 2 == 0 ? 'bg-blue-300' : i % 3 == 0 ? 'bg-[#347ab6]' : i % 5 == 0 ? 'bg-[#5eb95b]' : 'bg-red-500'}`}>
+                                                                    <span>{i % 2 == 0 ? "Đơn hàng mới" : i % 3 == 0 ? "Đang xử lý" : i % 5 == 0 ? "Thành công" : "Thất bại"}</span>
+                                                                </div>
                                                             </div>
                                                         </td>
 
