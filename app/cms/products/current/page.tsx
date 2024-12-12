@@ -241,27 +241,34 @@ const CurrentProductsPage: React.FC = () => {
                                     <div className='text-center'>
                                         <div>
                                             <span className='relative z-0 inline-flex rounded-md shadow-sm'>
-                                                <span onClick={() => currentPage > 1 ? setCurrentPage(currentPage - 1) : {}}>
-                                                    <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
-                                                        <FaChevronLeft className='w-5 h-5 p-1' />
-                                                    </button>
-                                                </span>
+                                                {
+                                                    currentPage > 1 ?
+                                                        <span onClick={() => setCurrentPage(currentPage - 1)}>
+                                                            <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:text-gray-300'>
+                                                                <FaChevronLeft className='w-5 h-5 p-1' />
+                                                            </button>
+                                                        </span> : <></>
+                                                }
                                                 {
                                                     Array.from({ length: products?.totalPages }).map((_, i) => {
                                                         return (
                                                             <span key={i + 1}>
-                                                                <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700`}>
+                                                                <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border hover:text-gray-300 focus:z-10 ${currentPage == i + 1 ? 'border-blue-300 shadow-blue-300' : 'border-gray-300'}`}>
                                                                     {i + 1}
                                                                 </button>
                                                             </span>
                                                         )
                                                     })
                                                 }
-                                                <span onClick={() => currentPage < products?.totalPages ? setCurrentPage(currentPage + 1) : {}}>
-                                                    <button className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
-                                                        <FaChevronRight className='w-5 h-5 p-1' />
-                                                    </button>
-                                                </span>
+                                                {
+                                                    currentPage < products?.totalPages ?
+                                                        <span onClick={() => setCurrentPage(currentPage + 1)}>
+                                                            <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:text-gray-300 -ml-px'>
+                                                                <FaChevronRight className='w-5 h-5 p-1' />
+                                                            </button>
+                                                        </span> : <></>
+                                                }
+
                                             </span>
                                         </div>
                                     </div> : <></>
