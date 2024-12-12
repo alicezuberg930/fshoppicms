@@ -253,7 +253,7 @@ const CurrentProductsPage: React.FC = () => {
                                                     Array.from({ length: products?.totalPages }).map((_, i) => {
                                                         return (
                                                             <span key={i + 1}>
-                                                                <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border hover:text-gray-300 focus:z-10 ${currentPage == i + 1 ? 'border-blue-300 shadow-blue-300' : 'border-gray-300'}`}>
+                                                                <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border hover:text-gray-300 ${currentPage == i + 1 ? 'border-blue-300 z-10' : 'border-gray-300'}`}>
                                                                     {i + 1}
                                                                 </button>
                                                             </span>
