@@ -107,7 +107,7 @@ const CustomImagePicker: React.FC<{
         }}
         onDragLeave={() => setFileEnter(false)}
         onDrop={handleDrop}
-        className={`${fileEnter ? "border-4" : "border-2"} ${files.length < 1 ? "block" : "hidden"} bg-white flex flex-col w-full max-w-64 h-72 border-dashed items-center justify-center`}
+        className={`${fileEnter ? "border-4" : "border-2"} ${files.length < 1 ? "block" : "hidden"} bg-white flex flex-col w-full max-w-56 h-64 border-dashed items-center justify-center`}
       >
         <label htmlFor="file" className="h-full flex flex-col gap-6 justify-center items-center text-center">
           <IoImagesOutline className="w-16 h-16" fill="#347ab6" />
@@ -125,12 +125,12 @@ const CustomImagePicker: React.FC<{
 
       {/* Images */}
       <div className={`${files.length > 0 ? "block" : "hidden"}`}>
-        <div className="flex flex-wrap overflow-scroll gap-2 h-72 image-container">
+        <div className="flex flex-wrap overflow-scroll gap-2 h-64 image-container">
           {
             files.map((file, index) => (
               <div
                 key={index}
-                className="w-full max-w-64 h-72"
+                className="w-full max-w-56 h-64"
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
