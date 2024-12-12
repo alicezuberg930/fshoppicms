@@ -36,7 +36,7 @@ const ProductDetailsComponent: React.FC<{
                                         <div className='mb-2'>
                                             <div className="flex flex-wrap overflow-scroll gap-2 h-72">
                                                 {
-                                                    product?.images.map((image, i) => {
+                                                    product?.images?.map((image, i) => {
                                                         return (
                                                             <object
                                                                 key={i}
