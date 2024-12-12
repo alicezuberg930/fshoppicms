@@ -7,7 +7,7 @@ const ProductDetailsComponent: React.FC<{
 
     return (
         <div className='w-full'>
-            <div className=''>
+            <div className='text-black'>
                 <div className='bg-[#f5f5f5] p-3'>
                     <h3 className='font-semibold text-red-500'>Thông tin sản phẩm</h3>
                 </div>
