@@ -64,7 +64,7 @@ const AdminPage: React.FC = () => {
                                 <table className="divide-y divide-gray-200 min-w-full">
                                     <thead>
                                         <tr>
-                                            <th className="bg-gray-50 px-3 py-2 md:py-3 w-36">
+                                            <th className="bg-gray-50 px-3 py-2 md:py-3">
                                                 <button className="flex items-center space-x-1 font-medium text-gray-500 text-left text-xs focus:underline uppercase leading-4 tracking-wider group focus:outline-none">
                                                     <span>Code</span>
                                                 </button>
@@ -115,7 +115,7 @@ const AdminPage: React.FC = () => {
                                                     <tr key={i} className="bg-white">
                                                         <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
                                                             <div className="text-gray-700">
-                                                                <span className="font-medium">NX{2411080009 * i}</span>
+                                                                <span className="font-medium">NX{i}</span>
                                                             </div>
                                                         </td>
 

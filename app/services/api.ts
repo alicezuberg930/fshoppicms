@@ -26,8 +26,6 @@ export const getProducts = async (token: string, filter?: FilterProducts) => {
 }
 
 export const createProduct = async (token: string, product: Product) => {
-    console.log("token2---" + token);
-
     return await axioInstance<any>({
         url: API.CREATE_PRODUCT, method: "POST",
         data: product,

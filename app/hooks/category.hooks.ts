@@ -34,7 +34,6 @@ export const createCategoryHook = () => {
     return useMutation({
         mutationFn: (category: Category) => createCategory(data?.user.access_token ?? "", category),
         onSuccess(data) {
-            console.log(data);
             toast.success(data.message)
         },
         onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.error) },

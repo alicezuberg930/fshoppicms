@@ -5,7 +5,7 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), 
 });
 // import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { uploadFile } from '@/app/services/api';
 import { toast } from 'react-toastify';
@@ -14,7 +14,6 @@ import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
-import { uploadFilesHook } from '../hooks/common.hooks';
 
 const ProductPageComponent: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
@@ -32,9 +31,9 @@ const ProductPageComponent: React.FC<{
     const { data } = useSession();
     const mutation = updateProductHook(page)
     const { data: categories, isLoading } = readCategoryHook(1)
-    // const uploadHook = uploadFilesHook()
 
-    const handleProduct = async () => {
+    const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         let imageLinks: string[] = []
         if (product?.images != null && product?.images.length > 0) imageLinks = product.images
         if ((images.length < 1 && images.length > 10) && product == null) {
@@ -71,7 +70,27 @@ const ProductPageComponent: React.FC<{
             options: variantInfo()
         }
         mutation!.mutate({ body: p, product })
+        setName("")
+        setPrice(0)
+        setStock(0)
+        setProductCode("")
+        setImages([])
+        setDescription("")
+        setVariantElements([])
         if (product != null) setSelected!(null)
+
+        // const formData = new FormData(e.currentTarget);
+        // const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
+        // tempProduct["description"] = description || product?.description
+        // tempProduct["images"] = imageLinks
+        // tempProduct["options"] = variantInfo()
+        // console.log(tempProduct);
+        // mutation!.mutate({ body: tempProduct, product }, {
+        //     onSuccess(_) {
+        //         e.currentTarget.reset()
+        //         if (product != null) setSelected!(null)
+        //     }
+        // })
     }
 
     const variantInfo = (): Variant[] => {
@@ -105,7 +124,7 @@ const ProductPageComponent: React.FC<{
                     <h3 className='font-semibold text-red-500'>{product != null ? 'Sửa' : 'Thêm'} sản phẩm</h3>
                 </div>
                 <div className='p-3'>
-                    <form className='' onSubmit={(e) => e.preventDefault()}>
+                    <form className='' onSubmit={(e) => handleProduct(e)}>
                         <table className='w-full'>
                             <tbody>
                                 <tr className='bg-[#347ab6] text-white'>
@@ -117,8 +136,7 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>Thương hiệu<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <select onChange={(e) => setCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' autoComplete='off'>
-                                            <option value="">Không chọn</option>
+                                        <select onChange={(e) => setCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
                                             {
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
@@ -172,7 +190,7 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <div className='mb-2'>
-                                            <CustomImagePicker images={product?.images} setImages={setImages} />
+                                            <CustomImagePicker images={product?.images} setImages={setImages} imageFiles={images} />
                                         </div>
                                         <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
                                     </td>
@@ -181,8 +199,8 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>Mã sản phẩm<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setProductCode(e.target.value)} defaultValue={product?.productCode}
-                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off'
+                                        <input onChange={(e) => setProductCode(e.target.value)} value={productCode} defaultValue={product?.productCode}
+                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='productCode'
                                         />
                                     </td>
                                 </tr>
@@ -190,8 +208,8 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>Tên Sản Phẩm<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setName(e.target.value)} defaultValue={product?.name}
-                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off'
+                                        <input onChange={(e) => setName(e.target.value)} value={name} defaultValue={product?.name}
+                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='name'
                                         />
                                     </td>
                                 </tr>
@@ -323,7 +341,7 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>Giá bán<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setPrice(+e.target.value)} defaultValue={product?.price} name='price'
+                                        <input onChange={(e) => setPrice(+e.target.value)} value={price} defaultValue={product?.price} name='price'
                                             className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
                                         />
                                     </td>
@@ -333,7 +351,7 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setStock(+e.target.value)} defaultValue={product?.stock} name='stock'
+                                        <input onChange={(e) => setStock(+e.target.value)} value={stock} defaultValue={product?.stock} name='stock'
                                             className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
                                         />
                                     </td>
@@ -387,7 +405,7 @@ const ProductPageComponent: React.FC<{
                                     <td className='py-3'>Chi tiết sản phẩm</td>
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <CustomCKEditor value={setDescription} defaultValue={product?.description || "Nhập mô tả của bạn"} />
+                                        <CustomCKEditor value={setDescription} defaultValue={product?.description || description} />
                                     </td>
                                 </tr>
 
@@ -438,7 +456,7 @@ const ProductPageComponent: React.FC<{
                                     <td colSpan={2}>&nbsp;</td>
                                     <td>
                                         <div className='space-x-3 font-bold text-md'>
-                                            <input type='submit' onClick={handleProduct} className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
+                                            <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
                                             <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
                                             {product != null ? <button onClick={() => setSelected!(null)} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button> : null}
                                         </div>

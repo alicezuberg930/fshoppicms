@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { icons } from "../common/icons";
 
-const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) => void, isMultiple?: boolean }> = ({ images, setImages, isMultiple = true }) => {
+const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) => void, isMultiple?: boolean, imageFiles?: File[] }> = ({ images, setImages, isMultiple = true, imageFiles }) => {
   const [files, setFiles] = useState<string[]>(images || []);
   const [fileEnter, setFileEnter] = useState<boolean>(false);
   const { IoImagesOutline } = icons
@@ -10,6 +10,10 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
   useEffect(() => {
     setFiles(images || [])
   }, [images])
+
+  useEffect(() => {
+    if (imageFiles?.length == 0) setFiles([])
+  }, [imageFiles])
 
   return (
     <div className="max-w-5xl">
