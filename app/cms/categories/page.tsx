@@ -2,7 +2,7 @@
 import { icons } from '@/app/common/icons'
 import LoadingComponent from '@/app/components/LoadingComponent'
 import Link from 'next/link'
-import { ChangeEvent, MouseEvent, useState } from 'react'
+import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { deleteCategoryHook, readCategoryHook } from '@/app/hooks/category.hooks'
@@ -177,8 +177,8 @@ const CategoriesPage: React.FC = () => {
                                             </tr> :
                                             (categories?.data.categories as Category[]).map((v, i) => {
                                                 return (
-                                                    <>
-                                                        <tr key={i} className='bg-white'>
+                                                    <React.Fragment key={i}>
+                                                        <tr className='bg-white'>
                                                             <td className='px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
                                                                 <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type='checkbox' />
                                                             </td>
@@ -264,7 +264,7 @@ const CategoriesPage: React.FC = () => {
                                                                 </tr>
                                                             })
                                                         }
-                                                    </>
+                                                    </React.Fragment>
                                                 )
                                             })
                                     }

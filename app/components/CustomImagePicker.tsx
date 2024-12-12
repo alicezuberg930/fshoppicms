@@ -63,8 +63,8 @@ const CustomImagePicker: React.FC<{
         const url = URL.createObjectURL(file);
         newFiles.push({ file, url });
       }
-      setFiles((prev) => [...prev, ...newFiles]);
-      setImages((prev) => [...prev, ...newFiles.map(({ file }) => file)]);
+      setFiles(newFiles);
+      setImages(newFiles.map(({ file }) => file));
     }
   };
 
@@ -126,22 +126,24 @@ const CustomImagePicker: React.FC<{
       {/* Images */}
       <div className={`${files.length > 0 ? "block" : "hidden"}`}>
         <div className="flex flex-wrap overflow-scroll gap-2 h-72 image-container">
-          {files.map(({ url }, index) => (
-            <div
-              key={index}
-              className="w-full max-w-64 h-72"
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDragEnd={handleDragEnd}
-            >
-              <img
-                src={url}
-                alt={`Uploaded file ${index}`}
-                className="w-full h-full object-cover rounded-md"
-              />
-            </div>
-          ))}
+          {
+            files.map((file, index) => (
+              <div
+                key={index}
+                className="w-full max-w-64 h-72"
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+              >
+                <img
+                  src={file.url}
+                  alt={`Uploaded file ${index}`}
+                  className="w-full h-full object-cover rounded-md"
+                />
+              </div>
+            ))
+          }
         </div>
         <div
           onClick={resetImages}
