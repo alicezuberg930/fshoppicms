@@ -61,7 +61,6 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
           <span className="text-sm">Nhấn vào để tải ảnh lên hoặc kéo thả</span>
         </label>
         <input
-          name="file"
           multiple={isMultiple}
           id="file"
           type="file"

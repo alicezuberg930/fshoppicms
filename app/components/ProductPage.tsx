@@ -18,13 +18,8 @@ import { readCategoryHook } from '../hooks/category.hooks';
 const ProductPageComponent: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
 }> = ({ product = null, setSelected, page }) => {
-    const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
-    const [price, setPrice] = useState<number>(0)
-    const [stock, setStock] = useState<number>(0)
-    const [category, setCategory] = useState<string>("")
     const [images, setImages] = useState<File[]>([])
-    const [productCode, setProductCode] = useState<string>("")
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
@@ -34,6 +29,8 @@ const ProductPageComponent: React.FC<{
 
     const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        const currentTarget = e.currentTarget
+        const formData = new FormData(currentTarget);
         let imageLinks: string[] = []
         if (product?.images != null && product?.images.length > 0) imageLinks = product.images
         if ((images.length < 1 && images.length > 10) && product == null) {
@@ -59,38 +56,20 @@ const ProductPageComponent: React.FC<{
             }
         }
 
-        const p: Product = {
-            name: name || product?.name || "",
-            description: description || product?.description || "",
-            price: price || product?.price || 0,
-            stock: stock || product?.stock || 0,
-            category: category || product?.category || categories?.data.categories[0]._id,
-            images: imageLinks,
-            productCode: productCode || product?.productCode,
-            options: variantInfo()
-        }
-        mutation!.mutate({ body: p, product })
-        setName("")
-        setPrice(0)
-        setStock(0)
-        setProductCode("")
-        setImages([])
-        setDescription("")
-        setVariantElements([])
-        if (product != null) setSelected!(null)
-
-        // const formData = new FormData(e.currentTarget);
-        // const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
-        // tempProduct["description"] = description || product?.description
-        // tempProduct["images"] = imageLinks
-        // tempProduct["options"] = variantInfo()
-        // console.log(tempProduct);
-        // mutation!.mutate({ body: tempProduct, product }, {
-        //     onSuccess(_) {
-        //         e.currentTarget.reset()
-        //         if (product != null) setSelected!(null)
-        //     }
-        // })
+        console.log(Object.fromEntries(formData.entries()));
+        const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
+        tempProduct["description"] = description || product?.description
+        tempProduct["images"] = imageLinks
+        tempProduct["options"] = variantInfo()
+        mutation!.mutate({ body: tempProduct, product }, {
+            onSuccess(_) {
+                currentTarget.reset()
+                setImages([])
+                setDescription("")
+                setVariantElements([])
+                if (product != null) setSelected!(null)
+            }
+        })
     }
 
     const variantInfo = (): Variant[] => {
@@ -124,19 +103,18 @@ const ProductPageComponent: React.FC<{
                     <h3 className='font-semibold text-red-500'>{product != null ? 'Sửa' : 'Thêm'} sản phẩm</h3>
                 </div>
                 <div className='p-3'>
-                    <form className='' onSubmit={(e) => handleProduct(e)}>
+                    <form onSubmit={(e) => handleProduct(e)}>
                         <table className='w-full'>
                             <tbody>
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td colSpan={2} className='bg-primary'>&nbsp;</td>
+                                    <td className='bg-primary w-32'></td>
                                     <td className='py-3 font-bold text-sm'>Phân loại sản phẩm</td>
                                 </tr>
 
                                 <tr>
                                     <td className='py-3'>Thương hiệu<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <select onChange={(e) => setCategory(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
+                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
                                             {
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
@@ -146,20 +124,19 @@ const ProductPageComponent: React.FC<{
                                                                 {
                                                                     v.subcategories?.map(sub => {
                                                                         return (
-                                                                            <option key={sub._id} value={sub._id}>{sub.name}</option>
+                                                                            <>
+                                                                                {
+                                                                                    product != null && sub._id === product?._id ?
+                                                                                        <option selected key={sub._id} value={sub._id}>{sub.name}</option> :
+                                                                                        <option key={sub._id} value={sub._id}>{sub.name}</option>
+                                                                                }
+                                                                            </>
                                                                         )
                                                                     })
                                                                 }
                                                             </optgroup>
                                                         )
                                                     })
-                                                // isLoading ?
-                                                //     <option value="" disabled>Không có dữ liệu</option> :
-                                                //     (categories?.data.categories as Category[])?.map(v => {
-                                                //         return (
-                                                //             <option key={v._id} value={v._id}>{v.name}</option>
-                                                //         )
-                                                //     })
                                             }
                                         </select>
                                         {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
@@ -181,13 +158,12 @@ const ProductPageComponent: React.FC<{
                                 </tr>
 
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td colSpan={2}>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                     <td className='py-3 font-bold text-sm'>Thông tin sản phẩm</td>
                                 </tr>
 
                                 <tr>
                                     <td className='py-3'>Hình</td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <div className='mb-2'>
                                             <CustomImagePicker images={product?.images} setImages={setImages} imageFiles={images} />
@@ -197,26 +173,21 @@ const ProductPageComponent: React.FC<{
                                 </tr>
                                 <tr>
                                     <td className='py-3'>Mã sản phẩm<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setProductCode(e.target.value)} value={productCode} defaultValue={product?.productCode}
-                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='productCode'
+                                        <input defaultValue={product?.productCode ?? ""} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='productCode'
                                         />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className='py-3'>Tên Sản Phẩm<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setName(e.target.value)} value={name} defaultValue={product?.name}
-                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='name'
+                                        <input defaultValue={product?.name ?? ""} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='name'
                                         />
                                     </td>
                                 </tr>
 
                                 {/* <tr>
                                         <td className='py-3'>Giới thiệu/Mô tả ngắn</td>
-                                        <td className='py-3'>:</td>
                                         <td className='py-3'>
                                             <textarea rows={5} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
                                         </td>
@@ -224,7 +195,6 @@ const ProductPageComponent: React.FC<{
 
                                 {/* <tr>
                                         <td className='py-3'>Trạng thái</td>
-                                        <td className='py-3'>:</td>
                                         <td className='py-3'>
                                             <div className='space-x-2 text-white text-xs'>
                                                 <label className='bg-[#347ab6] p-2 rounded-md'>
@@ -240,7 +210,6 @@ const ProductPageComponent: React.FC<{
                                     </tr> */}
                                 {/* <tr>
                                         <td className='py-3'>Tình trạng</td>
-                                        <td className='py-3'>:</td>
                                         <td className='py-3'>
                                             <div className='flex flex-wrap gap-2 text-white text-xs'>
                                                 <label className='bg-[#5eb95b] p-2 rounded-md flex items-center gap-1'>
@@ -264,7 +233,6 @@ const ProductPageComponent: React.FC<{
                                     </tr> */}
                                 <tr>
                                     <td className='py-3'>Biến thể</td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <div className='flex items-center gap-6'>
                                             <b className=''>Bật tắt biến thể</b>
@@ -306,8 +274,7 @@ const ProductPageComponent: React.FC<{
                                                             )
                                                         })
                                                     }
-                                                </div>
-                                                : null
+                                                </div> : <></>
                                         }
                                         {
                                             variantElements.length == 0 || !enableVariation ? null :
@@ -334,25 +301,21 @@ const ProductPageComponent: React.FC<{
                                 </tr>
 
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td colSpan={2}>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                     <td className='py-3 font-bold text-sm'>Giá bán</td>
                                 </tr>
                                 <tr>
                                     <td className='py-3'>Giá bán<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setPrice(+e.target.value)} value={price} defaultValue={product?.price} name='price'
-                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
+                                        <input defaultValue={product?.price ?? ""} name='price' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
                                         />
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
-                                        <input onChange={(e) => setStock(+e.target.value)} value={stock} defaultValue={product?.stock} name='stock'
-                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
+                                        <input defaultValue={product?.stock ?? ""} name='stock' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
                                         />
                                     </td>
                                 </tr>
@@ -382,7 +345,7 @@ const ProductPageComponent: React.FC<{
                                     </tr> */}
 
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td colSpan={2}>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                     <td className='py-3 font-bold text-sm'>Chi tiết sản phẩm</td>
                                 </tr>
                                 {/* <tr>
@@ -403,7 +366,6 @@ const ProductPageComponent: React.FC<{
 
                                 <tr>
                                     <td className='py-3'>Chi tiết sản phẩm</td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <CustomCKEditor value={setDescription} defaultValue={product?.description || description} />
                                     </td>
@@ -453,7 +415,7 @@ const ProductPageComponent: React.FC<{
                                         </td>
                                     </tr> */}
                                 <tr>
-                                    <td colSpan={2}>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                     <td>
                                         <div className='space-x-3 font-bold text-md'>
                                             <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />

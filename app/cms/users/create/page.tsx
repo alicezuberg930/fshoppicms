@@ -13,72 +13,70 @@ const CreateUserPage: React.FC = () => {
     }
 
     return (
-        <>
-            <div className='w-full'>
-                <div className=''>
-                    <div className='bg-[#f5f5f5] p-3'>
-                        <h3 className='font-semibold text-red-500'>Thêm người dùng</h3>
-                    </div>
-                    <div className='p-3'>
-                        <form onSubmit={(e) => handleCreateUser(e)}>
-                            <table className='w-full'>
-                                <tbody>
-                                    <tr className='bg-[#347ab6] text-white'>
-                                        <td colSpan={2} className='bg-primary'>&nbsp;</td>
-                                        <td className='py-3 font-bold text-sm'>Thông tin người dùng</td>
-                                    </tr>
+        <div className='w-full'>
+            <div className=''>
+                <div className='bg-[#f5f5f5] p-3'>
+                    <h3 className='font-semibold text-red-500'>Thêm người dùng</h3>
+                </div>
+                <div className='p-3'>
+                    <form onSubmit={(e) => handleCreateUser(e)}>
+                        <table className='w-full'>
+                            <tbody>
+                                <tr className='bg-[#347ab6] text-white'>
+                                    <td colSpan={2} className='bg-primary'>&nbsp;</td>
+                                    <td className='py-3 font-bold text-sm'>Thông tin người dùng</td>
+                                </tr>
 
-                                    <tr>
-                                        <td className='py-3 w-32'>Tên<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="name" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3 w-32'>Email<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="email" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3 w-32'>Mật khẩu<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="password" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3 w-32'>Xác nhận mật khẩu<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="confirmPassword" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3 w-32'>Số điện thoại<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="phone" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colSpan={2}>&nbsp;</td>
-                                        <td>
-                                            <div className='space-x-3 font-bold text-md'>
-                                                <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
-                                                <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </form>
-                    </div>
+                                <tr>
+                                    <td className='py-3 w-32'>Tên<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>:</td>
+                                    <td className='py-3'>
+                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="name" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className='py-3 w-32'>Email<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>:</td>
+                                    <td className='py-3'>
+                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="email" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className='py-3 w-32'>Mật khẩu<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>:</td>
+                                    <td className='py-3'>
+                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="password" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className='py-3 w-32'>Xác nhận mật khẩu<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>:</td>
+                                    <td className='py-3'>
+                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="confirmPassword" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className='py-3 w-32'>Số điện thoại<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>:</td>
+                                    <td className='py-3'>
+                                        <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="phone" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={2}>&nbsp;</td>
+                                    <td>
+                                        <div className='space-x-3 font-bold text-md'>
+                                            <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
+                                            <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
