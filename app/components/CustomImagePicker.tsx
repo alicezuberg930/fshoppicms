@@ -8,12 +8,12 @@ const CustomImagePicker: React.FC<{ images?: string[], setImages: (v: File[]) =>
   const { IoImagesOutline } = icons
 
   useEffect(() => {
-    setFiles(images || [])
-  }, [images])
-
-  useEffect(() => {
     if (imageFiles?.length == 0) setFiles([])
   }, [imageFiles])
+
+  useEffect(() => {
+    setFiles(images || [])
+  }, [images])
 
   return (
     <div className="max-w-5xl">

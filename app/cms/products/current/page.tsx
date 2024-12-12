@@ -191,7 +191,7 @@ const CurrentProductsPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="h-24 w-20">
-                                                                <img className="object-cover w-full h-full" srcSet={v.images[0] ?? '/logo.png'} />
+                                                                <img className="object-cover w-full h-full" srcSet={v.images![0] ?? '/logo.png'} />
                                                             </div>
                                                         </td>
 
@@ -203,7 +203,7 @@ const CurrentProductsPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="text-gray-700">
-                                                                <span className="font-medium">{formatVND(v.price)}</span>
+                                                                <span className="font-medium">{formatVND(v.price!)}</span>
                                                             </div>
                                                         </td>
 
