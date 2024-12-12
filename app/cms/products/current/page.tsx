@@ -10,10 +10,11 @@ import withReactContent from "sweetalert2-react-content";
 import { deleteProductHook, readProductsHook } from "@/app/hooks/product.hooks";
 import { FaRegShareSquare } from "react-icons/fa";
 import ProductDetailsComponent from "@/app/components/ProductDetailsComponent";
+import CustomPaginator from "@/app/components/CustomPaginator";
 
 const CurrentProductsPage: React.FC = () => {
     // icons
-    const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline, FaChevronLeft, FaChevronRight } = icons
+    const { FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     // hooks
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
@@ -61,6 +62,7 @@ const CurrentProductsPage: React.FC = () => {
             cancelButtonText: "Hủy",
         }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
     }
+    console.log(currentPage);
 
     return (
         <main className="h-full">
@@ -238,51 +240,13 @@ const CurrentProductsPage: React.FC = () => {
                         {
                             isLoading ? <></> :
                                 products?.totalPages ?
-                                    <div className='text-center'>
-                                        <div>
-                                            <span className='relative z-0 inline-flex rounded-md shadow-sm'>
-                                                {
-                                                    currentPage > 1 ?
-                                                        <span onClick={() => setCurrentPage(currentPage - 1)}>
-                                                            <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:text-gray-300'>
-                                                                <FaChevronLeft className='w-5 h-5 p-1' />
-                                                            </button>
-                                                        </span> : <></>
-                                                }
-                                                {
-                                                    Array.from({ length: products?.totalPages }).map((_, i) => {
-                                                        return (
-                                                            <span key={i + 1}>
-                                                                <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border hover:text-gray-300 ${currentPage == i + 1 ? 'border-blue-300 z-10' : 'border-gray-300'}`}>
-                                                                    {i + 1}
-                                                                </button>
-                                                            </span>
-                                                        )
-                                                    })
-                                                }
-                                                {
-                                                    currentPage < products?.totalPages ?
-                                                        <span onClick={() => setCurrentPage(currentPage + 1)}>
-                                                            <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:text-gray-300 -ml-px'>
-                                                                <FaChevronRight className='w-5 h-5 p-1' />
-                                                            </button>
-                                                        </span> : <></>
-                                                }
-
-                                            </span>
-                                        </div>
-                                    </div> : <></>
+                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={products?.totalPages} /> : <></>
                         }
                     </div>
                 </div>
             </div>
             <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedProduct != null ? 'block' : 'hidden'}`}>
-                <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0"
-                // onClick={(e) => {
-                // if (e.target !== e.currentTarget) return;
-                // setSelectedProduct(null)
-                // }}
-                >
+                <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0">
                     <div className="fixed inset-0 transition-opacity">
                         <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                     </div>

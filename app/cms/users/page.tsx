@@ -5,6 +5,7 @@ import LoadingComponent from "@/app/components/LoadingComponent";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import { handleUserHook, readUserHook } from "@/app/hooks/user.hooks";
+import CustomPaginator from "@/app/components/CustomPaginator";
 
 const UsersPage: React.FC = () => {
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
@@ -202,40 +203,9 @@ const UsersPage: React.FC = () => {
                             </table>
                         </div>
                         {
-                            isLoading ? null :
-                                <div className='text-center'>
-                                    <div>
-                                        <span className='relative z-0 inline-flex rounded-md shadow-sm'>
-                                            {
-                                                currentPage > 1 ?
-                                                    <span onClick={() => setCurrentPage(currentPage - 1)}>
-                                                        <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:text-gray-300'>
-                                                            <FaChevronLeft className='w-5 h-5 p-1' />
-                                                        </button>
-                                                    </span> : <></>
-                                            }
-                                            {
-                                                Array.from({ length: users?.data?.pagination.totalPages }).map((v, i) => {
-                                                    return (
-                                                        <span key={i + 1}>
-                                                            <button onClick={() => setCurrentPage(i + 1)} className={`relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border hover:text-gray-300 ${currentPage == i + 1 ? 'border-blue-300 z-10' : 'border-gray-300'}`}>
-                                                                {i + 1}
-                                                            </button>
-                                                        </span>
-                                                    )
-                                                })
-                                            }
-                                            {
-                                                currentPage < users?.data?.pagination.totalPages ?
-                                                    <span onClick={() => setCurrentPage(currentPage + 1)}>
-                                                        <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:text-gray-300 -ml-px'>
-                                                            <FaChevronRight className='w-5 h-5 p-1' />
-                                                        </button>
-                                                    </span> : <></>
-                                            }
-                                        </span>
-                                    </div>
-                                </div>
+                            isLoading ? <></> :
+                                users?.data?.pagination ?
+                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={users?.data?.pagination.totalPages} /> : <></>
                         }
                     </div>
                 </div>

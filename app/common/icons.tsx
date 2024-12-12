@@ -7,6 +7,8 @@ import { VscSettings } from "react-icons/vsc";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoImagesOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
+import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
+import { BsThreeDots } from "react-icons/bs";
 
 export const icons = {
     FaLaravel,
@@ -42,5 +44,8 @@ export const icons = {
     MdOutlinePayments,
     CiCircleCheck,
     FaCheck,
-    PiFlagBanner
+    PiFlagBanner,
+    HiChevronDoubleLeft,
+    HiChevronDoubleRight,
+    BsThreeDots
 }
