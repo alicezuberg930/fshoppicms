@@ -1,9 +1,10 @@
 "use client"
-import { FormEvent, useState } from "react"
+import React, { FormEvent, useState } from "react"
 import { toast } from "react-toastify"
 import CustomImagePicker from "@/app/components/CustomImagePicker"
 import { createCategoryHook, readCategoryHook } from "../hooks/category.hooks"
 import { uploadFilesHook } from "../hooks/common.hooks"
+import CategorySelectList from "./CategorySelectList"
 
 const CategoryPageComponent: React.FC = () => {
     const [images, setImages] = useState<File[]>([])
@@ -74,13 +75,9 @@ const CategoryPageComponent: React.FC = () => {
                                         <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
                                             <option value="">Không chọn</option>
                                             {
-                                                !isLoading ?
-                                                    (categories.data.categories as Category[])?.map(v => {
-                                                        return (
-                                                            <option key={v._id} value={v._id}>{v.name}</option>
-                                                        )
-                                                    }) :
-                                                    <option value="" disabled>Không có dữ liệu</option>
+                                                isLoading ?
+                                                    <option value="" disabled>Không có dữ liệu</option> :
+                                                    < CategorySelectList categories={categories?.data.categories as Category[]} currentPage={1} />
                                             }
                                         </select>
                                     </td>

@@ -14,6 +14,7 @@ import CustomSwitch from '@/app/components/CustomSwitch';
 import { useSession } from 'next-auth/react';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
+import CategorySelectList from './CategorySelectList';
 
 const ProductPageComponent: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
@@ -119,35 +120,8 @@ const ProductPageComponent: React.FC<{
                                             {
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
-                                                    (categories?.data.categories as Category[])?.map(v => {
-                                                        return (
-                                                            <React.Fragment key={v._id}>
-                                                                <option className='font-bold text-lg' value={v._id}>{v.name}</option>
-                                                                {
-                                                                    v.subcategories?.map(sub => {
-                                                                        return (
-                                                                            <option className='pl-4 text-md' key={sub._id} value={sub._id}>{sub.name}</option>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </React.Fragment>
-                                                        )
-                                                    })
+                                                    <CategorySelectList categories={categories?.data.categories as Category[]} currentPage={1} />
                                             }
-                                            {/* {
-                                                isLoading ? <></> :
-                                                    (categories?.data.categories as Category[])?.map(v => {
-                                                        return (
-                                                            v.subcategories?.map(sub => {
-                                                                return (
-                                                                    product != null && sub._id === product?._id ?
-                                                                        <option className='pl-4 text-md' selected key={sub._id} value={sub._id}>{sub.name}</option> :
-                                                                        <option className='pl-4 text-md' key={sub._id} value={sub._id}>{sub.name}</option>
-                                                                )
-                                                            })
-                                                        )
-                                                    })
-                                            } */}
                                         </select>
                                         {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
                                                 data-select2-id='4'>

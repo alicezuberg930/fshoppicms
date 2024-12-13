@@ -2,10 +2,9 @@
 import { icons } from '@/app/common/icons'
 import LoadingComponent from '@/app/components/LoadingComponent'
 import Link from 'next/link'
-import React, { ChangeEvent, MouseEvent, useState } from 'react'
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-import { deleteCategoryHook, readCategoryHook } from '@/app/hooks/category.hooks'
+import React, { ChangeEvent, useState } from 'react'
+import { readCategoryHook } from '@/app/hooks/category.hooks'
+import CategoryList from '@/app/components/CategoryList'
 
 const CategoriesPage: React.FC = () => {
     // icons
@@ -15,7 +14,6 @@ const CategoriesPage: React.FC = () => {
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const { data: categories, isLoading } = readCategoryHook(currentPage)
-    const mutation = deleteCategoryHook(currentPage)
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
@@ -41,25 +39,6 @@ const CategoriesPage: React.FC = () => {
         } else {
             setCheckBoxes([])
         }
-    }
-
-    const handleDeleteCategory = async (id: string) => {
-        withReactContent(Swal).fire({
-            title: 'Bạn có chắc chắn không?',
-            text: 'Bạn sẽ không thể đảo ngược hành động',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
-    }
-
-    const showSubCategories = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-        const showSubCategories = e.currentTarget
-        console.log(showSubCategories);
-
     }
 
     return (
@@ -175,98 +154,7 @@ const CategoriesPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            (categories?.data.categories as Category[]).map((v, i) => {
-                                                return (
-                                                    <React.Fragment key={i}>
-                                                        <tr className='bg-white'>
-                                                            <td className='px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type='checkbox' />
-                                                            </td>
-                                                            <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                {i}
-                                                            </td>
-
-                                                            <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                <div className='h-24 w-20'>
-                                                                    <img className='object-cover w-full h-full' srcSet={v.thumnail ?? '/logo.png'} />
-                                                                </div>
-                                                            </td>
-
-                                                            <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                <div className='text-gray-700 text-ellipsis overflow-hidden line-clamp-2'>
-                                                                    {v.name ?? ''}
-                                                                </div>
-                                                            </td>
-
-                                                            <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                {/* {v.subcategories![0]?.name ?? ''} */}
-                                                            </td>
-
-                                                            {/* <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
-                                                                <button onClick={(e) => showSubCategories(e)} className="subcategories bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Danh mục con">
-                                                                    <FaRegShareSquare className='w-5 h-5' />
-                                                                </button>
-                                                            </td> */}
-
-                                                            <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                <div className='flex flex-wrap justify-start gap-1'>
-                                                                    <button className='p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none' title='Edit'>
-                                                                        <MdModeEdit className='w-5 h-5' />
-                                                                    </button>
-                                                                    <button onClick={() => handleDeleteCategory(v._id!)} className='flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700' title='Delete'>
-                                                                        <FaRegTrashAlt className='w-5 h-5' />
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                        {
-                                                            v.subcategories?.map((sub, j) => {
-                                                                return <tr key={j} className='bg-white'>
-                                                                    <td className='px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                        <input type='checkbox' />
-                                                                    </td>
-                                                                    <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                        {i}
-                                                                    </td>
-
-                                                                    <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                        <div className='h-24 w-20'>
-                                                                            <img className='object-cover w-full h-full' srcSet={sub.thumnail ?? '/logo.png'} />
-                                                                        </div>
-                                                                    </td>
-
-                                                                    <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                        <div className='text-gray-700 text-ellipsis overflow-hidden line-clamp-2'>
-                                                                            {sub.name ?? ''}
-                                                                        </div>
-                                                                    </td>
-
-                                                                    <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                        {v?.name ?? ''}
-                                                                    </td>
-
-                                                                    {/* <td className="px-3 py-2 md:py-4 text-gray-900 text-sm leading-5 whitespace-normal">
-                                                                        <button onClick={(e) => showSubCategories(e)} className="subcategories bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Danh mục con">
-                                                                            <FaRegShareSquare className='w-5 h-5' />
-                                                                        </button>
-                                                                    </td> */}
-
-                                                                    <td className='px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900'>
-                                                                        <div className='flex flex-wrap justify-start gap-1'>
-                                                                            <button className='p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none' title='Edit'>
-                                                                                <MdModeEdit className='w-5 h-5' />
-                                                                            </button>
-                                                                            <button onClick={() => handleDeleteCategory(sub._id!)} className='flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700' title='Delete'>
-                                                                                <FaRegTrashAlt className='w-5 h-5' />
-                                                                            </button>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            })
-                                                        }
-                                                    </React.Fragment>
-                                                )
-                                            })
+                                            <CategoryList categories={categories?.data.categories as Category[]} currentPage={currentPage} />
                                     }
                                 </tbody>
                             </table>
