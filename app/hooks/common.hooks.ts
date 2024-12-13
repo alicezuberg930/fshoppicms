@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { uploadFile } from "@/app/services/api";
+import { uploadFile } from "@/app/services/api.service";
 import { isAxiosError } from "@/app/common/utils";
 import { toast } from "react-toastify";
 

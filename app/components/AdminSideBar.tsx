@@ -7,7 +7,7 @@ import { setCollapseSidebar } from '../services/sidebar.slice';
 import { PATH } from '@/app/common/path';
 import { usePathname } from 'next/navigation';
 import { setConfigDropDown, setOrderDropDown, setPaymentDropDown, setProductDropDown } from '../services/dropdown.slice';
-import { logout } from '../services/auth.action';
+import { logout } from '../services/auth.service';
 import menuItems from '../common/menu.items';
 
 const AdminSideBar: React.FC = () => {

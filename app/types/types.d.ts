@@ -67,12 +67,6 @@ interface FilterUsers {
     page: number
 }
 
-interface Paginate {
-    totalProducts: number,
-    totalPages: number,
-    currentPage: number
-}
-
 interface APIResponse<Type> {
     status: string,
     statusCode: number,

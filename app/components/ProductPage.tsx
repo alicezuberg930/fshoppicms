@@ -7,7 +7,7 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), 
 import CustomImagePicker from '@/app/components/CustomImagePicker'
 import React, { FormEvent, useState } from 'react';
 import { icons } from '@/app/common/icons';
-import { uploadFile } from '@/app/services/api';
+import { uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';

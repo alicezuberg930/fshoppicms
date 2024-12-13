@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useSession } from "next-auth/react"
 import { API } from "@/app/common/api"
-import { createCategory, deleteCategory, getCategories } from "../services/api"
+import { createCategory, deleteCategory, getCategories } from "../services/api.service"
 import { isAxiosError } from "@/app/common/utils"
 import { toast } from "react-toastify"
 

@@ -6,7 +6,7 @@ import { setCollapseSidebar } from "../services/sidebar.slice";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { PATH } from "@/app/common/path";
-import { logout } from "../services/auth.action";
+import { logout } from "../services/auth.service";
 
 const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {
     const [hideProfile, setHideProfile] = useState<boolean>(true)

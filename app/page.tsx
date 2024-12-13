@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
-import { login } from "./services/auth.action"
+import { login } from "./services/auth.service"
 import { PATH } from "@/app/common/path";
 
 const LoginPage: React.FC = () => {

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createUser, getUsers, lockAccount, unlockAccount } from "../services/api"
+import { createUser, getUsers, lockAccount, unlockAccount } from "../services/api.service"
 import { isAxiosError } from "../common/utils"
 import { toast } from "react-toastify"
 import { API } from "../common/api"
