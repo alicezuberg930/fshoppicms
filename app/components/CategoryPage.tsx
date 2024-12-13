@@ -73,11 +73,11 @@ const CategoryPageComponent: React.FC = () => {
                                     <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
-                                            <option value="">Không chọn</option>
+                                            <option value="" className="text-lg">Không chọn</option>
                                             {
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
-                                                    < CategorySelectList categories={categories?.data.categories as Category[]} currentPage={1} />
+                                                    <CategorySelectList categories={categories?.data.categories as Category[]} currentPage={1} />
                                             }
                                         </select>
                                     </td>

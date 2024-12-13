@@ -1,6 +1,8 @@
 import React from "react";
 
-const CategorySelectList: React.FC<{ categories: Category[], currentPage: number, currentNest?: number }> = ({ categories, currentPage = 1, currentNest = 1 }) => {
+const CategorySelectList: React.FC<{
+    categories: Category[], currentPage: number, currentNest?: number
+}> = ({ categories, currentPage = 1, currentNest = 1 }) => {
     return (
         <>
             {
@@ -8,9 +10,11 @@ const CategorySelectList: React.FC<{ categories: Category[], currentPage: number
                     return (
                         <React.Fragment key={category._id}>
                             {/* Main Category List */}
-                            <option className={`text-lg font-${currentNest * 100}`} value={category._id}>
+                            <option className={`text-lg`} value={category._id}>
                                 {
-                                    currentNest > 1 ? Array.from({ length: currentNest }).map(_ => { return <>&nbsp;</> }) : <></>
+                                    currentNest > 1 ? Array.from({ length: currentNest }).map((_, i) => {
+                                        return <React.Fragment key={i}>&#160;</React.Fragment>
+                                    }) : <></>
                                 }
                                 {category.name}
                             </option>
