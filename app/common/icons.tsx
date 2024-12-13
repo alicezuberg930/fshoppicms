@@ -9,6 +9,7 @@ import { IoImagesOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
+import { BiCategory } from "react-icons/bi";
 
 export const icons = {
     FaLaravel,
@@ -47,5 +48,6 @@ export const icons = {
     PiFlagBanner,
     HiChevronDoubleLeft,
     HiChevronDoubleRight,
-    BsThreeDots
+    BsThreeDots,
+    BiCategory
 }

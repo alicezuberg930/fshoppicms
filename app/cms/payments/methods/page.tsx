@@ -12,7 +12,7 @@ const PaymentMethodsPage: React.FC = () => {
         {
             name: "OnePay",
             active: true,
-            image: "https://play-lh.googleusercontent.com/z8gjl9SDDP4yBWus4KtwLVXHhxxkEzfg83gLhFqp94y7tYcFcxEXpdSaB1iqSM04emdi"
+            image: "https://th.bing.com/th/id/OIP.TuEutBbaUWL2z6FHFUyhEQHaHZ?rs=1&pid=ImgDetMain"
         },
         {
             name: "VNPay",
