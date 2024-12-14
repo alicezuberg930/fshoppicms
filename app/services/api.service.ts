@@ -1,5 +1,6 @@
 import axioInstance from "../configs/axios.config"
 import { API } from "../common/api";
+import axios from "axios";
 // common
 export const uploadFile = async (token: string, file: FormData) => {
     return await axioInstance<any>({
@@ -94,6 +95,21 @@ export const createCategory = async (token: string, category: Category) => {
 export const deleteCategory = async (token: string, id: string) => {
     return await axioInstance<any>({
         url: `${API.DELETE_CATEGORY}/${id}`, method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+    }).then(res => res.data)
+}
+
+// site config
+export const getSiteConfigs = async (token: string) => {
+    return await axios<SingleAPIResponse<Config>>({
+        url: "https://learning-nestjs-ediw.onrender.com/api/v1/configs", method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+    }).then(res => res.data)
+}
+
+export const updateSiteConfigs = async (token: string, config: Config) => {
+    return await axioInstance<SingleAPIResponse<Config>>({
+        url: "https://learning-nestjs-ediw.onrender.com/api/v1/configs", method: "POST", data: config,
         headers: { Authorization: `Bearer ${token}` },
     }).then(res => res.data)
 }

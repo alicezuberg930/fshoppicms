@@ -67,7 +67,7 @@ interface FilterUsers {
     page: number
 }
 
-interface APIResponse<Type> {
+interface ArrayAPIResponse<Type> {
     status: string,
     statusCode: number,
     message: string,
@@ -77,4 +77,11 @@ interface APIResponse<Type> {
         totalPages?: number,
         currentPage?: number
     }
+}
+
+interface SingleAPIResponse<Type> {
+    status?: string,
+    statusCode?: number,
+    message?: string,
+    data?: Type
 }
