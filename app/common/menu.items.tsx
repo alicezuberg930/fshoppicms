@@ -1,7 +1,8 @@
+import path from "path"
 import { icons } from "./icons"
 import { PATH } from "./path"
 
-const { BiCategory, PiFlagBanner, MdOutlinePayment, MdOutlinePayments, MdCancel, FaUser, FaChevronDown, MdLogout, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
+const { MdFileUpload, BiCategory, PiFlagBanner, MdOutlinePayment, MdOutlinePayments, MdCancel, FaUser, FaChevronDown, MdLogout, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
 
 const menuItems = [
     {
@@ -27,6 +28,12 @@ const menuItems = [
         name: "Người dùng",
         path: PATH.USERS,
         icon: <FaUser className='w-5 h-5' />
+    },
+    {
+        isParent: false,
+        name: "Tải ảnh lên cloud",
+        path: PATH.UPLOAD_FILES,
+        icon: <MdFileUpload className="w-5 h-5" />
     },
     {
         isParent: true,

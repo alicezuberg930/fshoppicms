@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 // import storageSession from "redux-persist/lib/storage/session";
 import { sidebarReducer } from "../services/sidebar.slice";
 import { dropDownReducer } from "../services/dropdown.slice";
+import { commonSliceReducer } from "../services/common.slice";
 
 const localPersistConfig = {
     key: "root",
@@ -19,6 +20,7 @@ export const store = configureStore({
     reducer: {
         dropdown: persistReducer(localPersistConfig, dropDownReducer),
         sidebar: persistReducer(localPersistConfig, sidebarReducer),
+        common: persistReducer(localPersistConfig, commonSliceReducer)
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {

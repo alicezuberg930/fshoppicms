@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReduxStoreProvider from "./components/ReduxStoreProvider";
 import NextAuthSessionProvider from "./components/NextAuthSessionProvider";
 import { auth } from "./configs/auth.config";
+import LoadingOverlayComponent from "./components/LoadingOverlayComponent";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           pauseOnHover
           pauseOnFocusLoss
         />
+        {/* <LoadingOverlayComponent /> */}
       </body>
     </html>
   );

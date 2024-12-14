@@ -10,5 +10,6 @@ export const PATH = {
     PROFILE: "/cms/profile",
     DASHBOARD: "/cms/dashboard",
     PAYMENT_METHODS: "/cms/payments/methods",
-    BANNERS: "/cms/banners"
+    BANNERS: "/cms/banners",
+    UPLOAD_FILES: "/cms/upload/files"
 }
