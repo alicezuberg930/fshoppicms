@@ -11,7 +11,7 @@ const ConfigurationPage: React.FC = () => {
 
     return (
         <div className='w-full'>
-            <div className=''>
+            <div className='text-black'>
                 <div className='p-3 bg-[#f5f5f5]'>
                     <h3 className='text-red-500 font-semibold'>Thông tin công ty</h3>
                 </div>
