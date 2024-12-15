@@ -44,7 +44,7 @@ const ProductPageComponent: React.FC<{
             for (let i = 0; i < images.length; i++) {
                 try {
                     form.set("file", images[i])
-                    const response = await uploadFile(data?.user.access_token ?? "", form)
+                    const response = await uploadFile(form)
                     if (response?.status === "OK") {
                         imageLinks.push(response.url)
                     } else {
