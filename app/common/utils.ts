@@ -1,4 +1,6 @@
 import axios from "axios"
+import { Session } from "next-auth";
+import { getSession } from "next-auth/react";
 
 export const isAxiosError = (error: unknown) => {
     return axios.isAxiosError(error)
@@ -25,3 +27,18 @@ export const formatVND = (n: number) => {
     const formated = new Intl.NumberFormat('vi-VN', config);
     return formated.format(n)
 }
+
+let cachedSession: Session | null = null;
+
+export const getCachedSession = async (): Promise<Session | null> => {
+    // If there's no cached session, fetch it
+    if (!cachedSession) {
+        cachedSession = await getSession()
+    }
+    return cachedSession
+}
+
+export const clearCachedSession = () => {
+    cachedSession = null
+}
+

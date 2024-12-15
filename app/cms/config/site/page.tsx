@@ -17,9 +17,7 @@ const ConfigurationPage: React.FC = () => {
         const formData = new FormData(e.currentTarget);
         const config: Config = Object.fromEntries(formData.entries())
         config["footerContact"] = getContacts()
-        console.log(config)
         mutate.mutate(config)
-
     }
 
     const getContacts = () => {
@@ -141,7 +139,7 @@ const ConfigurationPage: React.FC = () => {
                                 <tr>
                                     <td className='py-2'>URL: Zalo OA</td>
                                     <td className='py-2'>:</td>
-                                    
+
                                     <td className='py-2'>
                                         <input defaultValue={configs?.data?.zaloChatURL} name="zaloChatURL" className='outline-none rounded-md border p-2 border-gray-300 w-full focus:border-blue-500' type="text" />
                                     </td>

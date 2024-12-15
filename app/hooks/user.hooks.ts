@@ -3,12 +3,10 @@ import { createUser, getUsers, lockAccount, unlockAccount } from "../services/ap
 import { isAxiosError } from "../common/utils"
 import { toast } from "react-toastify"
 import { API } from "../common/api"
-import { useSession } from "next-auth/react"
 
 export const createUserHook = () => {
-    const { data } = useSession()
     return useMutation({
-        mutationFn: ({ user }: { user: User }) => createUser(data?.user.access_token ?? "", user),
+        mutationFn: ({ user }: { user: User }) => createUser(user),
         onError(error) {
             if (isAxiosError(error)) toast.error(error.response?.data.message ?? error.response?.data.error)
         },
@@ -18,9 +16,8 @@ export const createUserHook = () => {
 
 export const handleUserHook = (page: number) => {
     const queryClient = useQueryClient()
-    const { data } = useSession()
     return useMutation({
-        mutationFn: ({ id, type }: { id: string, type: string }) => type === "lock" ? lockAccount(data?.user.access_token ?? "", id) : unlockAccount(data?.user.access_token ?? "", id),
+        mutationFn: ({ id, type }: { id: string, type: string }) => type === "lock" ? lockAccount(id) : unlockAccount(id),
         onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.error) },
         onSuccess(data) {
             toast.success(data.message)
@@ -30,10 +27,9 @@ export const handleUserHook = (page: number) => {
 }
 
 export const readUserHook = (page: number) => {
-    const { data } = useSession()
     return useQuery({
         queryKey: [API.READ_USERS, page],
-        queryFn: () => getUsers(data?.user.access_token ?? "", { page }),
+        queryFn: () => getUsers({ page }),
         placeholderData: (previousData, previousQuery) => previousData,
     })
 }

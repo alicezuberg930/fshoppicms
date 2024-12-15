@@ -1,6 +1,7 @@
 "use server"
 
 import { signIn, signOut } from "@/app/configs/auth.config"
+import { clearCachedSession } from "../common/utils"
 
 export const login = async (phone: string, password: string) => {
     try {
@@ -11,5 +12,6 @@ export const login = async (phone: string, password: string) => {
 }
 
 export const logout = async () => {
+    clearCachedSession()
     await signOut({ redirectTo: "/" })
 }   

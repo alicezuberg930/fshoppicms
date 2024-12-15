@@ -5,7 +5,6 @@ import { PATH } from "@/app/common/path";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-    console.log("middleware");
     const session = await auth()
     const isAuthenticated = !!session?.user
     const path = request.nextUrl.pathname

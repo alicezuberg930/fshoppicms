@@ -1,17 +1,30 @@
 import axios from "axios"
+import { getCachedSession } from "../common/utils"
 
-const axioInstance = axios.create({ baseURL: process.env.API_URL })
+const axioInstance = axios.create({
+    baseURL: process.env.API_URL,
+    headers: { Accept: "application/json" },
+})
 
 // do something before requesting
-axioInstance.interceptors.request.use(function (config) {
+axioInstance.interceptors.request.use(async (config) => {
+    if (typeof window !== "undefined") {
+        const session = await getCachedSession() // Fetch or retrieve cached session
+        console.log(session ?? "no session")
+        if (session) {
+            config.headers["Authorization"] = `Bearer ${session.user.access_token}`
+        } else {
+            delete config.headers["Authorization"]
+        }
+    }
     return config
-}, function (error) {
+}, (error) => {
     return Promise.reject(error)
 })
 // do something after responding
-axioInstance.interceptors.response.use(function (config) {
+axioInstance.interceptors.response.use((config) => {
     return config
-}, function (error) {
+}, (error) => {
     return Promise.reject(error)
 })
 
