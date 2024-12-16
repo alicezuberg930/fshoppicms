@@ -18,8 +18,8 @@ const CategorySubPage: React.FC = () => {
             toast.error("Cần ít nhất 1 ảnh cho danh mục")
             return
         }
-        const formData = new FormData(e.currentTarget);
-        const category: Category = Object.fromEntries(formData.entries()); // Convert FormData to an object
+        const formData = new FormData(e.currentTarget)
+        const category: Category = Object.fromEntries(formData.entries()) // Convert FormData to an object
         if (category.parentCategory == "") category.parentCategory = null
         uploadHook.mutate(formData, {
             onSuccess(data) {
@@ -36,31 +36,28 @@ const CategorySubPage: React.FC = () => {
                     <h3 className='font-semibold text-red-500'>Thêm danh mục</h3>
                 </div>
                 <div className='p-3'>
-                    <form onSubmit={(e) => handleCreateCategory(e)}>
+                    <form onSubmit={handleCreateCategory}>
                         <table className='w-full'>
                             <tbody>
                                 <tr className='bg-[#347ab6] text-white'>
-                                    <td colSpan={2} className='bg-primary'>&nbsp;</td>
+                                    <td></td>
                                     <td className='py-3 font-bold text-sm'>Thông tin danh mục</td>
                                 </tr>
 
                                 <tr>
                                     <td className='py-3 w-32'>Tên danh mục<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' required autoComplete='off' name="name" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className='py-3 w-32'>Mô tả<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <textarea className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={6} required autoComplete='off' name="description" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className='py-3 w-32'>Hình</td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <div className='mb-2'>
                                             <CustomImagePicker setImages={setImages} isMultiple={false} />
@@ -70,7 +67,6 @@ const CategorySubPage: React.FC = () => {
                                 </tr>
                                 <tr>
                                     <td className='py-3 w-32'>Danh mục cha<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>:</td>
                                     <td className='py-3'>
                                         <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
                                             <option value="" className="text-lg">Không chọn</option>
@@ -83,7 +79,7 @@ const CategorySubPage: React.FC = () => {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan={2}>&nbsp;</td>
+                                    <td></td>
                                     <td>
                                         <div className='space-x-3 font-bold text-md'>
                                             <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />

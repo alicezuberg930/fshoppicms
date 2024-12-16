@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { auth } from './app/configs/auth.config'
-import { PATH } from "@/app/common/path";
+import { PATH } from "@/app/common/path"
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
@@ -16,8 +16,8 @@ export async function middleware(request: NextRequest) {
     } else if (isAuthenticated && !session.user.isAdmin && path.startsWith(PATH.USERS)) {
         // redirect user to the previous page if their role is not admin
         // Use the Referer header to get the previous URL
-        const referer = request.headers.get('referer') || PATH.LOGIN; // Default to '/login' if no Referer header
-        return NextResponse.redirect(new URL(referer, request.url));
+        const referer = request.headers.get('referer') || PATH.LOGIN // Default to '/login' if no Referer header
+        return NextResponse.redirect(new URL(referer, request.url))
     }
 }
 

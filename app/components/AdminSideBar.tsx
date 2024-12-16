@@ -1,15 +1,15 @@
 'use client'
-import React from 'react';
+import React from 'react'
 import Link from 'next/link'
-import { icons } from '@/app/common/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCollapseSidebar } from '../services/sidebar.slice';
-import { PATH } from '@/app/common/path';
-import { usePathname } from 'next/navigation';
-import { setConfigDropDown, setOrderDropDown, setPaymentDropDown, setProductDropDown } from '../services/dropdown.slice';
-import { logout } from '../services/auth.service';
-import menuItems from '../common/menu.items';
-import Image from 'next/image';
+import { icons } from '@/app/common/icons'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCollapseSidebar } from '../services/sidebar.slice'
+import { PATH } from '@/app/common/path'
+import { usePathname } from 'next/navigation'
+import { setConfigDropDown, setOrderDropDown, setPaymentDropDown, setProductDropDown } from '../services/dropdown.slice'
+import { logout } from '../services/auth.service'
+import menuItems from '../common/menu.items'
+import Image from 'next/image'
 
 const AdminSideBar: React.FC = () => {
     // icons
@@ -18,26 +18,26 @@ const AdminSideBar: React.FC = () => {
     const { isCollapsed } = useSelector((state: any) => state.sidebar)
     const { isOrder, isProduct, isConfig, isPayment } = useSelector((state: any) => state.dropdown)
     const dispatch = useDispatch()
-    const currentPath = usePathname();
+    const currentPath = usePathname()
 
     const toggleDropdown = (dropdownType: string) => {
         switch (dropdownType) {
             case 'isOrder':
-                dispatch(setOrderDropDown(!isOrder));
-                break;
+                dispatch(setOrderDropDown(!isOrder))
+                break
             case 'isProduct':
-                dispatch(setProductDropDown(!isProduct));
-                break;
+                dispatch(setProductDropDown(!isProduct))
+                break
             case 'isConfig':
-                dispatch(setConfigDropDown(!isConfig));
-                break;
+                dispatch(setConfigDropDown(!isConfig))
+                break
             case 'isPayment':
-                dispatch(setPaymentDropDown(!isPayment));
-                break;
+                dispatch(setPaymentDropDown(!isPayment))
+                break
             default:
-                break;
+                break
         }
-    };
+    }
 
     const dropdownType = (dropdownType: string) => {
         switch (dropdownType) {
@@ -59,14 +59,7 @@ const AdminSideBar: React.FC = () => {
             <div className='text-xl'>
                 <div className='p-3 flex items-center justify-between text-white'>
                     <div className='flex items-center'>
-                        <Image
-                            width={48}
-                            height={60}
-                            className="object-cover"
-                            src='/logo.svg'
-                            alt='logo'
-                            sizes="width: 100%, height: 100%"
-                        />
+                        <Image width={48} height={60} className="object-cover" priority src='/logo.svg' alt='logo' sizes="width: 100%, height: 100%" />
                         <h1 className='font-bold ml-3'>FShoppii</h1>
                     </div>
                     <MdCancel className='w-5 h-5' onClick={() => { dispatch(setCollapseSidebar(!isCollapsed)) }} />
@@ -81,7 +74,7 @@ const AdminSideBar: React.FC = () => {
                                 <div className='p-2 flex items-center rounded-md cursor-pointer hover:bg-blue-600' onClick={() => toggleDropdown(v.toggleType!)}>
                                     {v.icon}
                                     <div className='flex justify-between w-full items-center'>
-                                        <span className='text-[15px] ml-4 text-gray-200'>{v.name}</span>
+                                        <span className='text-sm ml-4 text-gray-200'>{v.name}</span>
                                         <span className={`${dropdownType(v.toggleType!) ? 'rotate-180' : ''}`}>
                                             <FaChevronDown className='w-4 h-4' />
                                         </span>
@@ -93,8 +86,8 @@ const AdminSideBar: React.FC = () => {
                                             return (
                                                 <Link key={j} className={`${currentPath === child.path ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href={child.path!}>
                                                     {child.icon}
-                                                    <span className='flex-1 text-[15px] ml-4 text-gray-200'>{child.name}</span>
-                                                    {child.path === PATH.ORDERS_NEW && <div className='px-2 bg-red-500 rounded-lg text-sm self-end'>15</div>}
+                                                    <span className='flex-1 text-sm ml-4 text-gray-200'>{child.name}</span>
+                                                    {child.path === PATH.ORDERS_NEW && <div className='px-2 bg-red-500 rounded-lg text-sm h-full'>15</div>}
                                                 </Link>
                                             )
                                         })
@@ -103,7 +96,7 @@ const AdminSideBar: React.FC = () => {
                             </div> :
                             <Link key={i} className={`${currentPath === v.path ? 'bg-blue-600' : ''} p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white`} href={v.path!}>
                                 {v.icon}
-                                <span className='text-[15px] ml-4 text-gray-200'>{v.name}</span>
+                                <span className='text-sm ml-4 text-gray-200'>{v.name}</span>
                             </Link>
                     )
                 })
@@ -111,7 +104,7 @@ const AdminSideBar: React.FC = () => {
             {/* Đăng xuất */}
             <div className='p-2 mt-3 flex items-center rounded-md cursor-pointer hover:bg-blue-600 text-white' onClick={async () => { await logout() }}>
                 <MdLogout className='w-5 h-5' />
-                <span className='text-[15px] ml-4 text-gray-200'>Đăng xuất</span>
+                <span className='text-sm ml-4 text-gray-200'>Đăng xuất</span>
             </div>
         </aside >
     )

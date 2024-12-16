@@ -193,14 +193,7 @@ const CurrentProductsPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="h-24 w-20 relative">
-                                                                <Image
-                                                                    fill
-                                                                    loading="lazy"
-                                                                    className="object-cover"
-                                                                    src={v.images![0] ?? '/logo.png'}
-                                                                    alt={v.name!}
-                                                                    sizes="width: 100%, height: 100%"
-                                                                />
+                                                                <Image fill loading="lazy" className="object-cover" src={v.images![0] ?? '/logo.png'} alt={v.name!} sizes="width: 100%, height: 100%" />
                                                             </div>
                                                         </td>
 

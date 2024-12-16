@@ -2,7 +2,7 @@ import path from "path"
 import { icons } from "./icons"
 import { PATH } from "./path"
 
-const { MdFileUpload, BiCategory, PiFlagBanner, MdOutlinePayment, MdOutlinePayments, MdCancel, FaUser, FaChevronDown, MdLogout, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
+const { MdFileUpload, BiCategory, PiFlagBanner, MdOutlinePayment, MdOutlinePayments, FaUser, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
 
 const menuItems = [
     {
@@ -38,28 +38,28 @@ const menuItems = [
     {
         isParent: true,
         name: "Đơn hàng",
-        icon: <CiShoppingBasket className="w-5 h-5" />,
+        icon: <PiShippingContainer className="w-5 h-5" />,
         toggleType: "isOrder",
         children: [
             {
                 name: "Đơn hàng mới",
                 path: PATH.ORDERS_NEW,
-                icon: <FaBoxOpen className='w-5 h-5' />,
+                icon: <PiShippingContainer className='w-5 h-5' />,
             },
             {
                 name: "Đơn hàng đang xử lý",
                 path: PATH.ORDERS_ALL,
-                icon: <FaBoxOpen className='w-5 h-5' />
+                icon: <PiShippingContainer className='w-5 h-5' />
             },
             {
                 name: "Đơn hàng thành công",
                 path: PATH.ORDERS_ALL,
-                icon: <FaBoxOpen className='w-5 h-5' />
+                icon: <PiShippingContainer className='w-5 h-5' />
             },
             {
                 name: "Tất cả đơn hàng",
                 path: PATH.ORDERS_ALL,
-                icon: <FaBoxOpen className='w-5 h-5' />
+                icon: <PiShippingContainer className='w-5 h-5' />
             },
         ]
     },
@@ -113,12 +113,12 @@ const menuItems = [
             {
                 name: "Phương thức thanh toán",
                 path: PATH.PAYMENT_METHODS,
-                icon: <VscSettings className='w-5 h-5' />,
+                icon: <MdOutlinePayment className='w-5 h-5' />,
             },
             {
                 name: "Lịch sử thanh toán",
                 path: PATH.PAYMENT_METHODS,
-                icon: <VscSettings className='w-5 h-5' />,
+                icon: <MdOutlinePayment className='w-5 h-5' />,
             }
         ]
     }

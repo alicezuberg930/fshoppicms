@@ -7,9 +7,9 @@ const CreateUserPage: React.FC = () => {
 
     const handleCreateUser = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const formData = new FormData(e.currentTarget);
-        const user: User = Object.fromEntries(formData.entries()); // Convert FormData to an object
-        mutation.mutate({ user });
+        const formData = new FormData(e.currentTarget)
+        const user: User = Object.fromEntries(formData.entries()) // Convert FormData to an object
+        mutation.mutate({ user })
     }
 
     return (
@@ -19,7 +19,7 @@ const CreateUserPage: React.FC = () => {
                     <h3 className='font-semibold text-red-500'>Thêm người dùng</h3>
                 </div>
                 <div className='p-3'>
-                    <form onSubmit={(e) => handleCreateUser(e)}>
+                    <form onSubmit={handleCreateUser}>
                         <table className='w-full'>
                             <tbody>
                                 <tr className='bg-[#347ab6] text-white'>

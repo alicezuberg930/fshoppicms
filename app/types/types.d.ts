@@ -60,7 +60,7 @@ interface FilterProducts {
     search?: string,
     category?: string,
     priceMin?: number,
-    page: number,
+    page?: number,
 }
 
 interface FilterUsers {

@@ -5,10 +5,11 @@ import Link from 'next/link'
 import React, { ChangeEvent, useState } from 'react'
 import { readCategoryHook } from '@/app/hooks/category.hooks'
 import CategoryList from '@/app/components/CategoryList'
+import CustomPaginator from '@/app/components/CustomPaginator'
 
 const CategoriesPage: React.FC = () => {
     // icons
-    const { FaChevronLeft, FaChevronRight, FaFilter, MdModeEdit, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline, FaRegShareSquare } = icons
+    const { FaChevronLeft, FaChevronRight, FaFilter, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     // hooks    
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
@@ -131,11 +132,6 @@ const CategoriesPage: React.FC = () => {
                                                 <span>Danh mục cha</span>
                                             </button>
                                         </th>
-                                        {/* <th className='px-3 py-2 md:py-3 bg-gray-50'>
-                                            <button className='flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline'>
-                                                <span>Danh mục con</span>
-                                            </button>
-                                        </th> */}
                                         <th className='px-3 py-2 md:py-3 bg-gray-50 flex items-center'>
                                             <span className='block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left'>
                                                 Hành động
@@ -159,35 +155,11 @@ const CategoriesPage: React.FC = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className='p-6 md:p-0'>
-                            <div className='text-center'>
-                                <div>
-                                    <span className='relative z-0 inline-flex rounded-md shadow-sm'>
-                                        <span>
-                                            <button className='relative inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'>
-                                                <FaChevronLeft className='w-5 h-5 p-1' />
-                                            </button>
-                                        </span>
-                                        {
-                                            Array.from({ length: 1 }).map((v, i) => {
-                                                return (
-                                                    <span key={i}>
-                                                        <button type='button' className='relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150'>
-                                                            {i + 1}
-                                                        </button>
-                                                    </span>
-                                                )
-                                            })
-                                        }
-                                        <span>
-                                            <button className='relative inline-flex items-center p-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-r-md leading-5'>
-                                                <FaChevronRight className='w-5 h-5 p-1' />
-                                            </button>
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                        {
+                            isLoading ? <></> :
+                                true ?
+                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={150} /> : <></>
+                        }
                     </div>
                 </div>
             </div>
