@@ -1,9 +1,9 @@
-import CategoryPageComponent from '@/app/components/CategoryPage';
+import CategorySubPage from '@/app/components/CategorySubPage';
 
 const CreateCategoryPage: React.FC = () => {
 
     return (
-        <CategoryPageComponent />
+        <CategorySubPage />
     )
 }
 

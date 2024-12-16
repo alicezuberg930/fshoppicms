@@ -1,7 +1,7 @@
 'use client'
 import { formatVND } from '../common/utils';
 
-const ProductDetailsComponent: React.FC<{
+const ProductDetailsModal: React.FC<{
     product?: Product, setSelected: (v: Product | null) => void, setShow: (v: boolean) => void,
 }> = ({ product, setSelected, setShow }) => {
 
@@ -267,4 +267,4 @@ const ProductDetailsComponent: React.FC<{
     )
 }
 
-export default ProductDetailsComponent
+export default ProductDetailsModal

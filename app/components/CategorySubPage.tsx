@@ -6,7 +6,7 @@ import { createCategoryHook, readCategoryHook } from "../hooks/category.hooks"
 import { uploadFilesHook } from "../hooks/common.hooks"
 import CategorySelectList from "./CategorySelectList"
 
-const CategoryPageComponent: React.FC = () => {
+const CategorySubPage: React.FC = () => {
     const [images, setImages] = useState<File[]>([])
     const { data: categories, isLoading } = readCategoryHook(1)
     const mutation = createCategoryHook()
@@ -100,4 +100,4 @@ const CategoryPageComponent: React.FC = () => {
     )
 }
 
-export default CategoryPageComponent
+export default CategorySubPage

@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useSelector } from "react-redux"
 
-const LoadingOverlayComponent = () => {
+const LoadingOverlay = () => {
     const { isLoading } = useSelector((state: any) => state.common)
     return (
         <div className={`absolute select-none top-0 bottom-0 right-0 left-0 bg-[rgba(0,0,0,.3)] z-50 ${isLoading ? '' : 'hidden'}`}>
@@ -20,4 +20,4 @@ const LoadingOverlayComponent = () => {
     )
 }
 
-export default LoadingOverlayComponent
+export default LoadingOverlay

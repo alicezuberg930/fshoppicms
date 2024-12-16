@@ -1,15 +1,15 @@
 "use client"
 import { icons } from "@/app/common/icons";
 import { formatVND } from "@/app/common/utils";
-import LoadingComponent from "@/app/components/LoadingComponent";
-import ProductPageComponent from "@/app/components/ProductPage";
+import LoadingShimmer from "@/app/components/LoadingShimmer";
+import HandleProductModal from "@/app/components/HandleProductModal";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteProductHook, readProductsHook } from "@/app/hooks/product.hooks";
 import { FaRegShareSquare } from "react-icons/fa";
-import ProductDetailsComponent from "@/app/components/ProductDetailsComponent";
+import ProductDetailsModal from "@/app/components/ProductDetailsModal";
 import CustomPaginator from "@/app/components/CustomPaginator";
 import Image from "next/image";
 
@@ -63,7 +63,6 @@ const CurrentProductsPage: React.FC = () => {
             cancelButtonText: "Hủy",
         }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
     }
-    console.log(currentPage);
 
     return (
         <main className="h-full">
@@ -178,7 +177,7 @@ const CurrentProductsPage: React.FC = () => {
                                             <tr>
                                                 <td colSpan={7}>
                                                     <div className="w-full p-3">
-                                                        <LoadingComponent />
+                                                        <LoadingShimmer />
                                                     </div>
                                                 </td>
                                             </tr> :
@@ -260,8 +259,8 @@ const CurrentProductsPage: React.FC = () => {
                     </div>
                     <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
                         <div className="px-4 py-5 bg-white text-left rounded-md">
-                            {!showDetails && selectedProduct ? <ProductPageComponent product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} /> : <></>}
-                            {showDetails ? <ProductDetailsComponent product={selectedProduct!} setSelected={setSelectedProduct} setShow={setShowDetails} /> : <></>}
+                            {!showDetails && selectedProduct ? <HandleProductModal product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} /> : <></>}
+                            {showDetails ? <ProductDetailsModal product={selectedProduct!} setSelected={setSelectedProduct} setShow={setShowDetails} /> : <></>}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 "use client"
 import { icons } from "@/app/common/icons";
 import { isAxiosError } from "@/app/common/utils";
-import LoadingComponent from "@/app/components/LoadingComponent";
+import LoadingShimmer from "@/app/components/LoadingShimmer";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import { handleUserHook, readUserHook } from "@/app/hooks/user.hooks";
@@ -148,7 +148,7 @@ const UsersPage: React.FC = () => {
                                             <tr>
                                                 <td colSpan={7}>
                                                     <div className="w-full p-3">
-                                                        <LoadingComponent />
+                                                        <LoadingShimmer />
                                                     </div>
                                                 </td>
                                             </tr> :

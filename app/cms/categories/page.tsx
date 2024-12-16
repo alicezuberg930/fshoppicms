@@ -1,6 +1,6 @@
 'use client'
 import { icons } from '@/app/common/icons'
-import LoadingComponent from '@/app/components/LoadingComponent'
+import LoadingShimmer from '@/app/components/LoadingShimmer'
 import Link from 'next/link'
 import React, { ChangeEvent, useState } from 'react'
 import { readCategoryHook } from '@/app/hooks/category.hooks'
@@ -150,7 +150,7 @@ const CategoriesPage: React.FC = () => {
                                             <tr>
                                                 <td colSpan={7}>
                                                     <div className="w-full p-3">
-                                                        <LoadingComponent />
+                                                        <LoadingShimmer />
                                                     </div>
                                                 </td>
                                             </tr> :

@@ -1,8 +1,7 @@
 "use client"
 import CustomImagePicker from "@/app/components/CustomImagePicker"
-import LoadingOverlayComponent from "@/app/components/LoadingOverlayComponent"
+import LoadingOverlay from "@/app/components/LoadingOverlay"
 import { uploadFilesHook } from "@/app/hooks/common.hooks"
-import { uploadFile } from "@/app/services/api.service"
 import { setIsLoadingOverlay } from "@/app/services/common.slice"
 import { useState } from "react"
 import { useDispatch } from "react-redux"
@@ -36,7 +35,7 @@ const UploadFilesPage: React.FC = () => {
 
     return (
         <main className="h-full">
-            <LoadingOverlayComponent />
+            <LoadingOverlay />
             <div className="py-5 px-2 md:px-6">
                 <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
                     <h2 className="text-black">Upload ảnh</h2>

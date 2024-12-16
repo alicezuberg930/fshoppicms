@@ -1,4 +1,4 @@
-const LoadingComponent: React.FC<{ isTet?: boolean }> = ({ isTet = true }) => {
+const LoadingShimmer: React.FC<{ isTet?: boolean }> = ({ isTet = true }) => {
     return (
         <>
             {isTet ?
@@ -24,4 +24,4 @@ const LoadingComponent: React.FC<{ isTet?: boolean }> = ({ isTet = true }) => {
     )
 }
 
-export default LoadingComponent
+export default LoadingShimmer

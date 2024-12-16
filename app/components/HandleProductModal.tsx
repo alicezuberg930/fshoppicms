@@ -11,12 +11,11 @@ import { uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
-import { useSession } from 'next-auth/react';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
 import CategorySelectList from './CategorySelectList';
 
-const ProductPageComponent: React.FC<{
+const HandleProductModal: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
 }> = ({ product = null, setSelected, page }) => {
     const [description, setDescription] = useState<string>("")
@@ -416,4 +415,4 @@ const ProductPageComponent: React.FC<{
     )
 }
 
-export default ProductPageComponent
+export default HandleProductModal
