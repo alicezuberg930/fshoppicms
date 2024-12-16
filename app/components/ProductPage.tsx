@@ -24,7 +24,6 @@ const ProductPageComponent: React.FC<{
     const [enableVariation, setEnableVariation] = useState<boolean>(false)
     const [variantElements, setVariantElements] = useState<number[]>([])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
-    const { data } = useSession();
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
     const { data: categories, isLoading } = readCategoryHook(1)
@@ -95,7 +94,7 @@ const ProductPageComponent: React.FC<{
     }
 
     const removeAttribute = (i: number) => {
-        setVariantElements(variantElements => variantElements.filter(val => val !== i))
+        setVariantElements(prev => prev.filter(val => val !== i))
     }
 
     return (

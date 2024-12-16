@@ -2,7 +2,6 @@ const ContactConfiguration: React.FC<{ i: number, contact: any }> = ({ i, contac
     return (
         <tr>
             <td className='py-2'>Contact {i}</td>
-            <td className='py-2'><b>:</b></td>
             <td className='py-2'>
                 <div className="contact grid text-sm grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="table">
