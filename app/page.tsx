@@ -4,6 +4,7 @@ import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
 import { login } from "./services/auth.service"
 import { PATH } from "@/app/common/path";
+import Image from "next/image"
 
 const LoginPage: React.FC = () => {
   const [phone, setPhone] = useState<string>("")
@@ -22,8 +23,8 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="h-screen relative" style={{ background: "url('../assets/wall_1.jpg')" }}>
-      <div className="mx-auto pt-24 px-8 md:w-1/2 lg:w-1/3">
-        <img className="mx-auto w-[150px]" src="../logo.png" />
+      <div className="mx-auto pt-24 px-8 max-w-[500px]">
+        <Image className="mx-auto" width={200} height={120} alt="logo" src="/logo.png" />
         <div className="mt-4 w-full rounded-lg login-body bg-[rgba(255,255,255,0.2)] px-4 py-8">
           <div className="font-bold text-white text-lg border-double border-b-4">Site: fshoppii.com</div>
           <form onSubmit={(e) => e.preventDefault()}>

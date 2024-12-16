@@ -107,7 +107,7 @@ const ConfigurationPage: React.FC = () => {
                                 <tr>
                                     <td className='py-2'>Thông tin công ty/Footer</td>
                                     <td className='py-2'>
-                                        <CustomCKEditor value={setCompanyInfo} defaultValue="Nhập mô tả bạn muốn" />
+                                        <CustomCKEditor value={setCompanyInfo} defaultValue="" />
                                     </td>
                                 </tr>
 

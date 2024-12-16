@@ -3,6 +3,7 @@ import { icons } from "../common/icons";
 import withReactContent from "sweetalert2-react-content";
 import Swal from 'sweetalert2'
 import { deleteCategoryHook } from "../hooks/category.hooks";
+import Image from "next/image";
 
 const CategoryList: React.FC<{ categories: Category[], parentIndex?: string, currentPage: number, parentCategory?: string }> = ({ categories, parentIndex = "", currentPage = 1, parentCategory = "" }) => {
     const mutation = deleteCategoryHook(currentPage)
@@ -37,11 +38,14 @@ const CategoryList: React.FC<{ categories: Category[], parentIndex?: string, cur
                                     {currentIndex}
                                 </td>
                                 <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                    <div className="h-24 w-20">
-                                        <img
-                                            className="object-cover w-full h-full"
-                                            srcSet={category.thumnail ?? "/logo.png"}
-                                            alt={category.name}
+                                    <div className="h-24 w-20 relative">
+                                        <Image
+                                            fill
+                                            loading="lazy"
+                                            className="object-cover"
+                                            src={category.thumnail ?? "/logo.png"}
+                                            alt={category.name!}
+                                            sizes="width: 100%, height: 100%"
                                         />
                                     </div>
                                 </td>

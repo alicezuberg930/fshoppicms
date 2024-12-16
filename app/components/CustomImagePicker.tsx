@@ -1,6 +1,7 @@
 "use client"
 import { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
 import { icons } from "../common/icons";
+import Image from "next/image";
 
 const CustomImagePicker: React.FC<{
   images?: string[],
@@ -131,16 +132,18 @@ const CustomImagePicker: React.FC<{
             files.map((file, index) => (
               <div
                 key={index}
-                className="w-full max-w-56 h-64"
+                className="bg-gray-200 rounded-md relative w-full max-w-56 h-64"
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
               >
-                <img
+                <Image
+                  fill
+                  className="object-cover rounded-md"
                   src={file.url}
                   alt={`Uploaded file ${index}`}
-                  className="w-full h-full object-cover rounded-md"
+                  sizes="width: 100%, height: 100%"
                 />
               </div>
             ))

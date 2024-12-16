@@ -7,6 +7,7 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import { PATH } from "@/app/common/path";
 import { logout } from "../services/auth.service";
+import Image from "next/image";
 
 const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {
     const [hideProfile, setHideProfile] = useState<boolean>(true)
@@ -43,8 +44,12 @@ const AdminHeader: React.FC<{ session: Session | null }> = ({ session }) => {
                             <button className="text-gray-500 flex items-center gap-2 focus:outline-none"
                                 onClick={() => setHideProfile(!hideProfile)}
                             >
-                                <img className="object-cover w-8 h-8 rounded-full"
-                                    src="https://sobexpressacms.di4l.vn/images/user.png" alt="profile" />
+                                <Image
+                                    width={32} height={32}
+                                    className="object-cover rounded-full"
+                                    src='/assets/user.png'
+                                    alt="profile"
+                                />
                                 <p className="hidden md:block">{session?.user.name ?? ""}</p>
                                 <FaChevronDown className="w-5 h-5" />
                             </button>

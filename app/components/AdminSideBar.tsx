@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { setConfigDropDown, setOrderDropDown, setPaymentDropDown, setProductDropDown } from '../services/dropdown.slice';
 import { logout } from '../services/auth.service';
 import menuItems from '../common/menu.items';
+import Image from 'next/image';
 
 const AdminSideBar: React.FC = () => {
     // icons
@@ -58,7 +59,14 @@ const AdminSideBar: React.FC = () => {
             <div className='text-xl'>
                 <div className='p-3 flex items-center justify-between text-white'>
                     <div className='flex items-center'>
-                        <img srcSet='/logo.svg' className='w-12' />
+                        <Image
+                            width={48}
+                            height={60}
+                            className="object-cover"
+                            src='/logo.svg'
+                            alt='logo'
+                            sizes="width: 100%, height: 100%"
+                        />
                         <h1 className='font-bold ml-3'>FShoppii</h1>
                     </div>
                     <MdCancel className='w-5 h-5' onClick={() => { dispatch(setCollapseSidebar(!isCollapsed)) }} />
