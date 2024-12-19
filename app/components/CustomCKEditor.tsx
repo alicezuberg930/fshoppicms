@@ -1,5 +1,4 @@
-"use client"
-import { useRef } from 'react';
+'use client'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
     EditorConfig,
@@ -80,16 +79,6 @@ import 'ckeditor5/ckeditor5.css'
 import '@/public/css/ckeditor.css'
 
 const CustomCKEditor: React.FC<{ value: (v: string) => void, defaultValue: string }> = ({ value, defaultValue }) => {
-    const editorContainerRef = useRef(null);
-    // const editorRef = useRef(null);
-    // const [isLayoutReady, setIsLayoutReady] = useState(false);
-
-    // useEffect(() => {
-    //     setIsLayoutReady(true);
-
-    //     return () => setIsLayoutReady(false);
-    // }, []);
-
     const editorConfig: EditorConfig = {
         toolbar: {
             items: [
@@ -365,9 +354,9 @@ const CustomCKEditor: React.FC<{ value: (v: string) => void, defaultValue: strin
 
     return (
         <div>
-            <div className="main-container">
-                <div className="editor-container editor-container_classic-editor editor-container_include-style" ref={editorContainerRef}>
-                    <div className="editor-container__editor">
+            <div className='main-container'>
+                <div className='editor-container editor-container_classic-editor editor-container_include-style'>
+                    <div className='editor-container__editor'>
                         <CKEditor data={defaultValue} onChange={(e, editor) => value(editor.getData())} editor={ClassicEditor} config={editorConfig} />
                     </div>
                 </div>

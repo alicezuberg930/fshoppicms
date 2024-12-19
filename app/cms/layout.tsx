@@ -6,8 +6,8 @@ import { auth } from "../configs/auth.config"
 import CustomQueryClientProvider from "../components/CustomQueryClientProvider"
 
 export const metadata: Metadata = {
-    title: "Fshoppi | Trang CMS",
-    description: "Phần quản lý content của website",
+    title: "Future Life | CMS",
+    description: "Phần quản lý content của website CMS",
 }
 
 const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>) => {

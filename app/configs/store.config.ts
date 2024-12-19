@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import { sidebarReducer } from "../services/sidebar.slice";
 import { dropDownReducer } from "../services/dropdown.slice";
 import { commonSliceReducer } from "../services/common.slice";
+import { useDispatch } from "react-redux";
 
 const localPersistConfig = {
     key: "root",
@@ -29,5 +30,5 @@ export const store = configureStore({
     }),
 })
 export const persistor = persistStore(store);
-export type RootState = ReturnType<typeof persistor.getState>
-export type AppDispatch = typeof persistor.dispatch
+// export type PersistorState = ReturnType<typeof persistor.getState>
+// export type AppDispatch = typeof persistor.dispatch

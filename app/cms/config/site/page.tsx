@@ -2,7 +2,7 @@
 import React, { FormEvent, useState } from "react";
 import dynamic from "next/dynamic";
 import ContactConfiguration from "@/app/components/ContactConfig";
-import { readSiteConfigsHook, updateSiteConfigsHook } from "@/app/hooks/site.config.hook";
+import { readSiteConfigsHook, updateSiteConfigsHook } from "@/app/hooks/site.config.hooks";
 const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
     ssr: false // Prevents Editor.js from being included in server-side rendering
 });

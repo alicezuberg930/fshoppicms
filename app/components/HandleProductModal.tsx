@@ -347,9 +347,9 @@ const HandleProductModal: React.FC<{
                                     </tr> */}
 
                                 <tr>
-                                    <td className='py-3 whitespace-nowrap'>Chi tiết sản phẩm</td>
+                                    <td className='py-3 w-[1%] whitespace-nowrap'>Chi tiết sản phẩm</td>
                                     <td className='py-3'>
-                                        <CustomCKEditor value={setDescription} defaultValue={product?.description || description} />
+                                        {/* <CustomCKEditor value={setDescription} defaultValue={product?.description || description} /> */}
                                     </td>
                                 </tr>
 
