@@ -132,15 +132,17 @@ export const createBrand = async (brand: Brand) => {
     }).then(res => res.data)
 }
 
-export const updateBrand = async (config: Config) => {
-    return await axioInstance<SingleAPIResponse<Config>>({
-        url: API.CONFIGS, method: "POST", data: config,
+export const updateBrand = async (id: string, brand: Brand) => {
+    console.log({ id });
+
+    return await axioInstance<any>({
+        url: API.UPDATE_BRAND, method: "PUT", params: { id }, data: brand
     }).then(res => res.data)
 }
 
 export const deleteBrand = async (id: string) => {
     return await axioInstance<any>({
-        url: API.DELETE_BRAND, method: "POST", params: { id },
+        url: API.DELETE_BRAND, method: "DELETE", params: { id },
     }).then(res => res.data)
 }
 

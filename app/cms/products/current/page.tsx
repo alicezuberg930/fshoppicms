@@ -1,8 +1,7 @@
 "use client"
 import { icons } from "@/app/common/icons";
-import { formatVND } from "@/app/common/utils";
 import LoadingShimmer from "@/app/components/LoadingShimmer";
-import HandleProductModal from "@/app/components/HandleProductModal";
+import ProductModal from "@/app/components/ProductModal";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
@@ -249,7 +248,7 @@ const CurrentProductsPage: React.FC = () => {
                     </div>
                     <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
                         <div className="px-4 py-5 bg-white text-left rounded-md">
-                            {!showDetails && selectedProduct ? <HandleProductModal product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} /> : <></>}
+                            {!showDetails && selectedProduct ? <ProductModal product={selectedProduct!} setSelected={setSelectedProduct} page={currentPage} /> : <></>}
                             {showDetails ? <ProductDetailsModal product={selectedProduct!} setSelected={setSelectedProduct} setShow={setShowDetails} /> : <></>}
                         </div>
                     </div>

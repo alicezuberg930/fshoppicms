@@ -17,7 +17,7 @@ import { readCategoryHook } from '../hooks/category.hooks';
 import { readBrandsHook } from '../hooks/brands.hooks';
 // import { isAxiosError } from '../common/utils';
 
-const HandleProductModal: React.FC<{
+const ProductModal: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
 }> = ({ product = null, setSelected, page }) => {
     const [description, setDescription] = useState<string>("")
@@ -488,4 +488,4 @@ const HandleProductModal: React.FC<{
     )
 }
 
-export default HandleProductModal
+export default ProductModal

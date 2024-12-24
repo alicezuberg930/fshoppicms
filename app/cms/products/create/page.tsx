@@ -1,8 +1,8 @@
-import HandleProductModal from "@/app/components/HandleProductModal"
+import ProductModal from "@/app/components/ProductModal"
 
 const CreateProductPage: React.FC = () => {
     return (
-        <HandleProductModal page={1} />
+        <ProductModal page={1} />
     )
 }
 

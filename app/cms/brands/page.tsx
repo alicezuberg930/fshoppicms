@@ -1,16 +1,19 @@
 "use client"
 import { icons } from "@/app/common/icons";
 import { PATH } from "@/app/common/path";
+import BrandModal from "@/app/components/BrandModal";
 import LoadingShimmer from "@/app/components/LoadingShimmer";
 import { deleteBrandHook, readBrandsHook } from "@/app/hooks/brands.hooks";
 import Link from "next/link";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const BrandsPage: React.FC = () => {
     const { IoIosAddCircleOutline, MdModeEdit, FaRegTrashAlt } = icons
     const { data: brands, isLoading } = readBrandsHook(1)
-    const mutation = deleteBrandHook(1)
+    const deleteHook = deleteBrandHook()
+    const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null)
 
     const deleteBrandAction = (id: string) => {
         withReactContent(Swal).fire({
@@ -22,7 +25,9 @@ const BrandsPage: React.FC = () => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Xóa',
             cancelButtonText: 'Hủy'
-        }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
+        }).then(result => {
+            if (result.isConfirmed) deleteHook.mutate(id)
+        })
     }
 
     return (
@@ -114,7 +119,7 @@ const BrandsPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="flex flex-wrap justify-start gap-1">
-                                                                <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
+                                                                <button onClick={() => setSelectedBrand(v)} className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
                                                                     <MdModeEdit className="w-5 h-5" />
                                                                 </button>
                                                                 <button onClick={() => deleteBrandAction(v._id!)} className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
@@ -136,7 +141,19 @@ const BrandsPage: React.FC = () => {
                         }
                     </div>
                 </div>
-            </div >
+            </div>
+            <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedBrand != null ? 'block' : 'hidden'}`}>
+                <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0">
+                    <div className="fixed inset-0 transition-opacity">
+                        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                    </div>
+                    <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
+                        <div className="px-4 py-5 bg-white text-left rounded-md">
+                            {selectedBrand ? <BrandModal selectedBrand={selectedBrand} setSelected={setSelectedBrand} /> : <></>}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     )
 }
