@@ -30,7 +30,7 @@ const CategoryModal: React.FC<{
                 if (selectedCategory == null) {
                     create.mutate(category)
                 } else {
-                    update.mutate({ category, id: selectedCategory._id! })
+                    update.mutate({ category: category, id: selectedCategory._id! })
                 }
             }
         })
