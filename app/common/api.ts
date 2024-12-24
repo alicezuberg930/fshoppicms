@@ -12,7 +12,7 @@ export const API = {
     CREATE_PRODUCT: "/.netlify/functions/create_product",
     READ_PRODUCTS: "/.netlify/functions/getlist",
     DELETE_PRODUCT: "/.netlify/functions/delete_product",
-    UPDATE_PRODUCT: "/product/update",
+    UPDATE_PRODUCT: "/.netlify/functions/update_product",
     // CRUD category
     CREATE_CATEGORY: "/.netlify/functions/category_funcCreate",
     READ_CATEGORIES: "/.netlify/functions/func_allCategory",

@@ -40,7 +40,7 @@ export const createProduct = async (product: Product) => {
 
 export const updateProduct = async (id: string, product: Product) => {
     return await axioInstance<any>({
-        url: `${API.UPDATE_PRODUCT}/${id}`, method: "PUT", data: product,
+        url: `${API.UPDATE_PRODUCT}`, params: { id }, method: "PUT", data: product,
     })
 }
 
