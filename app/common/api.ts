@@ -27,7 +27,7 @@ export const API = {
     CREATE_BRAND: "/.netlify/functions/func_createBrand",
     READ_BRANDS: "/.netlify/functions/func_allBrand",
     UPDATE_BRAND: "",
-    DELETE_BRAND: "",
+    DELETE_BRAND: "/.netlify/functions/func_deleteBrand",
     // CONFIG
     CONFIGS: "https://learning-nestjs-ediw.onrender.com/api/v1/configs"
 }

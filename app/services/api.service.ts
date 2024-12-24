@@ -126,9 +126,9 @@ export const updateBrand = async (config: Config) => {
     }).then(res => res.data)
 }
 
-export const deleteBrand = async (config: Config) => {
-    return await axioInstance<SingleAPIResponse<Config>>({
-        url: API.CONFIGS, method: "POST", data: config,
+export const deleteBrand = async (id: string) => {
+    return await axioInstance<any>({
+        url: API.DELETE_BRAND, method: "POST", params: { id },
     }).then(res => res.data)
 }
 

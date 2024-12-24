@@ -2,12 +2,28 @@
 import { icons } from "@/app/common/icons";
 import { PATH } from "@/app/common/path";
 import LoadingShimmer from "@/app/components/LoadingShimmer";
-import { readBrandsHook } from "@/app/hooks/brands.hooks";
+import { deleteBrandHook, readBrandsHook } from "@/app/hooks/brands.hooks";
 import Link from "next/link";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const BrandsPage: React.FC = () => {
     const { IoIosAddCircleOutline, MdModeEdit, FaRegTrashAlt } = icons
     const { data: brands, isLoading } = readBrandsHook(1)
+    const mutation = deleteBrandHook(1)
+
+    const deleteBrandAction = (id: string) => {
+        withReactContent(Swal).fire({
+            title: 'Bạn có chắc chắn không?',
+            text: 'Bạn sẽ không thể đảo ngược hành động',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
+    }
 
     return (
         <main className="h-full">
@@ -101,7 +117,7 @@ const BrandsPage: React.FC = () => {
                                                                 <button className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
                                                                     <MdModeEdit className="w-5 h-5" />
                                                                 </button>
-                                                                <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
+                                                                <button onClick={() => deleteBrandAction(v._id!)} className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete">
                                                                     <FaRegTrashAlt className='w-5 h-5' />
                                                                 </button>
                                                             </div>
