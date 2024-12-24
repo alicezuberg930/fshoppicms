@@ -5,17 +5,17 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), 
 });
 // import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { icons } from '@/app/common/icons';
-import { createProduct, getCategories, getSubCategories, uploadFile } from '@/app/services/api.service';
+import { getSubCategories, uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
-import CategorySelectList from './CategorySelectList';
+// import CategorySelectList from './CategorySelectList';
 import { readBrandsHook } from '../hooks/brands.hooks';
-import { isAxiosError } from '../common/utils';
+// import { isAxiosError } from '../common/utils';
 
 const HandleProductModal: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
@@ -66,7 +66,6 @@ const HandleProductModal: React.FC<{
         tempProduct["images"] = imageLinks
         tempProduct["options"] = variantInfo()
         tempProduct["childrenCategories"] = subs || []
-        // console.log(variantInfo());
         mutation!.mutate({ body: tempProduct, product }, {
             onSuccess(_) {
                 console.log("success???");
@@ -476,7 +475,7 @@ const HandleProductModal: React.FC<{
                                         <div className='space-x-3 font-bold text-md'>
                                             <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
                                             <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
-                                            {product != null ? <button onClick={() => setSelected!(null)} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button> : null}
+                                            {product != null ? <button onClick={() => setSelected!(null)} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button> : <></>}
                                         </div>
                                     </td>
                                 </tr>

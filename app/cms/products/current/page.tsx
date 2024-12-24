@@ -238,9 +238,7 @@ const CurrentProductsPage: React.FC = () => {
                         </div>
                         {
                             isLoading ? <></> :
-                                products?.products ?
-                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={products?.products.data.pagination.totalPages} /> : <></>
-                        }
+                                products?.products && <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={products?.products.data.pagination.totalPages} />}
                     </div>
                 </div>
             </div>

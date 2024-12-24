@@ -154,7 +154,7 @@ const UsersPage: React.FC = () => {
                                             </tr> :
                                             isAxiosError(error) ?
                                                 <tr><td className="text-center font-bold text-lg p-6" colSpan={7}>{error.response?.data.error}</td></tr> :
-                                                (users?.data?.users as User[])?.filter(e => !e.isAdmin).map((v, i) => {
+                                                (users?.products?.data?.users as User[])?.filter(e => !e.isAdmin).map((v, i) => {
                                                     return (
                                                         <tr key={i} className="bg-white">
                                                             <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
@@ -205,7 +205,7 @@ const UsersPage: React.FC = () => {
                         {
                             isLoading ? <></> :
                                 users?.data?.pagination ?
-                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={users?.data?.pagination.totalPages} /> : <></>
+                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={1} /> : <></>
                         }
                     </div>
                 </div>

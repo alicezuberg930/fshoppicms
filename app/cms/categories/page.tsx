@@ -6,6 +6,7 @@ import React, { ChangeEvent, useState } from 'react'
 import { readCategoryHook } from '@/app/hooks/category.hooks'
 import CategoryList from '@/app/components/CategoryList'
 import CustomPaginator from '@/app/components/CustomPaginator'
+import CategoryModal from '@/app/components/CategoryModal'
 
 const CategoriesPage: React.FC = () => {
     // icons
@@ -15,6 +16,7 @@ const CategoriesPage: React.FC = () => {
     const [checkAll, setCheckAll] = useState<boolean>(false)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const { data: categories, isLoading } = readCategoryHook(currentPage)
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
@@ -150,7 +152,7 @@ const CategoriesPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            categories?.categories && <CategoryList categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
+                                            categories?.categories && <CategoryList setSelectedCategory={setSelectedCategory} categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
                                     }
                                 </tbody>
                             </table>
@@ -160,6 +162,18 @@ const CategoriesPage: React.FC = () => {
                                 true ?
                                     <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={150} /> : <></>
                         }
+                    </div>
+                </div>
+            </div>
+            <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedCategory != null ? 'block' : 'hidden'}`}>
+                <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0">
+                    <div className="fixed inset-0 transition-opacity">
+                        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                    </div>
+                    <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
+                        <div className="px-4 py-5 bg-white text-left rounded-md">
+                            {selectedCategory ? <CategoryModal selectedCategory={selectedCategory!} setSelected={setSelectedCategory} page={currentPage} /> : <></>}
+                        </div>
                     </div>
                 </div>
             </div>

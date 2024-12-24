@@ -88,6 +88,12 @@ export const createCategory = async (category: Category) => {
     }).then(res => res.data)
 }
 
+export const updateCategory = async (id: string, category: Category) => {
+    return await axioInstance<any>({
+        url: API.UPDATE_CATEGORY, method: "PUT", params: { id }, data: category,
+    }).then(res => res.data)
+}
+
 export const deleteCategory = async (id: string) => {
     return await axioInstance<any>({
         url: `${API.DELETE_CATEGORY}`, params: { id }, method: "DELETE",

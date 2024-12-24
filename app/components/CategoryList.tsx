@@ -1,11 +1,13 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { icons } from "../common/icons";
 import withReactContent from "sweetalert2-react-content";
 import Swal from 'sweetalert2'
 import { deleteCategoryHook } from "../hooks/category.hooks";
 import Image from "next/image";
 
-const CategoryList: React.FC<{ categories: Category[], parentIndex?: string, currentPage: number, parentCategory?: string }> = ({ categories, parentIndex = "", currentPage = 1, parentCategory = "" }) => {
+const CategoryList: React.FC<{
+    categories: Category[], parentIndex?: string, currentPage: number, parentCategory?: string, setSelectedCategory: Dispatch<SetStateAction<Category | null>>
+}> = ({ categories, parentIndex = "", currentPage = 1, parentCategory = "", setSelectedCategory }) => {
     const mutation = deleteCategoryHook(currentPage)
     const { MdModeEdit, FaRegTrashAlt } = icons
 
@@ -62,6 +64,7 @@ const CategoryList: React.FC<{ categories: Category[], parentIndex?: string, cur
                                         <button
                                             className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none"
                                             title="Edit"
+                                            onClick={() => setSelectedCategory(category)}
                                         >
                                             <MdModeEdit className="w-5 h-5" />
                                         </button>
@@ -76,7 +79,7 @@ const CategoryList: React.FC<{ categories: Category[], parentIndex?: string, cur
                                 </td>
                             </tr>
                             {/* Recursively Render List of Subcategories */}
-                            {category.subcategories && <CategoryList categories={category.subcategories} currentPage={currentPage} parentCategory={category.name} />}
+                            {category.subcategories && <CategoryList categories={category.subcategories} currentPage={currentPage} parentCategory={category.name} setSelectedCategory={setSelectedCategory} />}
                         </React.Fragment>
                     );
                 })

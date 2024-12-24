@@ -1,9 +1,9 @@
-import CategorySubPage from '@/app/components/CategorySubPage';
+import CategoryModal from "@/app/components/CategoryModal"
 
 const CreateCategoryPage: React.FC = () => {
 
     return (
-        <CategorySubPage />
+        <CategoryModal page={1} />
     )
 }
 

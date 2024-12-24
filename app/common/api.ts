@@ -1,14 +1,13 @@
 export const API = {
     // admin
-    LOCK: "/admin/lock",
-    UNLOCK: "/admin/unlock",
-    // common
+    LOCK: "/.netlify/functions/func_getAlluser",
+    UNLOCK: "/.netlify/functions/func_getAlluser",
+    CREATE_USER: "/user/create",
+    READ_USERS: "/.netlify/functions/func_getAlluser",
+    // Common
     LOGIN: "/.netlify/functions/login",
     UPLOAD_FILE: "/files/upload/image",
     PROFILE: "/.netlify/functions/get_profile",
-    // CRUD user
-    CREATE_USER: "/user/create",
-    READ_USERS: "/admin/getUsers",
     // CRUD Product 
     CREATE_PRODUCT: "/.netlify/functions/create_product",
     READ_PRODUCTS: "/.netlify/functions/getlist",
@@ -17,13 +16,13 @@ export const API = {
     // CRUD category
     CREATE_CATEGORY: "/.netlify/functions/category_funcCreate",
     READ_CATEGORIES: "/.netlify/functions/func_allCategory",
-    UPDATE_CATEGORY: "???",
+    UPDATE_CATEGORY: "/.netlify/functions/func_updateCategory",
     DELETE_CATEGORY: "/.netlify/functions/func_delCategory",
     // CRUD Sub categories
     CREATE_SUBCATEGORIES: "/.netlify/functions/func_CreateSubcategory",
     READ_SUBCATEGORIES: "/.netlify/functions/func_getbyparentCategory",
-    // Kho 
-    READ_STORAGE: "/storage",
+    // 
+    READ_STORAGE: "/",
     // CRUD brand
     CREATE_BRAND: "/.netlify/functions/func_createBrand",
     READ_BRANDS: "/.netlify/functions/func_allBrand",
