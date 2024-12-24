@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        port: '',
+        hostname: 'tse1.mm.bing.net',
+        pathname: '/**',
+      }
     ],
   },
   env: {

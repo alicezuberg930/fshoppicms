@@ -23,7 +23,7 @@ const CategorySubPage: React.FC = () => {
         if (category.parentCategory == "") category.parentCategory = null
         uploadHook.mutate(formData, {
             onSuccess(data) {
-                category["thumnail"] = data.url
+                category["thumbnail"] = data.url
                 mutation.mutate(category)
             }
         })
@@ -73,7 +73,7 @@ const CategorySubPage: React.FC = () => {
                                             {
                                                 isLoading ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
-                                                    <CategorySelectList categories={categories?.data.categories as Category[]} currentPage={1} />
+                                                    categories?.categories && <CategorySelectList categories={categories?.categories.data.categories as Category[]} currentPage={1} />
                                             }
                                         </select>
                                     </td>

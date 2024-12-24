@@ -90,13 +90,19 @@ export const createCategory = async (category: Category) => {
 
 export const deleteCategory = async (id: string) => {
     return await axioInstance<any>({
-        url: `${API.DELETE_CATEGORY}/${id}`, method: "DELETE",
+        url: `${API.DELETE_CATEGORY}`, params: { id }, method: "DELETE",
     }).then(res => res.data)
 }
 // danh mục con
 export const getSubCategories = async (id: string) => {
     return await axioInstance<any>({
         url: API.READ_SUBCATEGORIES, method: "GET", params: { id },
+    }).then(res => res.data)
+}
+
+export const createSubCategory = async (category: Category) => {
+    return await axioInstance<any>({
+        url: API.CREATE_SUBCATEGORIES, method: "POST", data: category,
     }).then(res => res.data)
 }
 

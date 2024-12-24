@@ -43,7 +43,7 @@ const CategoryList: React.FC<{ categories: Category[], parentIndex?: string, cur
                                             fill
                                             loading="lazy"
                                             className="object-cover"
-                                            src={category.thumnail ?? "/logo.png"}
+                                            src={category.thumbnail ?? "/logo.png"}
                                             alt={category.name!}
                                             sizes="width: 100%, height: 100%"
                                         />

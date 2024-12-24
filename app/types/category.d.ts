@@ -4,5 +4,5 @@ interface Category {
     description?: string,
     parentCategory?: string | null,
     subcategories?: Category[],
-    thumnail?: string | null,
+    thumbnail?: string | null,
 }

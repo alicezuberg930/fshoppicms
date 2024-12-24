@@ -15,11 +15,12 @@ export const API = {
     DELETE_PRODUCT: "/.netlify/functions/delete_product",
     UPDATE_PRODUCT: "/product/update",
     // CRUD category
-    CREATE_CATEGORY: "/category/create",
+    CREATE_CATEGORY: "/.netlify/functions/category_funcCreate",
     READ_CATEGORIES: "/.netlify/functions/func_allCategory",
     UPDATE_CATEGORY: "???",
-    DELETE_CATEGORY: "/category/del",
+    DELETE_CATEGORY: "/.netlify/functions/func_delCategory",
     // CRUD Sub categories
+    CREATE_SUBCATEGORIES: "/.netlify/functions/func_CreateSubcategory",
     READ_SUBCATEGORIES: "/.netlify/functions/func_getbyparentCategory",
     // Kho 
     READ_STORAGE: "/storage",
