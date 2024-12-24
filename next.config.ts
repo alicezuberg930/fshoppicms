@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
     ],
   },
   env: {
-    API_URL: process.env.API_URL,
+    API_URL: process.env.API_URL
   }
   /* config options here */
 };

@@ -3,22 +3,31 @@ export const API = {
     LOCK: "/admin/lock",
     UNLOCK: "/admin/unlock",
     // common
+    LOGIN: "/.netlify/functions/login",
     UPLOAD_FILE: "/files/upload/image",
-    LOGIN: "/user/login",
     PROFILE: "/user/profile",
     // CRUD user
     CREATE_USER: "/user/create",
     READ_USERS: "/admin/getUsers",
     // CRUD Product 
-    CREATE_PRODUCT: "/product/create",
-    READ_PRODUCTS: "/product/get_list",
-    DELETE_PRODUCT: "/product/delete",
+    CREATE_PRODUCT: "/.netlify/functions/create_product",
+    READ_PRODUCTS: "/.netlify/functions/getlist",
+    DELETE_PRODUCT: "/.netlify/functions/delete_product",
     UPDATE_PRODUCT: "/product/update",
     // CRUD category
     CREATE_CATEGORY: "/category/create",
-    READ_CATEGORIES: "/category/all",
+    READ_CATEGORIES: "/.netlify/functions/func_allCategory",
     UPDATE_CATEGORY: "???",
     DELETE_CATEGORY: "/category/del",
+    // CRUD Sub categories
+    READ_SUBCATEGORIES: "/.netlify/functions/func_getbyparentCategory",
     // Kho 
-    READ_STORAGE: "/storage"
+    READ_STORAGE: "/storage",
+    // CRUD brand
+    CREATE_BRAND: "/.netlify/functions/func_createBrand",
+    READ_BRANDS: "/.netlify/functions/func_allBrand",
+    UPDATE_BRAND: "",
+    DELETE_BRAND: "",
+    // CONFIG
+    CONFIGS: "https://learning-nestjs-ediw.onrender.com/api/v1/configs"
 }

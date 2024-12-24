@@ -15,6 +15,8 @@ interface Product {
     averageRating?: number,
     remainingStock?: number,
     // ratings?: []
+    brand?: string,
     createdAt?: string,
     updatedAt?: string,
+    childrenCategories?: string[]
 }

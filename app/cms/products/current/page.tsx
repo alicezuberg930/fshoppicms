@@ -163,8 +163,7 @@ const CurrentProductsPage: React.FC = () => {
                                             </button>
                                         </th>
                                         <th className="px-3 py-2 md:py-3 bg-gray-50 flex items-center">
-                                            <span
-                                                className="block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left">
+                                            <span className="block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left">
                                                 Hành động
                                             </span>
                                         </th>
@@ -181,7 +180,7 @@ const CurrentProductsPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            (products?.products as Product[]).map((v, i) => {
+                                            products?.products && (products?.products.data.products as Product[]).map((v, i) => {
                                                 return (
                                                     <tr key={i} className="bg-white">
                                                         <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
@@ -205,7 +204,7 @@ const CurrentProductsPage: React.FC = () => {
 
                                                         <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                                             <div className="text-gray-700">
-                                                                <span className="font-medium">{formatVND(v.price!)}</span>
+                                                                <span className="font-medium">{v.price!}</span>
                                                             </div>
                                                         </td>
 
@@ -239,8 +238,8 @@ const CurrentProductsPage: React.FC = () => {
                         </div>
                         {
                             isLoading ? <></> :
-                                products?.totalPages ?
-                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={products?.totalPages} /> : <></>
+                                products?.products ?
+                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={products?.products.data.pagination.totalPages} /> : <></>
                         }
                     </div>
                 </div>

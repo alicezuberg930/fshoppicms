@@ -2,7 +2,7 @@ import path from "path"
 import { icons } from "./icons"
 import { PATH } from "./path"
 
-const { MdFileUpload, BiCategory, PiFlagBanner, MdOutlinePayment, MdOutlinePayments, FaUser, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
+const { MdBrandingWatermark, MdFileUpload, BiCategory, PiFlagBanner, MdOutlinePayment, MdOutlinePayments, FaUser, FaBoxOpen, CiShoppingBasket, PiShippingContainer, VscSettings, LuLayoutDashboard } = icons
 
 const menuItems = [
     {
@@ -10,6 +10,12 @@ const menuItems = [
         name: "Dashboard",
         path: PATH.DASHBOARD,
         icon: <LuLayoutDashboard className='w-5 h-5' />
+    },
+    {
+        isParent: false,
+        name: "Thương hiệu",
+        path: PATH.BRANDS,
+        icon: <MdBrandingWatermark className='w-5 h-5' />
     },
     {
         isParent: false,
@@ -65,7 +71,7 @@ const menuItems = [
     },
     {
         isParent: true,
-        name: "Danh sách sản phẩm",
+        name: "Sản phẩm",
         icon: <FaBoxOpen className='w-5 h-5' />,
         toggleType: "isProduct",
         children: [
@@ -74,16 +80,16 @@ const menuItems = [
                 path: PATH.PRODUCT_CURRENT,
                 icon: <FaBoxOpen className='w-5 h-5' />,
             },
-            {
-                name: "Đang giảm giá",
-                path: PATH.PRODUCT_CURRENT,
-                icon: <FaBoxOpen className='w-5 h-5' />
-            },
-            {
-                name: "Sản phẩm đang ẩn",
-                path: PATH.PRODUCT_CURRENT,
-                icon: <FaBoxOpen className='w-5 h-5' />
-            },
+            // {
+            //     name: "Đang giảm giá",
+            //     path: PATH.PRODUCT_CURRENT,
+            //     icon: <FaBoxOpen className='w-5 h-5' />
+            // },
+            // {
+            //     name: "Sản phẩm đang ẩn",
+            //     path: PATH.PRODUCT_CURRENT,
+            //     icon: <FaBoxOpen className='w-5 h-5' />
+            // },
         ]
     },
     {

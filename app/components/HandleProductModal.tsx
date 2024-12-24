@@ -5,15 +5,17 @@ const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), 
 });
 // import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import React, { FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';
-import { uploadFile } from '@/app/services/api.service';
+import { createProduct, getCategories, getSubCategories, uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import CustomSwitch from '@/app/components/CustomSwitch';
 import { updateProductHook } from '../hooks/product.hooks';
 import { readCategoryHook } from '../hooks/category.hooks';
 import CategorySelectList from './CategorySelectList';
+import { readBrandsHook } from '../hooks/brands.hooks';
+import { isAxiosError } from '../common/utils';
 
 const HandleProductModal: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
@@ -25,7 +27,9 @@ const HandleProductModal: React.FC<{
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
-    const { data: categories, isLoading } = readCategoryHook(1)
+    const { data: categories, isLoading: loadingCategories } = readCategoryHook(1)
+    const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
+    const [subCategories, setSubCategories] = useState<Category[]>([])
 
     const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -55,13 +59,17 @@ const HandleProductModal: React.FC<{
                 }
             }
         }
-        // console.log(Object.fromEntries(formData.entries()));
+        formData.delete("file")
+        let subs = subCategories.map(sub => sub._id!)
         const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
         tempProduct["description"] = description || product?.description
         tempProduct["images"] = imageLinks
         tempProduct["options"] = variantInfo()
+        tempProduct["childrenCategories"] = subs || []
+        // console.log(variantInfo());
         mutation!.mutate({ body: tempProduct, product }, {
             onSuccess(_) {
+                console.log("success???");
                 currentTarget.reset()
                 setImages([])
                 setResetAll(true)
@@ -79,17 +87,28 @@ const HandleProductModal: React.FC<{
         for (let i = 0; i < variantsEls.length; i++) {
             const variant = (variantsEls[i].children[0] as HTMLInputElement).value
             const attribute = (variantsEls[i].children[1] as HTMLInputElement).value
-            const stock = +(variantsEls[i].children[2] as HTMLInputElement).value
+            const quantity = +(variantsEls[i].children[2] as HTMLInputElement).value
+            const price = +(variantsEls[i].children[3] as HTMLInputElement).value
             const isDuplicate = variants.find(value => value.key.toLowerCase() === variant.toLowerCase());
             if (isDuplicate) {
-                isDuplicate.value.push({ val: attribute, quantity: stock })
+                isDuplicate.value.push({ val: attribute, quantity, price })
             } else {
-                attributes.push({ val: attribute, quantity: stock })
+                attributes.push({ val: attribute, quantity, price })
                 variants.push({ key: variant, value: attributes })
             }
             attributes = []
         }
         return variants
+    }
+
+    const findSubcategories = async (e: ChangeEvent<HTMLSelectElement>) => {
+        let value: string = e.currentTarget.value
+        const response = await getSubCategories(value)
+        if (response.category.data) {
+            setSubCategories(response.category.data)
+        } else {
+            setSubCategories([])
+        }
     }
 
     const removeAttribute = (i: number) => {
@@ -114,11 +133,67 @@ const HandleProductModal: React.FC<{
                                 <tr>
                                     <td className='py-3'>Thương hiệu<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <select defaultValue={product?.category ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
+                                        <select defaultValue={product?.brand ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='brand'>
                                             {
-                                                isLoading ?
+                                                loadingBrands ?
                                                     <option value="" disabled>Không có dữ liệu</option> :
-                                                    <CategorySelectList categories={categories?.data.categories as Category[]} currentPage={1} />
+                                                    brands && (brands.brands.data as Brand[]).map((brand) => {
+                                                        return (
+                                                            <option className='text-lg' key={brand._id} value={brand._id}>{brand.name}</option>
+                                                        )
+                                                    })
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className='py-3'>Danh mục<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>
+                                        <select onChange={(e) => findSubcategories(e)} defaultValue={product?.category ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
+                                            {
+                                                loadingCategories ?
+                                                    <option value="" disabled>Không có dữ liệu</option> :
+                                                    categories?.categories && (categories?.categories?.data.categories as Category[]).map(category => {
+                                                        return (
+                                                            <option className={`text-lg`} key={category._id} value={category._id}>
+                                                                {category.name}
+                                                            </option>
+                                                        )
+                                                    })
+                                                // categories && <CategorySelectList categories={categories?.categories?.data.categories as Category[]} currentPage={1} />
+                                            }
+                                        </select>
+                                        {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
+                                                data-select2-id='4'>
+                                                <span className='selection'><span
+                                                    className='select2-selection select2-selection--single'
+                                                    role='combobox' aria-haspopup='true' aria-expanded='false' aria-disabled='false'
+                                                    aria-labelledby='select2-brand-ee-container'>
+                                                    <span className='select2-selection__rendered'
+                                                        id='select2-brand-ee-container' role='textbox'
+                                                        aria-readonly='true' title='Vui lòng chọn...'>Vui lòng
+                                                        chọn...</span>
+                                                    <span className='select2-selection__arrow' role='presentation'><b role='presentation'></b></span>
+                                                </span>
+                                                </span>
+                                                <span className='dropdown-wrapper' aria-hidden='true'></span>
+                                            </span> */}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className='py-3'>Danh mục con<b className='text-red-500'>*</b></td>
+                                    <td className='py-3'>
+                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none'>
+                                            {
+                                                subCategories.length == 0 ?
+                                                    <option value="" disabled>Không có dữ liệu</option> :
+                                                    subCategories.map(subCategory => {
+                                                        return (
+                                                            <option className='text-lg' key={subCategory._id} value={subCategory._id}>{subCategory.name}</option>
+                                                        )
+                                                    })
                                             }
                                         </select>
                                         {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
@@ -264,11 +339,12 @@ const HandleProductModal: React.FC<{
                                                     {
                                                         variantElements.map(e => {
                                                             return (
-                                                                <div className='flex gap-2 my-2 variant' key={e}>
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[40%] outline-none' type='text' placeholder='Biến thể' />
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='text' placeholder='Thuộc tính' />
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='number' placeholder='Kho' />
-                                                                    <button className='bg-red-500 p-2 rounded-md text-white'
+                                                                <div className='flex flex-wrap gap-2 my-2 variant' key={e}>
+                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='text' placeholder='Biến thể' />
+                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='text' placeholder='Thuộc tính' />
+                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='number' placeholder='Kho' />
+                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='number' placeholder='Giá' />
+                                                                    <button className='bg-red-500 p-2 rounded-md text-white flex-none'
                                                                         onClick={() => removeAttribute(e)}
                                                                     >
                                                                         <FaRegTrashAlt className='w-5 h-5' />
@@ -289,16 +365,14 @@ const HandleProductModal: React.FC<{
                                 <tr>
                                     <td className='py-3'>Giá bán<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <input defaultValue={product?.price ?? ""} name='price' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
-                                        />
+                                        <input defaultValue={product?.price ?? ""} name='price' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off' />
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <input defaultValue={product?.stock ?? ""} name='stock' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off'
-                                        />
+                                        <input defaultValue={product?.stock ?? ""} name='stock' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off' />
                                     </td>
                                 </tr>
 
@@ -349,7 +423,7 @@ const HandleProductModal: React.FC<{
                                 <tr>
                                     <td className='py-3 w-[1%] whitespace-nowrap'>Chi tiết sản phẩm</td>
                                     <td className='py-3'>
-                                        {/* <CustomCKEditor value={setDescription} defaultValue={product?.description || description} /> */}
+                                        <CustomCKEditor value={setDescription} defaultValue={product?.description || description} />
                                     </td>
                                 </tr>
 

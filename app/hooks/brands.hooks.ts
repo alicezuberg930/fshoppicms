@@ -1,18 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { API } from "@/app/common/api"
-import { createCategory, deleteCategory, getCategories, getSubCategories } from "../services/api.service"
+import { createBrand, createCategory, deleteCategory, getBrands } from "../services/api.service"
 import { isAxiosError } from "@/app/common/utils"
 import { toast } from "react-toastify"
 
-export const readCategoryHook = (page: number) => {
+export const readBrandsHook = (page: number) => {
     return useQuery({
-        queryKey: [API.READ_CATEGORIES, page],
-        queryFn: () => getCategories(),
-        placeholderData: (previousData, previousQuery) => previousData,
+        queryKey: [API.READ_BRANDS, page],
+        queryFn: () => getBrands(),
+        placeholderData: (previousData, _) => previousData,
     })
 }
 
-export const deleteCategoryHook = (page: number) => {
+export const deleteBrandHook = (page: number) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (id: string) => deleteCategory(id),
@@ -26,14 +26,17 @@ export const deleteCategoryHook = (page: number) => {
     })
 }
 
-export const createCategoryHook = () => {
+export const createBrandHook = () => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: (category: Category) => createCategory(category),
+        mutationFn: (brand: Brand) => createBrand(brand),
         onSuccess(data) {
             toast.success(data.message)
-            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, 1] })
+            queryClient.invalidateQueries({ queryKey: [API.READ_BRANDS] })
         },
-        onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.error) },
+        onError(error) {
+            toast.error("Đã có lỗi xảy ra")
+            // if (isAxiosError(error)) toast.error(error.response?.data.error)
+        },
     })
 }

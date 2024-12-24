@@ -9,12 +9,13 @@ export const deleteProductHook = (page: number) => {
     return useMutation({
         mutationFn: (id: string) => deleteProduct(id),
         onError(error) {
-            if (isAxiosError(error)) toast.error(error.response?.data.message)
+            toast.error("Đã có lỗi xảy ra")
+            // if (isAxiosError(error)) toast.error(error.response?.data.message)
         },
         onSuccess(data) {
-            toast.success(data.data.message)
+            toast.success(data.message)
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
-        },
+        }
     })
 }
 
@@ -31,10 +32,13 @@ export const updateProductHook = (page: number) => {
     return useMutation({
         mutationFn: ({ body, product }: { body: Product, product: Product | null }) => product != null ? updateProduct(product!._id!, body) : createProduct(body),
         onSuccess(data) {
-            toast.success(data.data.message)
+            toast.success(data.message)
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
         },
-        onError(error) { if (isAxiosError(error)) toast.error(error.response?.data.message) },
+        onError(error) {
+            toast.error("Đã có lỗi xảy ra")
+            // if (isAxiosError(error)) toast.error(JSON.parse(error.response?.data))
+        },
     })
 }
 

@@ -14,7 +14,7 @@ const PaymentMethodsPage: React.FC = () => {
         <main className="h-full">
             <div className="py-5 px-2 md:px-6">
                 <div className="flex justify-between items-center mb-2 font-semibold text-2xl">
-                    <h2>Danh sách phương thức thanh toán</h2>
+                    <h2>Phương thức thanh toán</h2>
                     <button className="flex items-center gap-1 bg-blue-300 px-4 py-2 rounded-xl font-medium text-sm text-white">
                         <IoIosAddCircleOutline className="w-5 h-5" />
                         <span>Thêm mới</span>

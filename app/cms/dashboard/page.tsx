@@ -160,7 +160,7 @@ const DashboardPage: React.FC = () => {
                             {/* {<Line data={data} ref={chartRef} options={options} />} */}
                         </div>
                     </div>
-                    <div className="w-full md:w-[30%] bg-white rounded-xl px-3 py-6 shadow-md">
+                    <div className="w-full h-fit md:w-[30%] bg-white rounded-xl px-3 py-6 shadow-md">
                         <div className="flex justify-between">
                             <span className="text-xl font-bold flex-1">Khách hàng</span>
                             <select className='p-2 rounded-xl outline-none bg-gray-200' autoComplete='off'>

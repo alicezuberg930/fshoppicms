@@ -4,8 +4,9 @@ import axios from "axios";
 
 // common
 export const uploadFile = async (file: FormData) => {
-    return await axioInstance<any>({
-        url: API.UPLOAD_FILE, method: "POST", data: file,
+    return await axios({
+        url: `https://future-be.onrender.com${API.UPLOAD_FILE}`, method: "POST", data: file,
+        headers: { "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDM1N2E5MTZiMzI0YTU1ZGVhNzA2ZiIsInBob25lIjoiMDkwMTIzNDU2OSIsImlhdCI6MTczNDk0MzIzM30.S4-v5VBB4YceUYy8oai7Wy-vKLC9SDJCuv_8LAiseG8" }
     }).then(res => res.data)
 }
 
@@ -27,15 +28,14 @@ export const getProfile = async (token: string) => {
 // sản phẩm
 export const getProducts = async (filter?: FilterProducts) => {
     return await axioInstance<any>({
-        url: API.READ_PRODUCTS, method: "GET", params: filter,
+        url: API.READ_PRODUCTS, method: "GET", params: filter
     }).then(res => res.data)
 }
 
 export const createProduct = async (product: Product) => {
     return await axioInstance<any>({
-        url: API.CREATE_PRODUCT, method: "POST",
-        data: product,
-    })
+        url: API.CREATE_PRODUCT, method: "POST", data: product
+    }).then(res => res.data)
 }
 
 export const updateProduct = async (id: string, product: Product) => {
@@ -46,8 +46,8 @@ export const updateProduct = async (id: string, product: Product) => {
 
 export const deleteProduct = async (id: string) => {
     return await axioInstance<any>({
-        url: `${API.DELETE_PRODUCT}/${id}`, method: "DELETE",
-    })
+        url: `${API.DELETE_PRODUCT}`, params: { id }, method: "DELETE",
+    }).then(res => res.data)
 }
 
 // admin 
@@ -78,7 +78,7 @@ export const createUser = async (user: User) => {
 // danh mục
 export const getCategories = async () => {
     return await axioInstance<any>({
-        url: API.READ_CATEGORIES, method: "GET", data: {},
+        url: API.READ_CATEGORIES, method: "GET",
     }).then(res => res.data)
 }
 
@@ -93,16 +93,47 @@ export const deleteCategory = async (id: string) => {
         url: `${API.DELETE_CATEGORY}/${id}`, method: "DELETE",
     }).then(res => res.data)
 }
+// danh mục con
+export const getSubCategories = async (id: string) => {
+    return await axioInstance<any>({
+        url: API.READ_SUBCATEGORIES, method: "GET", params: { id },
+    }).then(res => res.data)
+}
 
-// site config
+// Cấu hình trang
 export const getSiteConfigs = async () => {
     return await axios<SingleAPIResponse<Config>>({
-        url: "https://learning-nestjs-ediw.onrender.com/api/v1/configs", method: "GET",
+        url: API.CONFIGS, method: "GET",
     }).then(res => res.data)
 }
 
 export const updateSiteConfigs = async (config: Config) => {
     return await axioInstance<SingleAPIResponse<Config>>({
-        url: "https://learning-nestjs-ediw.onrender.com/api/v1/configs", method: "POST", data: config,
+        url: API.CONFIGS, method: "POST", data: config,
+    }).then(res => res.data)
+}
+
+// Thương hiệu
+export const createBrand = async (brand: Brand) => {
+    return await axioInstance<any>({
+        url: API.CREATE_BRAND, method: "POST", data: brand,
+    }).then(res => res.data)
+}
+
+export const updateBrand = async (config: Config) => {
+    return await axioInstance<SingleAPIResponse<Config>>({
+        url: API.CONFIGS, method: "POST", data: config,
+    }).then(res => res.data)
+}
+
+export const deleteBrand = async (config: Config) => {
+    return await axioInstance<SingleAPIResponse<Config>>({
+        url: API.CONFIGS, method: "POST", data: config,
+    }).then(res => res.data)
+}
+
+export const getBrands = async () => {
+    return await axioInstance<any>({
+        url: API.READ_BRANDS, method: "GET",
     }).then(res => res.data)
 }

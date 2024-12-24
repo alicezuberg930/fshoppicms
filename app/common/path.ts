@@ -11,5 +11,6 @@ export const PATH = {
     DASHBOARD: "/cms/dashboard",
     PAYMENT_METHODS: "/cms/payments/methods",
     BANNERS: "/cms/banners",
-    UPLOAD_FILES: "/cms/upload/files"
+    UPLOAD_FILES: "/cms/upload/files",
+    BRANDS: "/cms/brands"
 }

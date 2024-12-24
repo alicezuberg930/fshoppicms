@@ -150,7 +150,7 @@ const CategoriesPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            <CategoryList categories={categories?.data.categories as Category[]} currentPage={currentPage} />
+                                            categories?.categories && <CategoryList categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
                                     }
                                 </tbody>
                             </table>
