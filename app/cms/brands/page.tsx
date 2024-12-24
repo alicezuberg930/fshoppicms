@@ -1,11 +1,9 @@
 "use client"
 import { icons } from "@/app/common/icons";
+import { PATH } from "@/app/common/path";
 import LoadingShimmer from "@/app/components/LoadingShimmer";
 import { readBrandsHook } from "@/app/hooks/brands.hooks";
-import { getBrands } from "@/app/services/api.service";
-import { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import Link from "next/link";
 
 const BrandsPage: React.FC = () => {
     const { IoIosAddCircleOutline, MdModeEdit, FaRegTrashAlt } = icons
@@ -16,10 +14,10 @@ const BrandsPage: React.FC = () => {
             <div className="py-5 px-2 md:px-6">
                 <div className="flex justify-between items-center mb-2 font-semibold text-2xl">
                     <h2>Thương hiệu</h2>
-                    <button className="flex items-center gap-1 bg-blue-300 px-4 py-2 rounded-xl font-medium text-sm text-white">
+                    <Link href={PATH.CREATE_BRAND} className="flex items-center gap-1 bg-blue-300 px-4 py-2 rounded-xl font-medium text-sm text-white">
                         <IoIosAddCircleOutline className="w-5 h-5" />
                         <span>Thêm mới</span>
-                    </button>
+                    </Link>
                 </div>
                 <div className="flex-col">
                     <div className="space-y-4">

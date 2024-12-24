@@ -1,10 +1,4 @@
-// {
-//     "name": "GALAXY",
-//         "logo": "https://example.com/nike-logo.png",
-//             "categories": ["676061ac75dc005144fb68c8"]
-// }
-
-import CategorySelectList from "@/app/components/CategorySelectList"
+"use client"
 import CustomImagePicker from "@/app/components/CustomImagePicker"
 import { createBrandHook } from "@/app/hooks/brands.hooks"
 import { readCategoryHook } from "@/app/hooks/category.hooks"
@@ -27,6 +21,7 @@ const CreateBrandPage: React.FC = () => {
         const formData = new FormData(e.currentTarget)
         const brand: Brand = Object.fromEntries(formData.entries()) // Convert FormData to an object
         // if (brand.parentCategory == "") brand.parentCategory = null
+        brand["categories"] = [formData.get("category")!.toString()]
         uploadHook.mutate(formData, {
             onSuccess(data) {
                 brand["logo"] = data.url
@@ -68,7 +63,7 @@ const CreateBrandPage: React.FC = () => {
                                 <tr>
                                     <td className='py-3 w-32'>Danh mục<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
+                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="category">
                                             {loadingCategories ?
                                                 <option value="" disabled>Không có dữ liệu</option> :
                                                 categories?.categories && (categories?.categories?.data.categories as Category[]).map(category => {
@@ -97,3 +92,5 @@ const CreateBrandPage: React.FC = () => {
         </div>
     )
 }
+
+export default CreateBrandPage
