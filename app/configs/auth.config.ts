@@ -11,20 +11,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: {}
             },
             authorize: async (credentials) => {
-                const tokenResponse = await login(credentials.phone as string, credentials.password as string)
-                if (tokenResponse?.login?.token != null) {
-                    const response = await getProfile(tokenResponse.token)
-                    if (response?.data?.data != null) {
-                        response.data.data["access_token"] = tokenResponse.login.token
-                        return response.data.data as User
+                try {
+                    const signin = await login(credentials.phone as string, credentials.password as string)
+                    if (signin?.login != null) {
+                        const profile = await getProfile(signin.login.token)
+                        if (profile?.data?.data != null) {
+                            profile.data.data["access_token"] = signin.login.token
+                            return profile.data.data as User
+                        } else {
+                            throw new CustomError("Access token không hợp lệ")
+                        }
                     } else {
-                        throw new CustomError("Access token không hợp lệ")
+                        throw new CustomError("Sai thông tin đăng nhập")
                     }
-                } else {
+                } catch (error) {
                     throw new CustomError("Sai thông tin đăng nhập")
                 }
             },
-        }),
+        })
     ],
     secret: process.env.AUTH_SECRET,
     session: {

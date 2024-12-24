@@ -5,7 +5,7 @@ export const API = {
     // common
     LOGIN: "/.netlify/functions/login",
     UPLOAD_FILE: "/files/upload/image",
-    PROFILE: "/user/profile",
+    PROFILE: "/.netlify/functions/get_profile",
     // CRUD user
     CREATE_USER: "/user/create",
     READ_USERS: "/admin/getUsers",
