@@ -1,15 +1,26 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { icons } from "../common/icons";
 import withReactContent from "sweetalert2-react-content";
 import Swal from 'sweetalert2'
 import { deleteCategoryHook } from "../hooks/category.hooks";
 import Image from "next/image";
+import { getSubCategories } from "../services/api.service";
 
 const CategoryList: React.FC<{
-    categories: Category[], parentIndex?: string, currentPage: number, parentCategory?: string, setSelectedCategory: Dispatch<SetStateAction<Category | null>>
-}> = ({ categories, parentIndex = "", currentPage = 1, parentCategory = "", setSelectedCategory }) => {
+    categories: Category[], parentIndex?: number, currentPage: number, parentCategory?: string, setSelectedCategory: Dispatch<SetStateAction<Category | null>>
+}> = ({ categories, parentIndex = 0, currentPage = 1, parentCategory = "", setSelectedCategory }) => {
     const mutation = deleteCategoryHook(currentPage)
     const { MdModeEdit, FaRegTrashAlt } = icons
+    const [subCategories, setSubCategories] = useState<Category[]>([])
+
+    const getSubCategoriesClick = async (id: string) => {
+        try {
+            const response = await getSubCategories(id)
+            setSubCategories(response.category.data)
+        } catch (error) {
+            setSubCategories([])
+        }
+    }
 
     const handleDeleteCategory = async (id: string) => {
         withReactContent(Swal).fire({
@@ -32,7 +43,7 @@ const CategoryList: React.FC<{
                     return (
                         <React.Fragment key={category._id || currentIndex}>
                             {/* Main Category List */}
-                            <tr className="bg-white">
+                            <tr onClick={() => getSubCategoriesClick(category._id!)} className="bg-white">
                                 <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                     <input type="checkbox" />
                                 </td>
@@ -45,7 +56,7 @@ const CategoryList: React.FC<{
                                             fill
                                             loading="lazy"
                                             className="object-cover"
-                                            src={category.thumbnail ?? "/logo.png"}
+                                            src={category.thumbnail || "/logo.png"}
                                             alt={category.name!}
                                             sizes="width: 100%, height: 100%"
                                         />
@@ -61,17 +72,13 @@ const CategoryList: React.FC<{
                                 </td>
                                 <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                     <div className="flex flex-wrap justify-start gap-1">
-                                        <button
+                                        <button onClick={() => setSelectedCategory(category)} title="Edit"
                                             className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none"
-                                            title="Edit"
-                                            onClick={() => setSelectedCategory(category)}
                                         >
                                             <MdModeEdit className="w-5 h-5" />
                                         </button>
-                                        <button
-                                            onClick={() => handleDeleteCategory(category._id!)}
+                                        <button onClick={() => handleDeleteCategory(category._id!)} title="Delete"
                                             className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700"
-                                            title="Delete"
                                         >
                                             <FaRegTrashAlt className="w-5 h-5" />
                                         </button>
@@ -79,7 +86,7 @@ const CategoryList: React.FC<{
                                 </td>
                             </tr>
                             {/* Recursively Render List of Subcategories */}
-                            {category.subcategories && <CategoryList categories={category.subcategories} currentPage={currentPage} parentCategory={category.name} setSelectedCategory={setSelectedCategory} />}
+                            {(subCategories.length > 0 && subCategories[0].parentCategory === category._id) ? <CategoryList parentIndex={parentIndex + 1} categories={subCategories} currentPage={currentPage} parentCategory={category.name} setSelectedCategory={setSelectedCategory} /> : <></>}
                         </React.Fragment>
                     );
                 })

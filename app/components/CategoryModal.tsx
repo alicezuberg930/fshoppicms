@@ -76,7 +76,7 @@ const CategoryModal: React.FC<{
                                 <tr>
                                     <td className='py-3 w-32'>Danh mục cha<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
+                                        <select defaultValue={selectedCategory?.parentCategory ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name="parentCategory">
                                             <option value="" className="text-lg">Không chọn</option>
                                             {
                                                 isLoading ?
