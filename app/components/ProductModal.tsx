@@ -36,7 +36,7 @@ const ProductModal: React.FC<{
         const currentTarget = e.currentTarget
         const formData = new FormData(currentTarget);
         let imageLinks: string[] = []
-        if (product?.images != null && product?.images.length > 0) imageLinks = product.images
+        if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
         if ((images.length < 1 && images.length > 10) && product == null) {
             toast.error("Cần ít nhất 1 ảnh và không hơn 10 ảnh")
             return
@@ -68,7 +68,7 @@ const ProductModal: React.FC<{
         tempProduct["childrenCategories"] = subs || []
         mutation!.mutate({ body: tempProduct, product }, {
             onSuccess(data) {
-                toast.success("Câp nhật sản phẩm thành công")
+                toast.success(data.message)
                 currentTarget.reset()
                 setImages([])
                 setResetAll(true)
