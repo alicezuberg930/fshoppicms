@@ -22,8 +22,7 @@ const ProductModal: React.FC<{
 }> = ({ product = null, setSelected, page }) => {
     const [description, setDescription] = useState<string>("")
     const [images, setImages] = useState<File[]>([])
-    const [enableVariation, setEnableVariation] = useState<boolean>(false)
-    const [variantElements, setVariantElements] = useState<number[]>([])
+    const [variantElements, setVariantElements] = useState<number[]>([0])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
@@ -291,17 +290,12 @@ const ProductModal: React.FC<{
                                     <td className='py-3'>Biến thể</td>
                                     <td className='py-3'>
                                         <div className='flex items-center gap-6'>
-                                            <b className=''>Bật tắt biến thể</b>
-                                            <CustomSwitch setEnable={setEnableVariation} />
-                                            {
-                                                !enableVariation ? null :
-                                                    <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
-                                                        className='flex items-center gap-1 bg-gray-500 p-2 rounded-md text-white text-xs'
-                                                    >
-                                                        <IoIosAddCircleOutline className='w-5 h-5' />
-                                                        <b>Thêm biến thể</b>
-                                                    </div>
-                                            }
+                                            <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
+                                                className='flex items-center gap-1 bg-gray-500 p-2 rounded-md text-white text-xs'
+                                            >
+                                                <IoIosAddCircleOutline className='w-5 h-5' />
+                                                <b>Thêm biến thể</b>
+                                            </div>
                                         </div>
                                         {
                                             product?.options != null ?
@@ -333,7 +327,7 @@ const ProductModal: React.FC<{
                                                 </div> : <></>
                                         }
                                         {
-                                            variantElements.length == 0 || !enableVariation ? null :
+                                            variantElements.length == 0 ? null :
                                                 <div className='mt-2'>
                                                     {
                                                         variantElements.map(e => {
@@ -361,13 +355,6 @@ const ProductModal: React.FC<{
                                     <td>&nbsp;</td>
                                     <td className='py-3 font-bold text-sm'>Giá bán</td>
                                 </tr>
-                                <tr>
-                                    <td className='py-3'>Giá bán<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <input defaultValue={product?.price ?? ""} name='price' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off' />
-                                    </td>
-                                </tr>
-
                                 <tr>
                                     <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
@@ -481,6 +468,7 @@ const ProductModal: React.FC<{
                                 </tr>
                             </tbody>
                         </table>
+                        <input readOnly hidden value={0} name='price' type='number' />
                     </form>
                 </div>
             </div>

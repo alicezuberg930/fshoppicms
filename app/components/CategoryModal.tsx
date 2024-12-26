@@ -41,7 +41,6 @@ const CategoryModal: React.FC<{
                     update.mutate({ category: category, id: selectedCategory._id!, isSubcategory })
                     if (isSubcategory)
                         getSubCategories(currentParentCategory!).then(res => { dispatch(setSubCategories(res.category.data)) })
-                    setShow!(false)
                 }
                 setShow!(false)
             }
