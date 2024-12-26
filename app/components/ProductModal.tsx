@@ -72,7 +72,7 @@ const ProductModal: React.FC<{
                 setImages([])
                 setResetAll(true)
                 setDescription("")
-                setVariantElements([])
+                setVariantElements([0])
                 if (product != null) setSelected!(null)
             }
         })
