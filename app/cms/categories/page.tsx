@@ -10,7 +10,7 @@ import CategoryModal from '@/app/components/CategoryModal'
 
 const CategoriesPage: React.FC = () => {
     // icons
-    const { FaChevronLeft, FaChevronRight, FaFilter, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
+    const { FaFilter, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     // hooks    
     const [checkBoxes, setCheckBoxes] = useState<number[]>([])
     const [checkAll, setCheckAll] = useState<boolean>(false)
@@ -159,8 +159,7 @@ const CategoriesPage: React.FC = () => {
                         </div>
                         {
                             isLoading ? <></> :
-                                true ?
-                                    <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={150} /> : <></>
+                                true ? <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={categories?.categories?.data.page} /> : <></>
                         }
                     </div>
                 </div>
