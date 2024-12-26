@@ -1,4 +1,4 @@
-import axioInstance from "../configs/axios.config"
+import axioInstance, { instanceWithoutToken } from "../configs/axios.config"
 import { API } from "../common/api";
 import axios from "axios";
 
@@ -77,7 +77,7 @@ export const createUser = async (user: User) => {
 
 // danh mục
 export const getCategories = async () => {
-    return await axioInstance<any>({
+    return await instanceWithoutToken<any>({
         url: API.READ_CATEGORIES, method: "GET",
     }).then(res => res.data)
 }
@@ -147,7 +147,7 @@ export const deleteBrand = async (id: string) => {
 }
 
 export const getBrands = async () => {
-    return await axioInstance<any>({
+    return await instanceWithoutToken<any>({
         url: API.READ_BRANDS, method: "GET",
     }).then(res => res.data)
 }

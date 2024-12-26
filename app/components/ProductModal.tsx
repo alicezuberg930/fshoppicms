@@ -67,8 +67,8 @@ const ProductModal: React.FC<{
         tempProduct["options"] = variantInfo()
         tempProduct["childrenCategories"] = subs || []
         mutation!.mutate({ body: tempProduct, product }, {
-            onSuccess(_) {
-                console.log("success???");
+            onSuccess(data) {
+                toast.success("Câp nhật sản phẩm thành công")
                 currentTarget.reset()
                 setImages([])
                 setResetAll(true)

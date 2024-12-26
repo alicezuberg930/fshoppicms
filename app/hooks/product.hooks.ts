@@ -32,7 +32,7 @@ export const updateProductHook = (page: number) => {
     return useMutation({
         mutationFn: ({ body, product }: { body: Product, product: Product | null }) => product != null ? updateProduct(product!._id!, body) : createProduct(body),
         onSuccess(data) {
-            toast.success(data.message)
+            // toast.success(data.message)
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
         },
         onError(error) {
