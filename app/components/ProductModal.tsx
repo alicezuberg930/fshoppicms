@@ -288,7 +288,7 @@ const ProductModal: React.FC<{
                                     </tr> */}
                                 <tr>
                                     <td className='py-3'>Biến thể</td>
-                                    <td className='py-3'>
+                                    <td className='py-3*'>
                                         <div className='flex items-center gap-6'>
                                             <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
                                                 className='flex items-center gap-1 bg-gray-500 p-2 rounded-md text-white text-xs'
@@ -307,13 +307,12 @@ const ProductModal: React.FC<{
                                                                     {
                                                                         variant.value.map((attr, i) => {
                                                                             return (
-                                                                                <div className='flex gap-2 my-2 variant' key={i} >
-                                                                                    <input defaultValue={variant.key} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[40%] outline-none' type='text' placeholder='Biến thể' />
-                                                                                    <input defaultValue={attr.val} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='text' placeholder='Thuộc tính' />
-                                                                                    <input defaultValue={attr.quantity} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='number' placeholder='Kho' />
-                                                                                    <button className='bg-red-500 p-2 rounded-md text-white'
-                                                                                        onClick={() => removeAttribute(i)}
-                                                                                    >
+                                                                                <div className='w-full flex flex-wrap my-2 variant gap-2' key={i} >
+                                                                                    <input defaultValue={variant.key} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Biến thể' />
+                                                                                    <input defaultValue={attr.val} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Kg, Màu sắc, Dung tích' />
+                                                                                    <input defaultValue={attr.quantity} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Kho' />
+                                                                                    <input defaultValue={attr.price} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Giá' />
+                                                                                    <button className='bg-red-500 p-2 rounded-md text-white flex-none' onClick={() => removeAttribute(i)}>
                                                                                         <FaRegTrashAlt className='w-5 h-5' />
                                                                                     </button>
                                                                                 </div>
@@ -327,19 +326,17 @@ const ProductModal: React.FC<{
                                                 </div> : <></>
                                         }
                                         {
-                                            variantElements.length == 0 ? null :
+                                            variantElements.length == 0 ? <></> :
                                                 <div className='mt-2'>
                                                     {
                                                         variantElements.map(e => {
                                                             return (
-                                                                <div className='flex flex-wrap gap-2 my-2 variant' key={e}>
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='text' placeholder='Biến thể' />
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='text' placeholder='Thuộc tính' />
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='number' placeholder='Kho' />
-                                                                    <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md flex-1 outline-none' type='number' placeholder='Giá' />
-                                                                    <button className='bg-red-500 p-2 rounded-md text-white flex-none'
-                                                                        onClick={() => removeAttribute(e)}
-                                                                    >
+                                                                <div className='w-full flex flex-wrap my-2 variant gap-2' key={e}>
+                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Biến thể' />
+                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Kg, Màu sắc, Dung tích ' />
+                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Kho' />
+                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Giá' />
+                                                                    <button className='bg-red-500 p-2 rounded-md text-white' onClick={() => removeAttribute(e)}>
                                                                         <FaRegTrashAlt className='w-5 h-5' />
                                                                     </button>
                                                                 </div>
@@ -351,10 +348,10 @@ const ProductModal: React.FC<{
                                     </td>
                                 </tr>
 
-                                <tr className='bg-[#347ab6] text-white'>
+                                {/* <tr className='bg-[#347ab6] text-white'>
                                     <td>&nbsp;</td>
                                     <td className='py-3 font-bold text-sm'>Giá bán</td>
-                                </tr>
+                                </tr> */}
                                 <tr>
                                     <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
