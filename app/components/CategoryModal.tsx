@@ -59,7 +59,7 @@ const CategoryModal: React.FC<{
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td className='py-3 w-32'>Mô tả<b className='text-red-500'>*</b></td>
+                                    <td className='py-3 w-32'>Mô tả</td>
                                     <td className='py-3'>
                                         <textarea defaultValue={selectedCategory?.description ?? ""} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={6} autoComplete='off' name="description" />
                                     </td>
