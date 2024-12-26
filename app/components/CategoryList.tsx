@@ -2,23 +2,28 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { icons } from "../common/icons";
 import withReactContent from "sweetalert2-react-content";
 import Swal from 'sweetalert2'
-import { deleteCategoryHook } from "../hooks/category.hooks";
+import { deleteCategoryHook, deleteSubCategoryHook } from "../hooks/category.hooks";
 import Image from "next/image";
 import { getSubCategories } from "../services/api.service";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentParentCategory, setSubCategories } from "../services/subcategories.slice";
 
 const CategoryList: React.FC<{
-    categories: Category[], parentIndex?: number, currentPage: number, parentCategory?: string, setSelectedCategory: Dispatch<SetStateAction<Category | null>>
-}> = ({ categories, parentIndex = 0, currentPage = 1, parentCategory = "", setSelectedCategory }) => {
-    const mutation = deleteCategoryHook(currentPage)
+    categories: Category[], setShow: (v: boolean) => void, parentIndex?: number, currentPage: number, parentCategory?: string, setSelectedCategory: Dispatch<SetStateAction<Category | null>>
+}> = ({ categories, setShow, parentIndex = 0, currentPage = 1, parentCategory = "", setSelectedCategory }) => {
+    const deleteCategory = deleteCategoryHook(currentPage)
+    const deleteSubCategory = deleteSubCategoryHook(currentPage)
     const { MdModeEdit, FaRegTrashAlt } = icons
-    const [subCategories, setSubCategories] = useState<Category[]>([])
+    const { subCategories, currentParentCategory } = useSelector((state: any) => state.subcategory)
+    const dispatch = useDispatch()
 
     const getSubCategoriesClick = async (id: string) => {
         try {
             const response = await getSubCategories(id)
-            setSubCategories(response.category.data)
+            dispatch(setCurrentParentCategory(id))
+            dispatch(setSubCategories(response.category.data))
         } catch (error) {
-            setSubCategories([])
+            // dispatch(setSubCategories([]))
         }
     }
 
@@ -32,7 +37,16 @@ const CategoryList: React.FC<{
             cancelButtonColor: '#d33',
             confirmButtonText: 'Xóa',
             cancelButtonText: 'Hủy'
-        }).then(result => { if (result.isConfirmed) mutation.mutate(id) })
+        }).then(result => {
+            if (result.isConfirmed) {
+                if (subCategories.length > 0 && subCategories.find((v: Category) => v._id === id)) {
+                    deleteSubCategory.mutate(id)
+                    getSubCategoriesClick(currentParentCategory)
+                } else {
+                    deleteCategory.mutate(id)
+                }
+            }
+        })
     }
 
     return (
@@ -72,7 +86,7 @@ const CategoryList: React.FC<{
                                 </td>
                                 <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                     <div className="flex flex-wrap justify-start gap-1">
-                                        <button onClick={() => setSelectedCategory(category)} title="Edit"
+                                        <button onClick={() => { setSelectedCategory(category); setShow(true) }} title="Edit"
                                             className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none"
                                         >
                                             <MdModeEdit className="w-5 h-5" />
@@ -86,7 +100,7 @@ const CategoryList: React.FC<{
                                 </td>
                             </tr>
                             {/* Recursively Render List of Subcategories */}
-                            {(subCategories.length > 0 && subCategories[0].parentCategory === category._id) ? <CategoryList parentIndex={parentIndex + 1} categories={subCategories} currentPage={currentPage} parentCategory={category.name} setSelectedCategory={setSelectedCategory} /> : <></>}
+                            {(subCategories.length > 0 && subCategories[0].parentCategory === category._id) ? <CategoryList setShow={setShow} parentIndex={index + 1} categories={subCategories} currentPage={currentPage} parentCategory={category.name} setSelectedCategory={setSelectedCategory} /> : <></>}
                         </React.Fragment>
                     );
                 })

@@ -112,6 +112,18 @@ export const createSubCategory = async (category: Category) => {
     }).then(res => res.data)
 }
 
+export const deleteSubCategory = async (id: string) => {
+    return await axioInstance<any>({
+        url: `${API.DELETE_SUBCATEGORIES}`, params: { id }, method: "DELETE",
+    }).then(res => res.data)
+}
+
+export const updateSubCategory = async (id: string, category: Category) => {
+    return await axioInstance<any>({
+        url: API.UPDATE_SUBCATEGORY, method: "PUT", params: { id }, data: category,
+    }).then(res => res.data)
+}
+
 // Cấu hình trang
 export const getSiteConfigs = async () => {
     return await axios<SingleAPIResponse<Config>>({

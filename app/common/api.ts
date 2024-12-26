@@ -21,7 +21,9 @@ export const API = {
     // CRUD Sub categories
     CREATE_SUBCATEGORIES: "/.netlify/functions/func_CreateSubcategory",
     READ_SUBCATEGORIES: "/.netlify/functions/func_getbyparentCategory",
-    // 
+    DELETE_SUBCATEGORIES: "/.netlify/functions/func_delSubcategory",
+    UPDATE_SUBCATEGORY: "/.netlify/functions/func_UpdateSubcategory"
+    ,  // 
     READ_STORAGE: "/",
     // CRUD brand
     CREATE_BRAND: "/.netlify/functions/func_createBrand",

@@ -1,19 +1,26 @@
 "use client"
-import React, { FormEvent, useState } from "react"
+import React, { Dispatch, FormEvent, SetStateAction, useState } from "react"
 import { toast } from "react-toastify"
 import CustomImagePicker from "@/app/components/CustomImagePicker"
 import { createCategoryHook, readCategoryHook, updateCategoryHook } from "../hooks/category.hooks"
 import { uploadFilesHook } from "../hooks/common.hooks"
 import CategorySelectList from "./CategorySelectList"
+import { icons } from "../common/icons"
+import { useDispatch, useSelector } from "react-redux"
+import { getSubCategories } from "../services/api.service"
+import { setSubCategories } from "../services/subcategories.slice"
 
 const CategoryModal: React.FC<{
-    selectedCategory?: Category, setSelected?: (v: Category | null) => void, page: number
-}> = ({ selectedCategory, setSelected, page }) => {
+    selectedCategory?: Category, setShow?: (v: boolean) => void, page: number, show?: boolean, setSelected: Dispatch<SetStateAction<Category | null>>
+}> = ({ selectedCategory, setShow, page, show = false, setSelected }) => {
     const [images, setImages] = useState<File[]>([])
     const { data: categories, isLoading } = readCategoryHook(1)
     const create = createCategoryHook()
     const update = updateCategoryHook()
     const uploadHook = uploadFilesHook()
+    const { MdCancel } = icons
+    const { subCategories, currentParentCategory } = useSelector((state: any) => state.subcategory)
+    const dispatch = useDispatch()
 
     const handleCreateCategory = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -30,18 +37,23 @@ const CategoryModal: React.FC<{
                 if (selectedCategory == null) {
                     create.mutate(category)
                 } else {
-                    update.mutate({ category: category, id: selectedCategory._id! })
+                    const isSubcategory = subCategories.find((v: Category) => v._id === selectedCategory._id) !== undefined
+                    update.mutate({ category: category, id: selectedCategory._id!, isSubcategory })
+                    if (isSubcategory)
+                        getSubCategories(currentParentCategory!).then(res => { dispatch(setSubCategories(res.category.data)) })
+                    setShow!(false)
                 }
+                setShow!(false)
             }
         })
     }
 
-
     return (
         <div className='w-full'>
             <div className='text-black'>
-                <div className='bg-[#f5f5f5] p-3'>
+                <div className='bg-[#f5f5f5] p-3 flex justify-between items-center'>
                     <h3 className='font-semibold text-red-500'>{selectedCategory ? 'Sửa' : 'Thêm'} danh mục</h3>
+                    <MdCancel size={28} fill="red" onClick={() => { setShow!(false); setSelected(null) }} />
                 </div>
                 <div className='p-3'>
                     <form onSubmit={handleCreateCategory}>
@@ -92,7 +104,7 @@ const CategoryModal: React.FC<{
                                         <div className='space-x-3 font-bold text-md'>
                                             <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
                                             <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
-                                            {selectedCategory ? <button onClick={() => setSelected!(null)} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button> : <></>}
+                                            <button onClick={() => { setShow!(false); setSelected(null); }} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -101,7 +113,7 @@ const CategoryModal: React.FC<{
                     </form>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

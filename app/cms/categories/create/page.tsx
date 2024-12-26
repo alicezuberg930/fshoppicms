@@ -1,10 +1,10 @@
-import CategoryModal from "@/app/components/CategoryModal"
+// import CategoryModal from "@/app/components/CategoryModal"
 
-const CreateCategoryPage: React.FC = () => {
+// const CreateCategoryPage: React.FC = () => {
 
-    return (
-        <CategoryModal page={1} />
-    )
-}
+//     return (
+//         <CategoryModal page={1} />
+//     )
+// }
 
-export default CreateCategoryPage
+// export default CreateCategoryPage

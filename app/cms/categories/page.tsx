@@ -1,7 +1,6 @@
 'use client'
 import { icons } from '@/app/common/icons'
 import LoadingShimmer from '@/app/components/LoadingShimmer'
-import Link from 'next/link'
 import React, { ChangeEvent, useState } from 'react'
 import { readCategoryHook } from '@/app/hooks/category.hooks'
 import CategoryList from '@/app/components/CategoryList'
@@ -17,6 +16,7 @@ const CategoriesPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const { data: categories, isLoading } = readCategoryHook(currentPage)
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+    const [show, setShow] = useState<boolean>(false)
 
     const dummy: number[] = [];
     for (let i = 0; i <= 8; i++) {
@@ -50,10 +50,10 @@ const CategoriesPage: React.FC = () => {
                 <div className='flex items-center justify-between mb-2 text-2xl font-semibold'>
                     <h2 className='text-black'>Danh mục</h2>
                     <div className='flex gap-2'>
-                        <Link href='/cms/categories/create' className='flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4'>
+                        <button className='flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4' onClick={() => setShow(true)}>
                             <IoIosAddCircleOutline className='w-5 h-5' />
                             <span>Thêm mới</span>
-                        </Link>
+                        </button>
                         <button className='flex items-center text-sm font-medium rounded-xl bg-red-600 gap-1 text-white py-2 px-4'>
                             <FaRegTrashAlt className='w-5 h-5' />
                             <span>Xóa</span>
@@ -152,7 +152,7 @@ const CategoriesPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            categories?.categories && <CategoryList setSelectedCategory={setSelectedCategory} categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
+                                            categories?.categories && <CategoryList setShow={setShow} setSelectedCategory={setSelectedCategory} categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
                                     }
                                 </tbody>
                             </table>
@@ -164,14 +164,14 @@ const CategoriesPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${selectedCategory != null ? 'block' : 'hidden'}`}>
+            <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${show ? 'block' : 'hidden'}`}>
                 <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0">
                     <div className="fixed inset-0 transition-opacity">
                         <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                     </div>
                     <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
                         <div className="px-4 py-5 bg-white text-left rounded-md">
-                            {selectedCategory ? <CategoryModal selectedCategory={selectedCategory!} setSelected={setSelectedCategory} page={currentPage} /> : <></>}
+                            {show ? <CategoryModal selectedCategory={selectedCategory!} setSelected={setSelectedCategory} setShow={setShow} page={currentPage} /> : <></>}
                         </div>
                     </div>
                 </div>

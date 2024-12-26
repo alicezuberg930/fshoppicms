@@ -5,7 +5,7 @@ import storage from "redux-persist/lib/storage";
 import { sidebarReducer } from "../services/sidebar.slice";
 import { dropDownReducer } from "../services/dropdown.slice";
 import { commonSliceReducer } from "../services/common.slice";
-import { useDispatch } from "react-redux";
+import { subcategoriesReducer } from "../services/subcategories.slice";
 
 const localPersistConfig = {
     key: "root",
@@ -21,7 +21,8 @@ export const store = configureStore({
     reducer: {
         dropdown: persistReducer(localPersistConfig, dropDownReducer),
         sidebar: persistReducer(localPersistConfig, sidebarReducer),
-        common: persistReducer(localPersistConfig, commonSliceReducer)
+        common: persistReducer(localPersistConfig, commonSliceReducer),
+        subcategory: persistReducer(localPersistConfig, subcategoriesReducer),
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {
