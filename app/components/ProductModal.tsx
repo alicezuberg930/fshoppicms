@@ -332,8 +332,8 @@ const ProductModal: React.FC<{
                                                         variantElements.map(e => {
                                                             return (
                                                                 <div className='w-full flex flex-wrap my-2 variant gap-2' key={e}>
-                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Biến thể' />
-                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Kg, Màu sắc, Dung tích ' />
+                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Biến thể' hidden={variantElements.length == 1 ? true : false} />
+                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Kg, Màu sắc, Dung tích' hidden={variantElements.length == 1 ? true : false} />
                                                                     <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Kho' />
                                                                     <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Giá' />
                                                                     <button className='bg-red-500 p-2 rounded-md text-white' onClick={() => removeAttribute(e)}>
