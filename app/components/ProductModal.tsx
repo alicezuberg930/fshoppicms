@@ -20,7 +20,7 @@ import { readBrandsHook } from '../hooks/brands.hooks';
 const ProductModal: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
 }> = ({ product = null, setSelected, page }) => {
-    const [description, setDescription] = useState<string>("")
+    const [description, setDescription] = useState<string>('')
     const [images, setImages] = useState<File[]>([])
     const [variantElements, setVariantElements] = useState<number[]>([0])
     const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
@@ -37,16 +37,16 @@ const ProductModal: React.FC<{
         let imageLinks: string[] = []
         if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
         if ((images.length < 1 && images.length > 10) && product == null) {
-            toast.error("Cần ít nhất 1 ảnh và không hơn 10 ảnh")
+            toast.error('Cần ít nhất 1 ảnh và không hơn 10 ảnh')
             return
         }
         if (images.length > 0) {
             const form = new FormData()
             for (let i = 0; i < images.length; i++) {
                 try {
-                    form.set("file", images[i])
+                    form.set('file', images[i])
                     const response = await uploadFile(form)
-                    if (response?.status === "OK") {
+                    if (response?.status === 'OK') {
                         imageLinks.push(response.url)
                     } else {
                         toast.error(response.error)
@@ -58,20 +58,20 @@ const ProductModal: React.FC<{
                 }
             }
         }
-        formData.delete("file")
+        formData.delete('file')
         let subs = subCategories.map(sub => sub._id!)
         const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
-        tempProduct["description"] = description || product?.description
-        tempProduct["images"] = imageLinks
-        tempProduct["options"] = variantInfo()
-        tempProduct["childrenCategories"] = subs || []
+        tempProduct['description'] = description || product?.description
+        tempProduct['images'] = imageLinks
+        tempProduct['options'] = variantInfo()
+        tempProduct['childrenCategories'] = subs || []
         mutation!.mutate({ body: tempProduct, product }, {
             onSuccess(data) {
                 toast.success(data.message)
                 currentTarget.reset()
                 setImages([])
                 setResetAll(true)
-                setDescription("")
+                setDescription('')
                 setVariantElements([0])
                 if (product != null) setSelected!(null)
             }
@@ -114,362 +114,306 @@ const ProductModal: React.FC<{
     }
 
     return (
-        <div className='w-full'>
-            <div className='text-black'>
-                <div className='bg-[#f5f5f5] p-3'>
-                    <h3 className='font-semibold text-red-500'>{product != null ? 'Sửa' : 'Thêm'} sản phẩm</h3>
-                </div>
-                <div className='p-3'>
-                    <form onSubmit={(e) => handleProduct(e)}>
-                        <table className='w-full'>
-                            <tbody>
-                                <tr className='bg-[#347ab6] text-white'>
-                                    <td className='bg-primary'></td>
-                                    <td className='py-3 font-bold text-sm'>Phân loại sản phẩm</td>
-                                </tr>
-
-                                <tr>
-                                    <td className='py-3'>Thương hiệu<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <select defaultValue={product?.brand ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='brand'>
-                                            {
-                                                loadingBrands ?
-                                                    <option value="" disabled>Không có dữ liệu</option> :
-                                                    brands && (brands.brands.data as Brand[]).map((brand) => {
-                                                        return (
-                                                            <option className='text-lg' key={brand._id} value={brand._id}>{brand.name}</option>
-                                                        )
-                                                    })
-                                            }
-                                        </select>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td className='py-3'>Danh mục<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <select onChange={(e) => findSubcategories(e)} defaultValue={product?.category ?? ""} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
-                                            {
-                                                loadingCategories ?
-                                                    <option value="" disabled>Không có dữ liệu</option> :
-                                                    categories?.categories && (categories?.categories?.data.categories as Category[]).map(category => {
-                                                        return (
-                                                            <option className={`text-lg`} key={category._id} value={category._id}>
-                                                                {category.name}
-                                                            </option>
-                                                        )
-                                                    })
-                                                // categories && <CategorySelectList categories={categories?.categories?.data.categories as Category[]} currentPage={1} />
-                                            }
-                                        </select>
-                                        {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
-                                                data-select2-id='4'>
-                                                <span className='selection'><span
-                                                    className='select2-selection select2-selection--single'
-                                                    role='combobox' aria-haspopup='true' aria-expanded='false' aria-disabled='false'
-                                                    aria-labelledby='select2-brand-ee-container'>
-                                                    <span className='select2-selection__rendered'
-                                                        id='select2-brand-ee-container' role='textbox'
-                                                        aria-readonly='true' title='Vui lòng chọn...'>Vui lòng
-                                                        chọn...</span>
-                                                    <span className='select2-selection__arrow' role='presentation'><b role='presentation'></b></span>
-                                                </span>
-                                                </span>
-                                                <span className='dropdown-wrapper' aria-hidden='true'></span>
-                                            </span> */}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td className='py-3'>Danh mục con<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <select className='border-gray-300 p-2 border rounded-md w-full outline-none'>
-                                            {
-                                                subCategories.length == 0 ?
-                                                    <option value="" disabled>Không có dữ liệu</option> :
-                                                    subCategories.map(subCategory => {
-                                                        return (
-                                                            <option className='text-lg' key={subCategory._id} value={subCategory._id}>{subCategory.name}</option>
-                                                        )
-                                                    })
-                                            }
-                                        </select>
-                                        {/* <span className='w-[1066px] select2 select2-container select2-container--default' dir='ltr'
-                                                data-select2-id='4'>
-                                                <span className='selection'><span
-                                                    className='select2-selection select2-selection--single'
-                                                    role='combobox' aria-haspopup='true' aria-expanded='false' aria-disabled='false'
-                                                    aria-labelledby='select2-brand-ee-container'>
-                                                    <span className='select2-selection__rendered'
-                                                        id='select2-brand-ee-container' role='textbox'
-                                                        aria-readonly='true' title='Vui lòng chọn...'>Vui lòng
-                                                        chọn...</span>
-                                                    <span className='select2-selection__arrow' role='presentation'><b role='presentation'></b></span>
-                                                </span>
-                                                </span>
-                                                <span className='dropdown-wrapper' aria-hidden='true'></span>
-                                            </span> */}
-                                    </td>
-                                </tr>
-
-                                <tr className='bg-[#347ab6] text-white'>
-                                    <td>&nbsp;</td>
-                                    <td className='py-3 font-bold text-sm'>Thông tin sản phẩm</td>
-                                </tr>
-
-                                <tr>
-                                    <td className='py-3'>Hình</td>
-                                    <td className='py-3'>
-                                        <div className='mb-2 image-container'>
-                                            <CustomImagePicker images={product?.images} setImages={setImages} resetAll={resetAll} />
-                                        </div>
-                                        <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className='py-3'>Mã sản phẩm<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <input defaultValue={product?.productCode ?? ""} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='productCode'
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className='py-3'>Tên Sản Phẩm<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <input defaultValue={product?.name ?? ""} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' name='name'
-                                        />
-                                    </td>
-                                </tr>
-
-                                {/* <tr>
-                                        <td className='py-3'>Giới thiệu/Mô tả ngắn</td>
-                                        <td className='py-3'>
-                                            <textarea rows={5} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
-                                        </td>
-                                    </tr> */}
-
-                                {/* <tr>
-                                        <td className='py-3'>Trạng thái</td>
-                                        <td className='py-3'>
-                                            <div className='space-x-2 text-white text-xs'>
-                                                <label className='bg-[#347ab6] p-2 rounded-md'>
-                                                    <input name='status' type='radio' value='1' autoComplete='off' defaultChecked />
-                                                    Hiển thị
-                                                </label>
-                                                <label className='bg-[#eead51] p-2 rounded-md'>
-                                                    <input name='status' type='radio' value='0' autoComplete='off' />
-                                                    Không Hiển thị
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr> */}
-                                {/* <tr>
-                                        <td className='py-3'>Tình trạng</td>
-                                        <td className='py-3'>
-                                            <div className='flex flex-wrap gap-2 text-white text-xs'>
-                                                <label className='bg-[#5eb95b] p-2 rounded-md flex items-center gap-1'>
-                                                    <input type='radio' value='1' name='tinhtrang' defaultChecked />
-                                                    <b>Đang có hàng</b>
-                                                </label>
-                                                <label className='bg-[#eead51] p-2 rounded-md flex items-center gap-1'>
-                                                    <input type='radio' value='9' name='tinhtrang' />
-                                                    <b>Hết hàng</b>
-                                                </label>
-                                                <label className='bg-[#5ac0dd] p-2 rounded-md flex items-center gap-1'>
-                                                    <input type='radio' value='2' name='tinhtrang' />
-                                                    <b>Hàng đặt theo yêu cầu</b>
-                                                </label>
-                                                <label className='bg-red-500 p-2 rounded-md flex items-center gap-1'>
-                                                    <input type='radio' value='3' name='tinhtrang' />
-                                                    <b>Hàng đang về</b>
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr> */}
-                                <tr>
-                                    <td className='py-3'>Biến thể</td>
-                                    <td className='py-3*'>
-                                        <div className='flex items-center gap-6'>
-                                            <div onClick={() => setVariantElements(variantElements => [...variantElements, variantElements.length])}
-                                                className='flex items-center gap-1 bg-gray-500 p-2 rounded-md text-white text-xs'
-                                            >
-                                                <IoIosAddCircleOutline className='w-5 h-5' />
-                                                <b>Thêm biến thể</b>
-                                            </div>
-                                        </div>
-                                        {
-                                            product?.options != null ?
-                                                <div className='mt-2'>
-                                                    {
-                                                        product!.options!.map((variant, i) => {
-                                                            return (
-                                                                <div key={i}>
-                                                                    {
-                                                                        variant.value.map((attr, i) => {
-                                                                            return (
-                                                                                <div className='w-full flex flex-wrap my-2 variant gap-2' key={i} >
-                                                                                    <input defaultValue={variant.key} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Biến thể' />
-                                                                                    <input defaultValue={attr.val} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Kg, Màu sắc, Dung tích' />
-                                                                                    <input defaultValue={attr.quantity} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Kho' />
-                                                                                    <input defaultValue={attr.price} className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Giá' />
-                                                                                    <button className='bg-red-500 p-2 rounded-md text-white flex-none' onClick={() => removeAttribute(i)}>
-                                                                                        <FaRegTrashAlt className='w-5 h-5' />
-                                                                                    </button>
-                                                                                </div>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </div>
-                                                            )
-                                                        })
-                                                    }
-                                                </div> : <></>
-                                        }
-                                        {
-                                            variantElements.length == 0 ? <></> :
-                                                <div className='mt-2'>
-                                                    {
-                                                        variantElements.map(e => {
-                                                            return (
-                                                                <div className='w-full flex flex-wrap my-2 variant gap-2' key={e}>
-                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Biến thể' hidden={variantElements.length == 1 ? true : false} />
-                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='text' placeholder='Kg, Màu sắc, Dung tích' hidden={variantElements.length == 1 ? true : false} />
-                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Kho' />
-                                                                    <input className='flex-auto border-gray-300 p-2 border focus:border-blue-500 rounded-md outline-none' type='number' placeholder='Giá' />
-                                                                    <button className='bg-red-500 p-2 rounded-md text-white' onClick={() => removeAttribute(e)}>
-                                                                        <FaRegTrashAlt className='w-5 h-5' />
-                                                                    </button>
-                                                                </div>
-                                                            )
-                                                        })
-                                                    }
-                                                </div>
-                                        }
-                                    </td>
-                                </tr>
-
-                                {/* <tr className='bg-[#347ab6] text-white'>
-                                    <td>&nbsp;</td>
-                                    <td className='py-3 font-bold text-sm'>Giá bán</td>
-                                </tr> */}
-                                <tr>
-                                    <td className='py-3'>Tồn kho<b className='text-red-500'>*</b></td>
-                                    <td className='py-3'>
-                                        <input defaultValue={product?.stock ?? ""} name='stock' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='number' autoComplete='off' />
-                                    </td>
-                                </tr>
-
-                                {/* <tr>
-                                        <td className='py-3'>Giá khuyến mãi</td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <div className='flex lg:flex-row flex-col gap-5'>
-                                                <div className='flex flex-col flex-auto'>
-                                                    <label>Giá khuyến mãi</label>
-                                                    <input name='price_sale' value='0' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' />
-                                                </div>
-                                                <div className='flex flex-col flex-auto'>
-                                                    <label>Ngày bắt đầu</label>
-                                                    <CustomDatePicker />
-                                                </div>
-                                                <div className='flex flex-col flex-auto'>
-                                                    <label>Ngày kết thúc</label>
-                                                    <CustomDatePicker />
-                                                </div>
-                                            </div>
-                                            <small className='text-[#eead51]'>
-                                                - Nhập <b className='text-red-500'>0</b> nếu không có giá bán khuyến mãi
-                                            </small>
-                                        </td>
-                                    </tr> */}
-
-                                <tr className='bg-[#347ab6] text-white'>
-                                    <td></td>
-                                    <td className='py-3 font-bold text-sm'>Chi tiết sản phẩm</td>
-                                </tr>
-                                {/* <tr>
-                                        <td className='py-3'>Video</td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text' autoComplete='off' />
-                                            <div>
-                                                <small className='text-[#eead51]'>
-                                                    - Copy đường dẫn Video từ Youtube.<br />
-                                                    - Đường dẫn Youtube là đường dẫn xem trực tiếp trên website được ( Không
-                                                    phải URL chia sẽ Video).<br />
-                                                    - VD: http://www.youtube.com/watch?v=Y8FU6-J5NnE
-                                                </small>
-                                            </div>
-                                        </td>
-                                    </tr> */}
-
-                                <tr>
-                                    <td className='py-3 w-[1%] whitespace-nowrap'>Chi tiết sản phẩm</td>
-                                    <td className='py-3'>
-                                        <CustomCKEditor value={setDescription} defaultValue={product?.description || description} />
-                                    </td>
-                                </tr>
-
-                                {/* <tr>
-                                        <td className='py-3'>Thông số kỹ thuật</td>
-                                        <td className='py-3'>:</td>
-                                        <td className='py-3'>
-                                            <CustomCKEditor />
-                                        </td>
-                                    </tr> */}
-
-                                {/* <tr className='bg-[#347ab6] text-white'>
-                                        <td colSpan={2}>&nbsp;</td>
-                                        <td className='py-3 font-bold text-sm'>SEO</td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3'>URL: Slug<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'><b>:</b></td>
-                                        <td className='py-3'>
-                                            <div className='flex items-center border-gray-300 border rounded-md'>
-                                                <div className='bg-[#eeeeee] p-2 h-full font-bold text-red-500'>https://fshoppii.com/</div>
-                                                <input className='p-2 border focus:border-blue-500 w-full outline-none' type='text'  autoComplete='off' />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3'>Meta Title<b className='text-red-500'>*</b></td>
-                                        <td className='py-3'><b>:</b></td>
-                                        <td className='py-3'>
-                                            <input className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' type='text'  autoComplete='off' />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3'>Meta Description</td>
-                                        <td className='py-3'><b>:</b></td>
-                                        <td className='py-3'>
-                                            <textarea className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={2} />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className='py-3'>Meta keyword</td>
-                                        <td className='py-3'><b>:</b></td>
-                                        <td className='py-3'>
-                                            <textarea className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' rows={2} />
-                                        </td>
-                                    </tr> */}
-                                <tr>
-                                    <td>&nbsp;</td>
-                                    <td>
-                                        <div className='space-x-3 font-bold text-md'>
-                                            <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
-                                            <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
-                                            {product != null ? <button onClick={() => setSelected!(null)} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button> : <></>}
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <input readOnly hidden value={0} name='price' type='number' />
-                    </form>
+        <div className='w-full py-4 max-w-[1440px] mx-auto'>
+            {/* Menu */}
+            <div className='bg-white mb-4 rounded-md overflow-hidden'>
+                <div className='text-sm relative cursor-pointer'>
+                    <div className='flex items-center h-14'>
+                        <div className='px-4 hover:text-blue-500 active'>Thông tin cơ bản</div>
+                        <div className='px-4 hover:text-blue-500'>Thông tin chi tiết</div>
+                        <div className='px-4 hover:text-blue-500'>Thông tin bán hàng</div>
+                        <div className='px-4 hover:text-blue-500'>Vận chuyển</div>
+                        <div className='px-4 hover:text-blue-500'>Thông tin khác</div>
+                    </div>
+                    <div className='absolute left-0 bottom-0 w-[137px] h-[3px] bg-blue-500'></div>
                 </div>
             </div>
-        </div >
+            {/* Thông tin cơ bản */}
+            <section className='rounded-md bg-white mb-4'>
+                <div className='p-6 shadow-md'>
+                    <div className='panel-header'>
+                        <div className='text-xl font-semibold'>Thông tin cơ bản </div>
+                    </div>
+                    <div className='text-sm'>
+                        <div className='panel-content'>
+                            <div className=''>
+                                <div className='flex items-center'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Hình ảnh sản phẩm</span>
+                                    </div>
+                                    <div className=''>
+                                        <div className='flex'>
+                                            <div className='flex'>
+                                                <label className='mr-3 gap-3 flex items-center'>
+                                                    <input type='radio' value='1' name='ratio' />
+                                                    {/* <span className=''></span> */}
+                                                    <span data-v-ba3e96bb='' className=''>Hình ảnh tỷ lệ 1:1</span>
+                                                </label>
+                                                <label className='mr-3 gap-3 flex items-center'>
+                                                    <input type='radio' value='2' name='ratio' />
+                                                    {/* <span className=''></span> */}
+                                                    <span className=''>Hình ảnh tỷ lệ 3:4</span>
+                                                </label>
+                                            </div>
+                                            <button type='button' className='text-blue-500'>
+                                                <span>Xem ví dụ</span>
+                                            </button>
+                                        </div>
+                                        <div className=''>
+                                            <div className=''>
+                                                <CustomImagePicker setImages={setImages} limit={4} />
+                                            </div>
+                                            {/* <div className='eds-modal image-cropper-modal' close-inside=''>
+                                                    <div className='eds-modal__mask'>
+                                                        <div className='eds-modal__container'>
+                                                            <div className='eds-modal__box'>
+                                                                <div className='eds-modal__content eds-modal__content--normal'>
+                                                                    <div className='eds-modal__header'>
+                                                                        <div className='image-cropper-header'>Chỉnh sửa hình ảnh sản phẩm</div>
+                                                                    </div>
+                                                                    <div className='eds-modal__body'>
+                                                                        <div className='image-cropper-content'>
+                                                                            <div className='panel-left'>
+                                                                                <div className='image-container'>
+                                                                                    <img src='/assets/user.png' className='image' alt='' />
+                                                                                </div>
+                                                                                <div className='actions-bar'>
+                                                                                    <div className='actions-left'>
+                                                                                        <div className='zoom'>
+                                                                                            <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
+                                                                                                <div className='eds-popover__ref'>
+                                                                                                    <div className='icon disabled'>
+                                                                                                        <i className='eds-icon icon-zoom'></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
+                                                                                                    <div className='eds-popover__content'>Thu nhỏ</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
+                                                                                                <div className='eds-popover__ref'>
+                                                                                                    <div className='icon'>
+                                                                                                        <i className='eds-icon icon-zoom'></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
+                                                                                                    <div className='eds-popover__content'>Phóng to</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
+                                                                                            <div className='eds-popover__ref'>
+                                                                                                <div className='icon'>
+                                                                                                    <i className='eds-icon icon-others'></i>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
+                                                                                                <div className='eds-popover__content'>Xoay phải 90°</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
+                                                                                            <div className='eds-popover__ref'>
+                                                                                                <div className='icon'>
+                                                                                                    <i className='eds-icon icon-others'></i>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
+                                                                                                <div className='eds-popover__content'>Lật ngược ảnh theo chiều ngang</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
+                                                                                            <div className='eds-popover__ref'>
+                                                                                                <div className='icon'>
+                                                                                                    <i className='eds-icon icon-others'></i>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
+                                                                                                <div className='eds-popover__content'>Lật ngược ảnh theo chiều dọc</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className='actions-right'>
+                                                                                        <button type='button' className='eds-button eds-button--small'>
+                                                                                            <span>Nhập Lại</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className='mask'>
+                                                                                    <div className='mask-loading'>
+                                                                                        <img src='/assets/user.png' loading='eager' />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className='panel-right'>
+                                                                                <div className='label label-preview'>Xem trước</div>
+                                                                                <div className='preview-image-container'>
+                                                                                    <div className='preview-image'>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className='resize-triggers'>
+                                                                            <div className='expand-trigger'></div>
+                                                                            <div className='contract-trigger'></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className='eds-modal__footer'>
+                                                                        <div className='eds-modal__footer-buttons'>
+                                                                            <button type='button' className='eds-button eds-button--normal'>
+                                                                                <span>Đóng</span>
+                                                                            </button>
+                                                                            <button type='button' className='eds-button eds-button--primary eds-button--normal disabled'>
+                                                                                <span>Lưu</span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <i className='eds-icon eds-modal__close'></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> */}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='flex items-center'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Ảnh bìa</span>
+                                    </div>
+                                    <div className=''>
+                                        <div className='flex items-center'>
+                                            <div className=''>
+                                                <CustomImagePicker setImages={setImages} isDisabled={true} />
+                                            </div>
+                                            <div className='ml-6 text-xs text-gray-400'>
+                                                <ul>
+                                                    <li className='list-disc'>Tải lên hình ảnh 1:1.</li>
+                                                    <li className='list-disc'>Ảnh bìa sẽ được hiển thị tại các trang Kết quả tìm kiếm, Gợi ý hôm nay,... Việc sử dụng ảnh bìa đẹp sẽ thu hút thêm lượt truy cập vào sản phẩm của bạn</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='flex items-center'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <div>Video sản phẩm</div>
+                                    </div>
+                                    <div className='flex items-center'>
+                                        <div className=''>
+                                            <CustomImagePicker setImages={setImages} isDisabled={true} />
+                                        </div>
+                                        <div className='ml-6 text-xs text-gray-400'>
+                                            <ul>
+                                                <li className='list-disc'>Kích thước tối đa 30Mb, độ phân giải không vượt quá 1280x1280px</li>
+                                                <li className='list-disc'>Độ dài: 10s-60s</li>
+                                                <li className='list-disc'>Định dạng: MP4</li>
+                                                <li className='list-disc'>Lưu ý: sản phẩm có thể hiển thị trong khi video đang được xử lý. Video sẽ tự động hiển thị sau khi đã xử lý thành công.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className=''>
+                                    <div className='edit-row'>
+                                        <div className='edit-label edit-title'>
+                                            <div className='mandatory'>
+                                                <span className='mandatory-icon'>*</span>
+                                            </div>
+                                            <span>Tên sản phẩm</span>
+                                        </div>
+                                        <div className='edit-main'>
+                                            <div className='popover-wrap'>
+                                                <div className='product-edit-form-item custom-len-calc-input'>
+                                                    <div className='product-edit-form-item-content'>
+                                                        <div className='eds-input'>
+                                                            <div className='eds-input__inner eds-input__inner--large'>
+                                                                <input placeholder='Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật' type='text' max='Infinity' min='-Infinity' className='eds-input__input' />
+                                                                <div className='eds-input__suffix'>
+                                                                    <i className='eds-icon eds-input__clear-btn'></i>
+                                                                    <span className='eds-input__suffix-split'></span>0/120
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='edit-row is-last-edit-row'>
+                                        <div className='edit-label edit-row-left'>
+                                            <div className='mandatory'>
+                                                <span className='mandatory-icon'>*</span>
+                                            </div>
+                                            <span>Ngành hàng</span>
+                                        </div>
+                                        <div className='degrade-wrap edit-row-right-full'>
+                                            <div className='product-category'>
+                                                <div className='product-category-box'>
+                                                    <div className='product-edit-form-item'>
+                                                        <div className='product-edit-form-item-content'>
+                                                            <div className='popover-wrap'>
+                                                                <div className='product-category-box-inner'>
+                                                                    <div className='product-category-text'>
+                                                                        <span className='product-category-placeholder'>Chọn ngành hàng</span>
+                                                                    </div>
+                                                                    <i className='eds-icon product-category-icon'></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='edit-row description-wrap'>
+                                        <div className='edit-label edit-title'>
+                                            <div className='mandatory'>
+                                                <span className='mandatory-icon'>*</span>
+                                            </div>
+                                            <span>Mô tả sản phẩm</span>
+                                        </div>
+                                        <div className='edit-main'>
+                                            <div className='product-description'>
+                                                <span className='async-component'>
+                                                    <span>
+                                                        <div className='ls-upload-cmpt-container product-description-editor'>
+                                                            <div className='popover-wrap'>
+                                                                <div className='product-edit-form-item custom-len-calc-input'>
+                                                                    <div className='product-edit-form-item-content'>
+                                                                        <div className='eds-input eds-input__area'>
+                                                                            <textarea rows={26} className='eds-input__inner eds-input__inner--normal' />
+                                                                        </div>
+                                                                        <div className='text-area-label'>
+                                                                            <span className='text-area-label-pre'>0</span>
+                                                                            <span>3000</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </span>
+                                                </span>
+                                                <div className='banner-generator-container banner-generator' entrance-type='4'>
+                                                    <div className='image-selector-wrapper'>
+                                                        <div className='eds-upload'>
+                                                            <div className='eds-upload-wrapper'>
+                                                                <input className='eds-upload__input' type='file' name='file' accept='.jpg, .jpeg, .png' />
+                                                                <span></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     )
 }
 

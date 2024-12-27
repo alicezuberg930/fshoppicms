@@ -11,6 +11,7 @@ import { FaRegShareSquare } from "react-icons/fa";
 import ProductDetailsModal from "@/app/components/ProductDetailsModal";
 import CustomPaginator from "@/app/components/CustomPaginator";
 import Image from "next/image";
+import { PATH } from "@/app/common/path";
 
 const CurrentProductsPage: React.FC = () => {
     // icons
@@ -69,7 +70,7 @@ const CurrentProductsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-2 text-2xl font-semibold">
                     <h2 className="text-black">Sản phẩm</h2>
                     <div className="flex gap-2">
-                        <Link href="/cms/products/create" className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
+                        <Link href={PATH.NEW_PRODUCT} className="flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4">
                             <IoIosAddCircleOutline className="w-5 h-5" />
                             <span>Thêm mới</span>
                         </Link>

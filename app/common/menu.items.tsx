@@ -77,7 +77,7 @@ const menuItems = [
         children: [
             {
                 name: "Sản phẩm đang bán",
-                path: PATH.PRODUCT_CURRENT,
+                path: PATH.PRODUCT_LIST,
                 icon: <FaBoxOpen className='w-5 h-5' />,
             },
             // {

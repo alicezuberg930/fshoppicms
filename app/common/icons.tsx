@@ -10,6 +10,7 @@ import { LuLayoutDashboard } from "react-icons/lu"
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi"
 import { BsThreeDots } from "react-icons/bs"
 import { BiCategory } from "react-icons/bi"
+import { RiImageAddFill } from "react-icons/ri";
 
 export const icons = {
     FaLaravel,
@@ -33,6 +34,7 @@ export const icons = {
     FaBoxOpen,
     IoIosAddCircleOutline,
     IoImagesOutline,
+    RiImageAddFill,
     FaRegShareSquare,
     CiLock,
     CiUnlock,

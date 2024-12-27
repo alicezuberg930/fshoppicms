@@ -1,18 +1,22 @@
-"use client"
-import { Dispatch, DragEvent, SetStateAction, useEffect, useState } from "react";
-import { icons } from "../common/icons";
-import Image from "next/image";
+'use client'
+import { Dispatch, DragEvent, SetStateAction, useEffect, useState } from 'react';
+import { icons } from '../common/icons';
+import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 const CustomImagePicker: React.FC<{
   images?: string[],
   setImages: Dispatch<SetStateAction<File[]>>,
   isMultiple?: boolean,
   resetAll?: boolean,
-}> = ({ images, setImages, isMultiple = true, resetAll = false }) => {
-  const [files, setFiles] = useState<{ file: File; url: string }[]>([]);
-  const [fileEnter, setFileEnter] = useState<boolean>(false);
+  limit?: number,
+  isDisabled?: boolean
+}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = 9, isDisabled = false }) => {
+  console.log({ limit, isDisabled });
+
+  const [tempfiles, setFiles] = useState<{ file: File; url: string }[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const { IoImagesOutline } = icons;
+  const { RiImageAddFill, FaRegTrashAlt, MdModeEdit } = icons;
 
   useEffect(() => {
     // Load initial images if provided
@@ -31,12 +35,11 @@ const CustomImagePicker: React.FC<{
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setFileEnter(false);
-
+    if (e.dataTransfer.items.length > limit) toast.error(`Bạn chỉ có thể tải lên không quá ${limit} file`)
     const newFiles: { file: File; url: string }[] = [];
     if (e.dataTransfer.items) {
       [...e.dataTransfer.items].forEach((item) => {
-        if (item.kind === "file") {
+        if (item.kind === 'file') {
           const file = item.getAsFile();
           if (file) {
             const url = URL.createObjectURL(file);
@@ -44,28 +47,24 @@ const CustomImagePicker: React.FC<{
           }
         }
       });
-    } else {
-      [...e.dataTransfer.files].forEach((file) => {
-        const url = URL.createObjectURL(file);
-        newFiles.push({ file, url });
-      });
     }
-
-    setFiles((prev) => [...prev, ...newFiles]);
-    setImages((prev) => [...prev, ...newFiles.map(({ file }) => file)]);
+    setFiles((prev) => [...prev, ...newFiles].slice(0, limit));
+    setImages((prev) => [...prev, ...newFiles.map(f => f.file).slice(0, limit)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+    if (files!.length > limit) toast.error(`Bạn chỉ có thể tải lên không quá ${limit} file`)
     if (files) {
-      const newFiles: { file: File; url: string }[] = [];
+      let newFiles: { file: File; url: string }[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const url = URL.createObjectURL(file);
         newFiles.push({ file, url });
       }
-      setFiles(newFiles);
-      setImages(newFiles.map(({ file }) => file));
+      newFiles = newFiles.slice(0, 8)
+      setFiles(prev => [...prev, ...newFiles].slice(0, limit));
+      setImages(prev => [...prev, ...newFiles.map(f => f.file)].slice(0, limit));
     }
   };
 
@@ -89,72 +88,74 @@ const CustomImagePicker: React.FC<{
 
   const handleDragEnd = () => {
     setDraggedIndex(null);
-    setImages(files.map(({ file }) => file));
+    setImages(tempfiles.map(f => f.file));
   };
 
   const resetImages = () => {
-    files.forEach(({ url }) => URL.revokeObjectURL(url));
+    tempfiles.forEach(f => URL.revokeObjectURL(f.url));
     setFiles([]);
     setImages([]);
   };
 
   return (
-    <div className="max-w-5xl">
-      {/* Dropzone */}
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setFileEnter(true);
-        }}
-        onDragLeave={() => setFileEnter(false)}
-        onDrop={handleDrop}
-        className={`${fileEnter ? "border-4" : "border-2"} ${files.length < 1 ? "block" : "hidden"} bg-white flex flex-col w-full max-w-56 h-64 border-dashed items-center justify-center`}
-      >
-        <label htmlFor="file" className="h-full flex flex-col gap-6 justify-center items-center text-center">
-          <IoImagesOutline className="w-16 h-16" fill="#347ab6" />
-          <span className="text-sm">Nhấn vào để tải ảnh lên hoặc kéo thả</span>
-        </label>
-        <input
-          name="file"
-          multiple={isMultiple}
-          id="file"
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-      </div>
-
-      {/* Images */}
-      <div className={`${files.length > 0 ? "block" : "hidden"}`}>
-        <div className="flex flex-wrap overflow-scroll gap-2 h-64 image-container">
+    <div className='text-blue-500 flex flex-wrap gap-5'>
+      {/* Image list */}
+      <div className={`${tempfiles.length > 0 ? 'block' : 'hidden'}`}>
+        <div className='flex flex-wrap gap-5 image-container'>
           {
-            files.map((file, index) => (
-              <div
-                key={index}
-                className="bg-gray-200 rounded-md relative w-full max-w-56 h-64"
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={(e) => handleDragOver(e, index)}
+            tempfiles.map((file, i) => (
+              <div key={i} draggable
+                className='group rounded-md overflow-hidden relative h-20 w-20 bg-gray-300'
+                onDragStart={() => handleDragStart(i)}
+                onDragOver={(e) => handleDragOver(e, i)}
                 onDragEnd={handleDragEnd}
               >
-                <Image
-                  fill
-                  className="object-cover rounded-md"
+                <Image fill className='object-cover'
                   src={file.url}
-                  alt={`Uploaded file ${index}`}
-                  sizes="width: 100%, height: 100%"
+                  alt={`Uploaded file ${i}`}
+                  sizes='width: 100%, height: 100%'
                 />
+                <div className='group-hover:block hidden'>
+                  <div className='text-white w-full py-1 bg-[rgba(0,0,0,0.7)] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
+                    <button className='pr-3'>
+                      <MdModeEdit size={16} />
+                    </button>
+                    <span>|</span>
+                    <button className='pl-3' onClick={() => {
+                      setFiles(prev => prev.filter((_, index) => index != i))
+                      setImages(prev => prev.filter((_, index) => index != i))
+                    }}>
+                      <FaRegTrashAlt size={16} />
+                    </button>
+                  </div>
+                </div>
               </div>
             ))
           }
         </div>
-        <div
-          onClick={resetImages}
-          className="cursor-pointer w-fit mt-6 p-3 py-2 bg-red-500 text-white rounded-md"
-        >
-          Đặt lại
-        </div>
+      </div>
+      {/* Dropzone */}
+      <div
+        onDragOver={(e) => { e.preventDefault() }}
+        // onDragLeave={() => setFileEnter(false)}
+        onDrop={handleDrop}
+        className={`${tempfiles.length < limit ? 'block' : 'hidden'} bg-white flex flex-col border border-dashed rounded-md items-center justify-center h-20 w-20`}
+      >
+        <label htmlFor='file' className='flex flex-col justify-center items-center text-center'>
+          <RiImageAddFill size={24} />
+          <span className='text-xs'>Thêm hình ảnh ({tempfiles.length}/9)</span>
+        </label>
+        <input
+          name='file'
+          multiple={isMultiple}
+          id='file'
+          type='file'
+          accept='image/*'
+          className='hidden'
+          onChange={handleFileChange}
+          disabled={isDisabled}
+          readOnly={isDisabled}
+        />
       </div>
     </div>
   );
