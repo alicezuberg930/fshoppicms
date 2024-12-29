@@ -1,34 +1,29 @@
 'use client'
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
 // const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
 //     ssr: false // Prevents Editor.js from being included in server-side rendering
 // });
-// import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { icons } from '@/app/common/icons';
 import { uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { updateProductHook } from '../hooks/product.hooks';
-// import { readCategoryHook } from '../hooks/category.hooks';
-// import CategorySelectList from './CategorySelectList';
 import { readBrandsHook } from '../hooks/brands.hooks';
 import CategoryModalPicker from './CategoryModalPicker';
-// import { isAxiosError } from '../common/utils';
 
 const ProductModal: React.FC<{
     product?: Product, setSelected?: (v: Product | null) => void, page: number
 }> = ({ product = null, setSelected, page }) => {
     const [description, setDescription] = useState<string>('')
     const [images, setImages] = useState<File[]>([])
-    const { IoIosAddCircleOutline, FaRegTrashAlt, MdOutlineCancel } = icons
+    const { FaRegTrashAlt, MdOutlineCancel, IoIosAddCircleOutline } = icons
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
     const [variations, setVariations] = useState<number[]>([]);
     const [options, setOptions] = useState<number[][]>([])
-    console.log(options);
 
     const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -78,6 +73,20 @@ const ProductModal: React.FC<{
         })
     }
 
+    useEffect(() => {
+        const onAddOption = () => {
+            const optionInputs = document.querySelectorAll('.option-input') as NodeListOf<HTMLInputElement>
+            for (let i = 0; i < optionInputs.length; i++) {
+                optionInputs[i].addEventListener('change', (e) => {
+                    // if (optionInputs[i].value != '') {
+                    // console.log(optionInputs[i].value);
+                    // }
+                })
+            }
+        }
+        onAddOption()
+    }, [options])
+
     const variantInfo = (): Variant[] => {
         const variantsEls = document.getElementsByClassName('variant')
         let attributes = []
@@ -116,7 +125,7 @@ const ProductModal: React.FC<{
             </div>
             {/* Thông tin cơ bản */}
             <section className='overflow-hidden rounded-md bg-white mb-4'>
-                <div className='p-6 shadow-md'>
+                <div className='p-2 md:p-6 shadow-md'>
                     <div className='panel-header'>
                         <div className='text-xl font-semibold mb-10'>Thông tin cơ bản </div>
                     </div>
@@ -285,7 +294,7 @@ const ProductModal: React.FC<{
                                 {/* Video */}
                                 <div className='flex items-center mb-5'>
                                     <div className='flex-none mr-3 w-36 text-end'>
-                                        <div>Video sản phẩm</div>
+                                        <span>Video sản phẩm</span>
                                     </div>
                                     <div className='flex items-center'>
                                         <div className=''>
@@ -371,7 +380,7 @@ const ProductModal: React.FC<{
             </section>
             {/* Thông tin bán hàng (biến thể) */}
             <section className='overflow-hidden rounded-md bg-white mb-4'>
-                <div className='p-6 shadow-md'>
+                <div className='p-2 md:p-6 shadow-md'>
                     <div className='panel-header'>
                         <div className='text-xl font-semibold mb-10'>Thông tin bán hàng</div>
                     </div>
@@ -379,12 +388,12 @@ const ProductModal: React.FC<{
                         <div className='panel-content'>
                             <div className=''>
                                 {/* Phân loại hàng */}
-                                <div className='flex items-center mb-5'>
-                                    <div className='flex-none mr-3 w-36 '>
-                                        <div className='flex justify-end gap-1 items-center'>
+                                <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36'>
+                                        <div className='flex justify-start md:justify-end gap-1 items-center'>
                                             <span className='relative flex w-2 h-2'>
-                                                <div className='absolute inline-flex w-full h-full bg-blue-400 rounded-full opacity-75 animate-ping'></div>
-                                                <div className='relative inline-flex w-2 h-2 bg-blue-500 rounded-full'></div>
+                                                <div className='absolute w-full h-full bg-blue-400 rounded-full opacity-75 animate-ping'></div>
+                                                <div className='relative w-2 h-2 bg-blue-500 rounded-full'></div>
                                             </span>
                                             <span>Phân loại hàng</span>
                                         </div>
@@ -405,36 +414,50 @@ const ProductModal: React.FC<{
                                                                 >
                                                                     <MdOutlineCancel size={24} />
                                                                 </span>
-                                                                <div className='flex items-center pb-3'>
+                                                                <div className='flex flex-col sm:flex-row items-start sm:items-center pb-3'>
                                                                     <div className='flex-none w-20'>Phân loại {i + 1}</div>
-                                                                    <div className='flex-1 variation-name-edit'>
-                                                                        <div className='w-1/2 flex variation-name-edit-item'>
+                                                                    <div className='flex-1 w-full variation-name-edit'>
+                                                                        <div className='w-full sm:w-1/2 flex variation-name-edit-item'>
                                                                             <div className='flex-auto'>
                                                                                 <input placeholder='e.g. Color, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
                                                                             </div>
-                                                                            <div className='px-3'>
-                                                                                <div className='w-4 h-4'></div>
+                                                                            <div className='flex-none p-0 sm:pr-2 opacity-0'>
+                                                                                <button className='pl-2'>
+                                                                                    <IoIosAddCircleOutline size={16} />
+                                                                                </button>
+                                                                                <button className='pl-2'>
+                                                                                    <IoIosAddCircleOutline size={16} />
+                                                                                </button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div className='flex items-center'>
+                                                                <div className='flex flex-col sm:flex-row items-start sm:items-center'>
                                                                     <div className='flex-none w-20 pt-3'>Tùy chọn</div>
-                                                                    <div className='flex-1 variation-option-edit'>
+                                                                    <div className='flex-1 w-full variation-option-edit'>
                                                                         <div className='flex flex-wrap options-container'>
                                                                             {
                                                                                 options[i]?.map((_, optionIndex) => {
                                                                                     return (
-                                                                                        <div key={optionIndex} className='w-1/2 pt-3 odd:pr-3 flex items-center option-item drag-item' draggable>
+                                                                                        <div key={optionIndex} className='w-full sm:w-1/2 pt-3 pr-0 sm:odd:pr-2 flex items-center option-item drag-item' draggable>
                                                                                             <div className='flex-auto'>
-                                                                                                <input placeholder='e.g. Red, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                                                                                <input placeholder='e.g. Red, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-input' />
                                                                                             </div>
-                                                                                            <div className='flex-none pl-3 text-gray-400'>
-                                                                                                <button className='option-item-remove-btn' onClick={() => {
+                                                                                            <div className='h-4 flex-none'>
+                                                                                                <button className='pl-2 text-gray-400' onClick={() => {
                                                                                                     setOptions(prev => {
                                                                                                         const newOptions = prev.map((option, index) => index === i ? [...option, option.length] : option)
                                                                                                         return newOptions
                                                                                                     })
+                                                                                                }}>
+                                                                                                    <IoIosAddCircleOutline size={16} />
+                                                                                                </button>
+                                                                                                <button className='pl-2 text-gray-400' onClick={() => {
+                                                                                                    if (options[i].length > 1)
+                                                                                                        setOptions(prev => {
+                                                                                                            const newOptions = prev.map((option, index) => index === i ? option.filter((_, op) => op !== optionIndex) : option)
+                                                                                                            return newOptions
+                                                                                                        })
                                                                                                 }}>
                                                                                                     <FaRegTrashAlt size={16} />
                                                                                                 </button>
@@ -459,6 +482,108 @@ const ProductModal: React.FC<{
                                                 <IoIosAddCircleOutline size={24} className='mr-2' />
                                                 <span>Thêm nhóm phân loại</span>
                                             </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Danh sách phân loại hàng */}
+                                <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36 text-start md:text-end'>
+                                        <span>Danh sách phân loại</span>
+                                    </div>
+                                    <div className='w-full'>
+                                        <div className='flex flex-wrap gap-3'>
+                                            <form className='flex items-center flex-auto'>
+                                                <div className='flex-auto'>
+                                                    <div className='eds-form-item__control'>
+                                                        <div className='eds-form-item__content'>
+                                                            <div className='eds-input price-input'>
+                                                                <input placeholder='Giá' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-l-md w-full outline-none' />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='flex-auto'>
+                                                    <div className='eds-form-item__control'>
+                                                        <div className='eds-form-item__content'>
+                                                            <div className='eds-input'>
+                                                                <input placeholder='Kho hàng' type='text' className='border-gray-300 p-2 border focus:border-blue-500 w-full outline-none' />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='flex-auto'>
+                                                    <div className='eds-form-item__control'>
+                                                        <div className='eds-form-item__content'>
+                                                            <div className='eds-input'>
+                                                                <input placeholder='SKU phân loại' className='border-gray-300 p-2 border focus:border-blue-500 rounded-r-md w-full outline-none' />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <div className='flex-none'>
+                                                <button className='rounded-md bg-blue-300 gap-1 text-white py-2 px-4'>
+                                                    <span>Áp dụng cho tất cả phân loại</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="overflow-hidden rounded-md border border-gray-300 mt-5">
+                                            <table className="w-full text-center">
+                                                <thead className="bg-gray-100">
+                                                    <tr>
+                                                        <th className="px-1 md:px-4 py-2 border-r border-gray-300 font-medium">
+                                                            <div className='flex justify-center gap-1 items-center'>
+                                                                <span className='relative flex w-2 h-2'>
+                                                                    <div className='absolute w-full h-full bg-blue-400 rounded-full opacity-75 animate-ping'></div>
+                                                                    <div className='relative w-2 h-2 bg-blue-500 rounded-full'></div>
+                                                                </span>
+                                                                <span>tenbienthe</span>
+                                                            </div>
+                                                        </th>
+                                                        <th className="px-1 md:px-4 py-2 border-r border-gray-300 font-medium">
+                                                            <div>
+                                                                <span className='text-red-500'>*</span>
+                                                                <span>Giá</span>
+                                                            </div>
+                                                        </th>
+                                                        <th className="px-1 md:px-4 py-2 border-r border-gray-300 font-medium">
+                                                            <div>
+                                                                <span className='text-red-500'>*</span>
+                                                                <span>Kho hàng</span>
+                                                            </div>
+                                                        </th>
+                                                        <th className="px-1 md:px-4 py-2 font-medium">
+                                                            <span>SKU Phân loại</span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {[{ name: "rer" }, { name: "rfds" }].map((row, i) => (
+                                                        <tr key={i} className="border-t border-gray-300">
+                                                            <td className="border-r py-3 flex flex-col items-center gap-2">
+                                                                <div>{row.name}</div>
+                                                                <CustomImagePicker showTitle={false} setImages={setImages} id={i.toString()} isMultiple={false} />
+                                                            </td>
+                                                            <td className="border-r px-1 md:px-4 py-3">
+                                                                <input type="number" placeholder="Nhập vào" max={0}
+                                                                    className="border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none"
+                                                                />
+                                                            </td>
+                                                            <td className="border-r px-1 md:px-4 py-3">
+                                                                <input type="number" defaultValue={0} max={0}
+                                                                    className="border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none"
+                                                                />
+                                                            </td>
+                                                            <td className="px-1 md:px-4 py-3">
+                                                                <input type="number" placeholder="Nhập vào" max={0}
+                                                                    className="border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>

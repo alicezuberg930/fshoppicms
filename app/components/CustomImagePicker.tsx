@@ -11,7 +11,8 @@ const CustomImagePicker: React.FC<{
   resetAll?: boolean,
   limit?: number,
   id: string,
-}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = isMultiple ? 9 : 1, id }) => {
+  showTitle?: boolean
+}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = isMultiple ? 9 : 1, id, showTitle = true }) => {
   const [tempfiles, setFiles] = useState<{ file: File; url: string }[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { RiImageAddFill, FaRegTrashAlt, MdModeEdit } = icons;
@@ -137,9 +138,9 @@ const CustomImagePicker: React.FC<{
       <div onDragOver={(e) => { e.preventDefault() }} onDrop={handleDrop}
         className={`${tempfiles.length < limit ? 'block' : 'hidden'} bg-white flex flex-col border border-dashed rounded-md items-center justify-center h-20 w-20`}
       >
-        <label htmlFor={id} className='flex flex-col justify-center items-center text-center'>
+        <label htmlFor={id} className='flex flex-col justify-center items-center'>
           <RiImageAddFill size={24} />
-          <span className='text-xs'>Thêm hình ảnh ({tempfiles.length}/{limit})</span>
+          {showTitle && <span className='text-xs text-center'>Thêm hình ảnh ({tempfiles.length}/{limit})</span>}
         </label>
         <input multiple={isMultiple} type='file' accept='image/*' id={id} name={id} className='hidden' onChange={handleFileChange} />
       </div>
