@@ -52,7 +52,7 @@ const UploadFilesPage: React.FC = () => {
                 </div>
                 <div className="flex-col text-black">
                     <div className="space-y-4">
-                        <CustomImagePicker setImages={setFiles} isMultiple={true} />
+                        <CustomImagePicker id="lll" setImages={setFiles} isMultiple={true} />
                         <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' onClick={handleUploadFiles} />
                         {
                             imageLinks.length > 0 ? <div className="">
