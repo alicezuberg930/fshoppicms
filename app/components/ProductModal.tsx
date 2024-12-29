@@ -10,11 +10,11 @@ import { icons } from '@/app/common/icons';
 import { getSubCategories, uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import CustomSwitch from '@/app/components/CustomSwitch';
 import { updateProductHook } from '../hooks/product.hooks';
-import { readCategoryHook } from '../hooks/category.hooks';
+// import { readCategoryHook } from '../hooks/category.hooks';
 // import CategorySelectList from './CategorySelectList';
 import { readBrandsHook } from '../hooks/brands.hooks';
+import CategoryModalPicker from './CategoryModalPicker';
 // import { isAxiosError } from '../common/utils';
 
 const ProductModal: React.FC<{
@@ -23,12 +23,15 @@ const ProductModal: React.FC<{
     const [description, setDescription] = useState<string>('')
     const [images, setImages] = useState<File[]>([])
     const [variantElements, setVariantElements] = useState<number[]>([0])
-    const { IoIosAddCircleOutline, FaRegTrashAlt } = icons
+    const { IoIosAddCircleOutline, FaRegTrashAlt, MdModeEdit } = icons
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
-    const { data: categories, isLoading: loadingCategories } = readCategoryHook(1)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
     const [subCategories, setSubCategories] = useState<Category[]>([])
+
+    const showCategoryListModal = () => {
+
+    }
 
     const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -129,21 +132,22 @@ const ProductModal: React.FC<{
                 </div>
             </div>
             {/* Thông tin cơ bản */}
-            <section className='rounded-md bg-white mb-4'>
+            <section className='overflow-hidden rounded-md bg-white mb-4'>
                 <div className='p-6 shadow-md'>
                     <div className='panel-header'>
-                        <div className='text-xl font-semibold'>Thông tin cơ bản </div>
+                        <div className='text-xl font-semibold mb-10'>Thông tin cơ bản </div>
                     </div>
                     <div className='text-sm'>
                         <div className='panel-content'>
                             <div className=''>
-                                <div className='flex items-center'>
+                                {/* Hình ảnh */}
+                                <div className='flex items-center mb-5'>
                                     <div className='flex-none mr-3 w-36 text-end'>
                                         <span className='text-red-500'>*</span>
                                         <span>Hình ảnh sản phẩm</span>
                                     </div>
                                     <div className=''>
-                                        <div className='flex'>
+                                        <div className='flex py-2'>
                                             <div className='flex'>
                                                 <label className='mr-3 gap-3 flex items-center'>
                                                     <input type='radio' value='1' name='ratio' />
@@ -277,13 +281,14 @@ const ProductModal: React.FC<{
                                         </div>
                                     </div>
                                 </div>
+                                {/* Ảnh bìa */}
                                 <div className='flex items-center'>
                                     <div className='flex-none mr-3 w-36 text-end'>
                                         <span className='text-red-500'>*</span>
                                         <span>Ảnh bìa</span>
                                     </div>
                                     <div className=''>
-                                        <div className='flex items-center'>
+                                        <div className='flex items-center mb-5'>
                                             <div className=''>
                                                 <CustomImagePicker setImages={setImages} isDisabled={true} />
                                             </div>
@@ -296,7 +301,8 @@ const ProductModal: React.FC<{
                                         </div>
                                     </div>
                                 </div>
-                                <div className='flex items-center'>
+                                {/* Video */}
+                                <div className='flex items-center mb-5'>
                                     <div className='flex-none mr-3 w-36 text-end'>
                                         <div>Video sản phẩm</div>
                                     </div>
@@ -314,97 +320,108 @@ const ProductModal: React.FC<{
                                         </div>
                                     </div>
                                 </div>
-                                <div className=''>
-                                    <div className='edit-row'>
-                                        <div className='edit-label edit-title'>
-                                            <div className='mandatory'>
-                                                <span className='mandatory-icon'>*</span>
-                                            </div>
-                                            <span>Tên sản phẩm</span>
+                                {/* Tên */}
+                                <div className='flex items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Tên sản phẩm</span>
+                                    </div>
+                                    <div className='w-full'>
+                                        <div className=''>
+                                            <input placeholder='Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật' type='text' name='name'
+                                                className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
+                                            />
+                                            {/* <div className='eds-input__suffix'>
+                                                <i className='eds-icon eds-input__clear-btn'></i>
+                                                <span className='eds-input__suffix-split'></span>0/120
+                                            </div> */}
                                         </div>
-                                        <div className='edit-main'>
-                                            <div className='popover-wrap'>
-                                                <div className='product-edit-form-item custom-len-calc-input'>
-                                                    <div className='product-edit-form-item-content'>
-                                                        <div className='eds-input'>
-                                                            <div className='eds-input__inner eds-input__inner--large'>
-                                                                <input placeholder='Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật' type='text' max='Infinity' min='-Infinity' className='eds-input__input' />
-                                                                <div className='eds-input__suffix'>
-                                                                    <i className='eds-icon eds-input__clear-btn'></i>
-                                                                    <span className='eds-input__suffix-split'></span>0/120
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    </div>
+                                </div>
+                                {/* Ngành hàng (danh mục) */}
+                                <div className='flex items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Ngành hàng</span>
+                                    </div>
+                                    <div className='w-full'>
+                                        <CategoryModalPicker />
+                                    </div>
+                                </div>
+                                {/* Description  */}
+                                <div className='flex items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Mô tả sản phẩm</span>
+                                    </div>
+                                    <div className='w-full'>
+                                        <div className='product-description'>
+                                            <div className=''>
+                                                <textarea rows={9} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                                {/* <div className='text-area-label'>
+                                                    <span className='text-area-label-pre'>0</span>
+                                                    <span>3000</span>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
-                                    <div className='edit-row is-last-edit-row'>
-                                        <div className='edit-label edit-row-left'>
-                                            <div className='mandatory'>
-                                                <span className='mandatory-icon'>*</span>
-                                            </div>
-                                            <span>Ngành hàng</span>
-                                        </div>
-                                        <div className='degrade-wrap edit-row-right-full'>
-                                            <div className='product-category'>
-                                                <div className='product-category-box'>
-                                                    <div className='product-edit-form-item'>
-                                                        <div className='product-edit-form-item-content'>
-                                                            <div className='popover-wrap'>
-                                                                <div className='product-category-box-inner'>
-                                                                    <div className='product-category-text'>
-                                                                        <span className='product-category-placeholder'>Chọn ngành hàng</span>
-                                                                    </div>
-                                                                    <i className='eds-icon product-category-icon'></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                </div>
+                                {/* Brand */}
+                                <div className='flex items-center'>
+                                    <div className='flex-none mr-3 w-36 text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Thương hiệu</span>
+                                    </div>
+                                    <div className='w-full'>
+                                        <div className=''>
+                                            <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="category">
+                                                {loadingBrands ?
+                                                    <option value="" disabled>Không có dữ liệu</option> :
+                                                    brands && (brands?.brands?.data as Brand[]).map(brand => {
+                                                        return (
+                                                            <option key={brand._id} value={brand._id}>{brand.name}</option>
+                                                        )
+                                                    })
+                                                }
+                                            </select>
                                         </div>
                                     </div>
-                                    <div className='edit-row description-wrap'>
-                                        <div className='edit-label edit-title'>
-                                            <div className='mandatory'>
-                                                <span className='mandatory-icon'>*</span>
-                                            </div>
-                                            <span>Mô tả sản phẩm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Thông tin bán hàng (biến thể) */}
+            <section className='overflow-hidden rounded-md bg-white mb-4'>
+                <div className='p-6 shadow-md'>
+                    <div className='panel-header'>
+                        <div className='text-xl font-semibold mb-10'>Thông tin bán hàng</div>
+                    </div>
+                    <div className='text-sm'>
+                        <div className='panel-content'>
+                            <div className=''>
+                                {/* Phân loại hàng */}
+                                <div className='flex items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36 '>
+                                        <div className='flex justify-end gap-1 items-center'>
+                                            <span className='relative flex w-2 h-2'>
+                                                <div className='absolute inline-flex w-full h-full bg-blue-400 rounded-full opacity-75 animate-ping'></div>
+                                                <div className='relative inline-flex w-2 h-2 bg-blue-500 rounded-full'></div>
+                                            </span>
+                                            <span>Phân loại hàng</span>
                                         </div>
-                                        <div className='edit-main'>
-                                            <div className='product-description'>
-                                                <span className='async-component'>
-                                                    <span>
-                                                        <div className='ls-upload-cmpt-container product-description-editor'>
-                                                            <div className='popover-wrap'>
-                                                                <div className='product-edit-form-item custom-len-calc-input'>
-                                                                    <div className='product-edit-form-item-content'>
-                                                                        <div className='eds-input eds-input__area'>
-                                                                            <textarea rows={26} className='eds-input__inner eds-input__inner--normal' />
-                                                                        </div>
-                                                                        <div className='text-area-label'>
-                                                                            <span className='text-area-label-pre'>0</span>
-                                                                            <span>3000</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </span>
-                                                </span>
-                                                <div className='banner-generator-container banner-generator' entrance-type='4'>
-                                                    <div className='image-selector-wrapper'>
-                                                        <div className='eds-upload'>
-                                                            <div className='eds-upload-wrapper'>
-                                                                <input className='eds-upload__input' type='file' name='file' accept='.jpg, .jpeg, .png' />
-                                                                <span></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div className='w-full'>
+                                        <div className=''>
+                                            <button className='text-blue-500 border-gray-300 p-2 border border-dashed rounded-md outline-none'>
+                                                Thêm nhóm phân loại
+                                            </button>
+                                            {/* <div className='eds-input__suffix'>
+                                                <i className='eds-icon eds-input__clear-btn'></i>
+                                                <span className='eds-input__suffix-split'></span>0/120
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

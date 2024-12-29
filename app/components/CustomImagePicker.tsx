@@ -49,7 +49,7 @@ const CustomImagePicker: React.FC<{
       });
     }
     setFiles((prev) => [...prev, ...newFiles].slice(0, limit));
-    setImages((prev) => [...prev, ...newFiles.map(f => f.file).slice(0, limit)]);
+    setImages((prev) => [...prev, ...newFiles.map(f => f.file)].slice(0, limit));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
