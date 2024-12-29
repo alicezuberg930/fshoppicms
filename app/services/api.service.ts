@@ -50,6 +50,12 @@ export const deleteProduct = async (id: string) => {
     }).then(res => res.data)
 }
 
+export const detailsProduct = async (id: string) => {
+    return await axioInstance<any>({
+        url: `${API.DETAILS_PRODUCT}`, params: { id }, method: "GET",
+    }).then(res => res.data)
+}
+
 // admin 
 export const lockAccount = async (lockReason: string) => {
     return await axioInstance<any>({
