@@ -10,10 +10,8 @@ const CustomImagePicker: React.FC<{
   isMultiple?: boolean,
   resetAll?: boolean,
   limit?: number,
-  isDisabled?: boolean
-}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = 9, isDisabled = false }) => {
-  console.log({ limit, isDisabled });
-
+  id: string,
+}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = isMultiple ? 9 : 1, id }) => {
   const [tempfiles, setFiles] = useState<{ file: File; url: string }[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { RiImageAddFill, FaRegTrashAlt, MdModeEdit } = icons;
@@ -98,35 +96,36 @@ const CustomImagePicker: React.FC<{
   };
 
   return (
-    <div className='text-blue-500 flex flex-wrap gap-5'>
+    <div className='text-blue-500 flex flex-wrap gap-3'>
       {/* Image list */}
       <div className={`${tempfiles.length > 0 ? 'block' : 'hidden'}`}>
-        <div className='flex flex-wrap gap-5 image-container'>
+        <div className='flex flex-wrap gap-3 image-container'>
           {
             tempfiles.map((file, i) => (
-              <div key={i} draggable
-                className='group rounded-md overflow-hidden relative h-20 w-20 bg-gray-300'
+              <div draggable key={i} className='group'
                 onDragStart={() => handleDragStart(i)}
                 onDragOver={(e) => handleDragOver(e, i)}
                 onDragEnd={handleDragEnd}
               >
-                <Image fill className='object-cover'
-                  src={file.url}
-                  alt={`Uploaded file ${i}`}
-                  sizes='width: 100%, height: 100%'
-                />
-                <div className='group-hover:block hidden'>
-                  <div className='text-white w-full py-1 bg-[rgba(0,0,0,0.7)] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
-                    <button className='pr-3'>
-                      <MdModeEdit size={16} />
-                    </button>
-                    <span>|</span>
-                    <button className='pl-3' onClick={() => {
-                      setFiles(prev => prev.filter((_, index) => index != i))
-                      setImages(prev => prev.filter((_, index) => index != i))
-                    }}>
-                      <FaRegTrashAlt size={16} />
-                    </button>
+                <div className='rounded-md overflow-hidden relative h-20 w-20 bg-gray-300'>
+                  <Image fill className='object-cover'
+                    src={file.url}
+                    alt={`Uploaded file ${i}`}
+                    sizes='width: 100%, height: 100%'
+                  />
+                  <div className='group-hover:block hidden'>
+                    <div className='text-white w-full py-1 bg-[rgba(0,0,0,0.7)] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
+                      <button className='pr-3'>
+                        <MdModeEdit size={16} />
+                      </button>
+                      <span>|</span>
+                      <button className='pl-3' onClick={() => {
+                        setFiles(prev => prev.filter((_, index) => index != i))
+                        setImages(prev => prev.filter((_, index) => index != i))
+                      }}>
+                        <FaRegTrashAlt size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -135,29 +134,16 @@ const CustomImagePicker: React.FC<{
         </div>
       </div>
       {/* Dropzone */}
-      <div
-        onDragOver={(e) => { e.preventDefault() }}
-        // onDragLeave={() => setFileEnter(false)}
-        onDrop={handleDrop}
+      <div onDragOver={(e) => { e.preventDefault() }} onDrop={handleDrop}
         className={`${tempfiles.length < limit ? 'block' : 'hidden'} bg-white flex flex-col border border-dashed rounded-md items-center justify-center h-20 w-20`}
       >
-        <label htmlFor='file' className='flex flex-col justify-center items-center text-center'>
+        <label htmlFor={id} className='flex flex-col justify-center items-center text-center'>
           <RiImageAddFill size={24} />
-          <span className='text-xs'>Thêm hình ảnh ({tempfiles.length}/9)</span>
+          <span className='text-xs'>Thêm hình ảnh ({tempfiles.length}/{limit})</span>
         </label>
-        <input
-          name='file'
-          multiple={isMultiple}
-          id='file'
-          type='file'
-          accept='image/*'
-          className='hidden'
-          onChange={handleFileChange}
-          disabled={isDisabled}
-          readOnly={isDisabled}
-        />
+        <input multiple={isMultiple} type='file' accept='image/*' id={id} name={id} className='hidden' onChange={handleFileChange} />
       </div>
-    </div>
+    </div >
   );
 };
 

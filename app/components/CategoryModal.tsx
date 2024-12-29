@@ -79,7 +79,7 @@ const CategoryModal: React.FC<{
                                     <td className='py-3 w-32'>Hình</td>
                                     <td className='py-3'>
                                         <div className='mb-2'>
-                                            <CustomImagePicker setImages={setImages} isMultiple={false} />
+                                            <CustomImagePicker setImages={setImages} isMultiple={false} id="category" />
                                         </div>
                                         <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
                                     </td>

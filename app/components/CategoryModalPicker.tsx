@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { icons } from '../common/icons'
 import { readCategoryHook } from '../hooks/category.hooks'
 import { getSubCategories } from '../services/api.service'
+import { toast } from 'react-toastify'
 
 const CategoryModalPicker: React.FC = () => {
     const { MdModeEdit, MdCancel, FaChevronRight } = icons
@@ -80,7 +81,7 @@ const CategoryModalPicker: React.FC = () => {
                                                                 getSubCategoriesAction(category._id!)
                                                                 setChosenCateggory([category.name!])
                                                                 setCategoryID(category._id!)
-                                                            }} key={category._id} className='category-item px-4 py-2 hover:bg-gray-100 items-center flex justify-between'>
+                                                            }} key={category._id} className='category-item px-4 py-2 hover:bg-gray-100 items-center flex justify-between cursor-pointer'>
                                                                 <p className='overflow-hidden text-ellipsis'>{category.name}</p>
                                                                 <div>
                                                                     <FaChevronRight />
@@ -97,7 +98,7 @@ const CategoryModalPicker: React.FC = () => {
                                                             <li key={category._id} onClick={() => {
                                                                 setChosenCateggory(prev => prev.length == 1 ? prev.concat(category.name!) : [...prev.filter((_, i) => i !== prev.length - 1), category.name!])
                                                                 setCategoryID(category._id!)
-                                                            }} className='category-item px-4 py-2 hover:bg-gray-100 items-center flex justify-between'>
+                                                            }} className='category-item px-4 py-2 hover:bg-gray-100 items-center flex justify-between cursor-pointer'>
                                                                 <p className='overflow-hidden text-ellipsis'>{category.name}</p>
                                                                 <div>
                                                                     <FaChevronRight />
@@ -127,17 +128,16 @@ const CategoryModalPicker: React.FC = () => {
                                             )
                                         })
                                     }
-                                    {/* <span className='pr-2 font-semibold'>Thời Trang Nữ</span>
-                                    <span className='pr-2 font-semibold'>&gt;</span>
-                                    <span className='pr-2 font-semibold'>Quần đùi</span>
-                                    <span className='pr-2 font-semibold'>&gt;</span>
-                                    <span className='pr-2 font-semibold'>Khác</span> */}
                                 </div>
                                 <div>
-                                    <button className='rounded-md border border-gray-400 py-2 px-4 mr-2' onClick={() => setShow(false)}>
-                                        Hủy
-                                    </button>
-                                    <button className='rounded-md bg-blue-300 text-white py-2 px-4 ml-2' >
+                                    <button className='rounded-md border border-gray-400 py-2 px-4 mr-2' onClick={() => setShow(false)}>Hủy</button>
+                                    <button className='rounded-md bg-blue-300 text-white py-2 px-4 ml-2' onClick={() => {
+                                        if (categoryID == '') {
+                                            toast.error('Hãy chọn 1 ngành hàng (danh mục)')
+                                            return
+                                        }
+                                        setShow(false)
+                                    }} >
                                         Xác nhận
                                     </button>
                                 </div>

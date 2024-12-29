@@ -1,13 +1,13 @@
 'use client'
 import dynamic from 'next/dynamic'
-const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
-    ssr: false // Prevents Editor.js from being included in server-side rendering
-});
+// const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
+//     ssr: false // Prevents Editor.js from being included in server-side rendering
+// });
 // import CustomDatePicker from '@/app/components/DatePicker';
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { icons } from '@/app/common/icons';
-import { getSubCategories, uploadFile } from '@/app/services/api.service';
+import { uploadFile } from '@/app/services/api.service';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { updateProductHook } from '../hooks/product.hooks';
@@ -22,16 +22,13 @@ const ProductModal: React.FC<{
 }> = ({ product = null, setSelected, page }) => {
     const [description, setDescription] = useState<string>('')
     const [images, setImages] = useState<File[]>([])
-    const [variantElements, setVariantElements] = useState<number[]>([0])
-    const { IoIosAddCircleOutline, FaRegTrashAlt, MdModeEdit } = icons
+    const { IoIosAddCircleOutline, FaRegTrashAlt, MdOutlineCancel } = icons
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
-    const [subCategories, setSubCategories] = useState<Category[]>([])
-
-    const showCategoryListModal = () => {
-
-    }
+    const [variations, setVariations] = useState<number[]>([]);
+    const [options, setOptions] = useState<number[][]>([])
+    console.log(options);
 
     const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -62,12 +59,12 @@ const ProductModal: React.FC<{
             }
         }
         formData.delete('file')
-        let subs = subCategories.map(sub => sub._id!)
+        // let subs = subCategories.map(sub => sub._id!)
         const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
         tempProduct['description'] = description || product?.description
         tempProduct['images'] = imageLinks
         tempProduct['options'] = variantInfo()
-        tempProduct['childrenCategories'] = subs || []
+        // tempProduct['childrenCategories'] = subs || []
         mutation!.mutate({ body: tempProduct, product }, {
             onSuccess(data) {
                 toast.success(data.message)
@@ -75,7 +72,7 @@ const ProductModal: React.FC<{
                 setImages([])
                 setResetAll(true)
                 setDescription('')
-                setVariantElements([0])
+                // setVariantElements([0])
                 if (product != null) setSelected!(null)
             }
         })
@@ -100,20 +97,6 @@ const ProductModal: React.FC<{
             attributes = []
         }
         return variants
-    }
-
-    const findSubcategories = async (e: ChangeEvent<HTMLSelectElement>) => {
-        let value: string = e.currentTarget.value
-        const response = await getSubCategories(value)
-        if (response.category.data) {
-            setSubCategories(response.category.data)
-        } else {
-            setSubCategories([])
-        }
-    }
-
-    const removeAttribute = (i: number) => {
-        setVariantElements(prev => prev.filter(val => val !== i))
     }
 
     return (
@@ -166,7 +149,7 @@ const ProductModal: React.FC<{
                                         </div>
                                         <div className=''>
                                             <div className=''>
-                                                <CustomImagePicker setImages={setImages} limit={4} />
+                                                <CustomImagePicker id='images' setImages={setImages} limit={9} />
                                             </div>
                                             {/* <div className='eds-modal image-cropper-modal' close-inside=''>
                                                     <div className='eds-modal__mask'>
@@ -282,22 +265,20 @@ const ProductModal: React.FC<{
                                     </div>
                                 </div>
                                 {/* Ảnh bìa */}
-                                <div className='flex items-center'>
+                                <div className='flex items-center mb-5'>
                                     <div className='flex-none mr-3 w-36 text-end'>
                                         <span className='text-red-500'>*</span>
                                         <span>Ảnh bìa</span>
                                     </div>
-                                    <div className=''>
-                                        <div className='flex items-center mb-5'>
-                                            <div className=''>
-                                                <CustomImagePicker setImages={setImages} isDisabled={true} />
-                                            </div>
-                                            <div className='ml-6 text-xs text-gray-400'>
-                                                <ul>
-                                                    <li className='list-disc'>Tải lên hình ảnh 1:1.</li>
-                                                    <li className='list-disc'>Ảnh bìa sẽ được hiển thị tại các trang Kết quả tìm kiếm, Gợi ý hôm nay,... Việc sử dụng ảnh bìa đẹp sẽ thu hút thêm lượt truy cập vào sản phẩm của bạn</li>
-                                                </ul>
-                                            </div>
+                                    <div className='flex items-center'>
+                                        <div className=''>
+                                            <CustomImagePicker id='banner' setImages={setImages} isMultiple={false} />
+                                        </div>
+                                        <div className='ml-6 text-xs text-gray-400'>
+                                            <ul>
+                                                <li className='list-disc'>Tải lên hình ảnh 1:1.</li>
+                                                <li className='list-disc'>Ảnh bìa sẽ được hiển thị tại các trang Kết quả tìm kiếm, Gợi ý hôm nay,... Việc sử dụng ảnh bìa đẹp sẽ thu hút thêm lượt truy cập vào sản phẩm của bạn</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -308,7 +289,7 @@ const ProductModal: React.FC<{
                                     </div>
                                     <div className='flex items-center'>
                                         <div className=''>
-                                            <CustomImagePicker setImages={setImages} isDisabled={true} />
+                                            <CustomImagePicker id='video' setImages={setImages} />
                                         </div>
                                         <div className='ml-6 text-xs text-gray-400'>
                                             <ul>
@@ -331,10 +312,6 @@ const ProductModal: React.FC<{
                                             <input placeholder='Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật' type='text' name='name'
                                                 className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
                                             />
-                                            {/* <div className='eds-input__suffix'>
-                                                <i className='eds-icon eds-input__clear-btn'></i>
-                                                <span className='eds-input__suffix-split'></span>0/120
-                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -374,9 +351,9 @@ const ProductModal: React.FC<{
                                     </div>
                                     <div className='w-full'>
                                         <div className=''>
-                                            <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name="category">
+                                            <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name='category'>
                                                 {loadingBrands ?
-                                                    <option value="" disabled>Không có dữ liệu</option> :
+                                                    <option value='' disabled>Không có dữ liệu</option> :
                                                     brands && (brands?.brands?.data as Brand[]).map(brand => {
                                                         return (
                                                             <option key={brand._id} value={brand._id}>{brand.name}</option>
@@ -392,7 +369,6 @@ const ProductModal: React.FC<{
                     </div>
                 </div>
             </section>
-
             {/* Thông tin bán hàng (biến thể) */}
             <section className='overflow-hidden rounded-md bg-white mb-4'>
                 <div className='p-6 shadow-md'>
@@ -414,14 +390,75 @@ const ProductModal: React.FC<{
                                         </div>
                                     </div>
                                     <div className='w-full'>
-                                        <div className=''>
-                                            <button className='text-blue-500 border-gray-300 p-2 border border-dashed rounded-md outline-none'>
-                                                Thêm nhóm phân loại
+                                        {/* Container chứa các biến thể */}
+                                        <div className='variations-container'>
+                                            {
+                                                variations.map((variation, i) => {
+                                                    return (
+                                                        <div key={variation} className={`${i > 0 ? 'mt-4' : ''} rounded-md bg-gray-100 p-3`}>
+                                                            <div className='relative'>
+                                                                <span className='absolute top-0 right-0'
+                                                                    onClick={() => {
+                                                                        setVariations(prev => prev.filter((_, j) => j !== i))
+                                                                        setOptions(prev => prev.filter((_, j) => j !== i))
+                                                                    }}
+                                                                >
+                                                                    <MdOutlineCancel size={24} />
+                                                                </span>
+                                                                <div className='flex items-center pb-3'>
+                                                                    <div className='flex-none w-20'>Phân loại {i + 1}</div>
+                                                                    <div className='flex-1 variation-name-edit'>
+                                                                        <div className='w-1/2 flex variation-name-edit-item'>
+                                                                            <div className='flex-auto'>
+                                                                                <input placeholder='e.g. Color, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                                                            </div>
+                                                                            <div className='px-3'>
+                                                                                <div className='w-4 h-4'></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className='flex items-center'>
+                                                                    <div className='flex-none w-20 pt-3'>Tùy chọn</div>
+                                                                    <div className='flex-1 variation-option-edit'>
+                                                                        <div className='flex flex-wrap options-container'>
+                                                                            {
+                                                                                options[i]?.map((_, optionIndex) => {
+                                                                                    return (
+                                                                                        <div key={optionIndex} className='w-1/2 pt-3 odd:pr-3 flex items-center option-item drag-item' draggable>
+                                                                                            <div className='flex-auto'>
+                                                                                                <input placeholder='e.g. Red, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                                                                            </div>
+                                                                                            <div className='flex-none pl-3 text-gray-400'>
+                                                                                                <button className='option-item-remove-btn' onClick={() => {
+                                                                                                    setOptions(prev => {
+                                                                                                        const newOptions = prev.map((option, index) => index === i ? [...option, option.length] : option)
+                                                                                                        return newOptions
+                                                                                                    })
+                                                                                                }}>
+                                                                                                    <FaRegTrashAlt size={16} />
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                        <div className={`${variations.length > 0 ? 'mt-4' : ''}`}>
+                                            <button className='flex items-center text-blue-500 border-gray-300 p-2 border border-dashed rounded-md outline-none'
+                                                onClick={() => { setVariations([...variations, variations.length]); setOptions([...[...options], [0]]) }}
+                                            >
+                                                <IoIosAddCircleOutline size={24} className='mr-2' />
+                                                <span>Thêm nhóm phân loại</span>
                                             </button>
-                                            {/* <div className='eds-input__suffix'>
-                                                <i className='eds-icon eds-input__clear-btn'></i>
-                                                <span className='eds-input__suffix-split'></span>0/120
-                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -429,9 +466,10 @@ const ProductModal: React.FC<{
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     )
+
 }
 
 export default ProductModal
