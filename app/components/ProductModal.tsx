@@ -4,7 +4,7 @@
 //     ssr: false // Prevents Editor.js from being included in server-side rendering
 // })
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { icons } from '@/app/common/icons'
 import { toast } from 'react-toastify'
 import { updateProductHook } from '../hooks/product.hooks'
@@ -21,46 +21,90 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     // const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
-    const [variations, setVariations] = useState<number[]>([0])
-    const [options, setOptions] = useState<number[][]>([[0]])
     const uploadHook = uploadFilesHook()
     const dispatch = useDispatch()
+    const [variations, setVariations] = useState<number[]>([])
+    const [options, setOptions] = useState<number[][]>([])
+
+    useEffect(() => {
+        if (product != null && product.options!.length > 0) {
+            const newVariations: number[] = []
+            const newOptions: number[][] = []
+            for (let i = 0; i < product.options!.length; i++) {
+                newVariations.push(i)
+                const optionValues: number[] = []
+                for (let j = 0; j < product.options![i].value!.length; j++) {
+                    optionValues.push(j)
+                }
+                newOptions.push(optionValues); // Add the options array for this variation
+            }
+            setVariations(newVariations)
+            setOptions(newOptions)
+        }
+    }, [])
 
     const getAllVariations = async (): Promise<Variant[]> => {
-        const variationElements = document.querySelectorAll('.variation-item')
-        const variationTableElements = document.querySelectorAll('.variation-table')
-        let attributes: any[] = []
-        let formData = new FormData()
         const variations: Variant[] = []
+        if (variations.length > 0) {
+            const variationElements = document.querySelectorAll('.variation-item')
+            const variationTableElements = document.querySelectorAll('.variation-table')
+            let attributes: any[] = []
+            let formData = new FormData()
+            for (let j = 0; j < variationElements.length; j++) {
+                let variationNameInput = variationElements[j].querySelector('.variation-name-input') as HTMLInputElement
+                let optionElements = variationElements[j].querySelectorAll('.option-name-input') as NodeListOf<HTMLInputElement>
+                let table = variationTableElements[j]
 
-        for (let j = 0; j < variationElements.length; j++) {
-            let variationNameInput = variationElements[j].querySelector('.variation-name-input') as HTMLInputElement
-            let optionElements = variationElements[j].querySelectorAll('.option-name-input') as NodeListOf<HTMLInputElement>
-            let table = variationTableElements[j]
-
-            for (let i = 0; i < optionElements.length; i++) {
-                let optionPriceInput = table.querySelectorAll('.option-price-input')[i] as HTMLInputElement
-                let optionStockInput = table.querySelectorAll('.option-stock-input')[i] as HTMLInputElement
-                let optionSKUInput = table.querySelectorAll('.option-sku-input')[i] as HTMLInputElement
-                let optionImageInput = table.querySelectorAll('.option-file-input')[i] as HTMLInputElement
-                formData.set('file', optionImageInput.files![0])
-                await new Promise((resolve, reject) => {
-                    uploadHook.mutate(formData, {
-                        onSuccess(data) {
-                            attributes.push({ val: optionElements[i].value, price: +optionPriceInput.value, quantity: +optionStockInput.value, sku: optionSKUInput.value, img: data.url })
-                            resolve(null);
-                        },
-                        onError(error) {
-                            reject(error)
-                        }
+                for (let i = 0; i < optionElements.length; i++) {
+                    let optionPriceInput = table.querySelectorAll('.option-price-input')[i] as HTMLInputElement
+                    let optionStockInput = table.querySelectorAll('.option-stock-input')[i] as HTMLInputElement
+                    let optionSKUInput = table.querySelectorAll('.option-sku-input')[i] as HTMLInputElement
+                    let optionImageInput = table.querySelectorAll('.option-file-input')[i] as HTMLInputElement
+                    formData.set('file', optionImageInput.files![0])
+                    await new Promise((resolve, reject) => {
+                        uploadHook.mutate(formData, {
+                            onSuccess(data) {
+                                attributes.push({ val: optionElements[i].value, price: +optionPriceInput.value, quantity: +optionStockInput.value, sku: optionSKUInput.value, img: data.url })
+                                resolve(null);
+                            },
+                            onError(error) {
+                                reject(error)
+                            }
+                        })
                     })
-                })
+                }
+                variations.push({ key: variationNameInput.value, value: attributes })
+                attributes = []
             }
-            variations.push({ key: variationNameInput.value, value: attributes })
-            attributes = []
+        } else {
+            const noVariationPriceInput = document.querySelector('.no-variation-price') as HTMLInputElement
+            const noVariationStockInput = document.querySelector('.no-variation-stock') as HTMLInputElement
+            variations.push({
+                key: "No variation",
+                value: [
+                    {
+                        val: "No variation",
+                        img: "",
+                        price: +noVariationPriceInput.value,
+                        quantity: +noVariationStockInput.value
+                    }
+                ]
+            })
         }
         console.log(variations)
         return variations
+    }
+
+    const applyAllOptions = () => {
+        const allPrice = document.getElementById('all-price-option') as HTMLInputElement
+        const allStock = document.getElementById('all-stock-option') as HTMLInputElement
+        const allSKU = document.getElementById('all-sku-option') as HTMLInputElement
+        const optionPriceInputs = document.querySelectorAll('.option-price-input') as NodeListOf<HTMLInputElement>
+        const optionStockInputs = document.querySelectorAll('.option-stock-input') as NodeListOf<HTMLInputElement>
+        const optionSKUInputs = document.querySelectorAll('.option-sku-input') as NodeListOf<HTMLInputElement>
+        optionPriceInputs.forEach(v => v.value = allPrice.value)
+        optionStockInputs.forEach(v => v.value = allStock.value)
+        optionSKUInputs.forEach(v => v.value = allSKU.value)
     }
 
     const handleProductAction = async (e: FormEvent<HTMLFormElement>) => {
@@ -100,14 +144,14 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
             tempProduct['length'] = 30
             tempProduct['width'] = 30
             tempProduct['height'] = 30
-            tempProduct["information"] = "information"
-            tempProduct["specifications"] = "specifications"
-            tempProduct["ingredients"] = "ingredients"
-            tempProduct["usage"] = "usage"
-            tempProduct["packaging"] = "Quy cách đóng gói type String"
+            tempProduct['information'] = 'information'
+            tempProduct['specifications'] = 'specifications'
+            tempProduct['ingredients'] = 'ingredients'
+            tempProduct['usage'] = 'usage'
+            tempProduct['packaging'] = 'Quy cách đóng gói type String'
             mutation!.mutate({ body: tempProduct, product }, {
                 onSuccess(data) {
-                    toast.success("Thêm sản phẩm thành công")
+                    toast.success('Thêm sản phẩm thành công')
                     currentTarget.reset()
                     setImages([])
                     setVariations([0])
@@ -119,18 +163,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         } catch (error) {
             dispatch(dispatch(setIsLoadingOverlay(false)))
         }
-    }
-
-    const applyAllOptions = () => {
-        const allPrice = document.getElementById('all-price-option') as HTMLInputElement
-        const allStock = document.getElementById('all-stock-option') as HTMLInputElement
-        const allSKU = document.getElementById('all-sku-option') as HTMLInputElement
-        const optionPriceInputs = document.querySelectorAll('.option-price-input') as NodeListOf<HTMLInputElement>
-        const optionStockInputs = document.querySelectorAll('.option-stock-input') as NodeListOf<HTMLInputElement>
-        const optionSKUInputs = document.querySelectorAll('.option-sku-input') as NodeListOf<HTMLInputElement>
-        optionPriceInputs.forEach(v => v.value = allPrice.value)
-        optionStockInputs.forEach(v => v.value = allStock.value)
-        optionSKUInputs.forEach(v => v.value = allSKU.value)
     }
 
     return (
@@ -195,7 +227,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='flex items-center'>
                                             <div className=''>
-                                                <CustomImagePicker id='banner' isDisabled={true} images={images.length > 0 ? [URL.createObjectURL(images[0])] : [""]} isMultiple={false} hideEdit={true} />
+                                                <CustomImagePicker id='banner' isDisabled={true} images={images.length > 0 ? [URL.createObjectURL(images[0])] : ['']} isMultiple={false} hideEdit={true} />
                                             </div>
                                             <div className='ml-6 text-xs text-gray-400'>
                                                 <ul>
@@ -246,7 +278,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='w-full'>
                                             <div className=''>
-                                                <input placeholder='Mã sản phẩm' type='text' name='productCode' defaultValue={typeof product?.productCode === 'object' ? product?.productCode.code : ''}
+                                                <input placeholder='Mã sản phẩm' type='text' name='productCode' defaultValue={typeof product?.productCode === 'object' ? (product?.productCode?.code ?? '') : ''}
                                                     className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
                                                 />
                                             </div>
@@ -349,7 +381,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                         <div className='flex-1 w-full variation-name-edit'>
                                                                             <div className='w-full sm:w-1/2 flex'>
                                                                                 <div className='flex-auto'>
-                                                                                    <input placeholder='e.g. Color, etc' type='text' className='variation-name-input border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                                                                    <input placeholder='e.g. Color, etc' type='text' defaultValue={product ? product?.options![i]?.key : ''}
+                                                                                        className='variation-name-input border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
+                                                                                    />
                                                                                 </div>
                                                                                 <div className='flex-none p-0 sm:pr-2 opacity-0'>
                                                                                     <button type='button' className='pl-2'>
@@ -371,7 +405,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                         return (
                                                                                             <div key={optionIndex} className='w-full sm:w-1/2 pt-3 pr-0 sm:odd:pr-2 flex items-center option-item drag-item' draggable>
                                                                                                 <div className='flex-auto'>
-                                                                                                    <input placeholder='e.g. Red, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-name-input' />
+                                                                                                    <input placeholder='e.g. Red, etc' type='text' defaultValue={product ? product?.options![i].value![optionIndex]?.val : ''}
+                                                                                                        className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-name-input'
+                                                                                                    />
                                                                                                 </div>
                                                                                                 <div className='h-4 flex-none'>
                                                                                                     <button type='button' className='pl-2 text-gray-400' onClick={() => {
@@ -418,51 +454,84 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                             </div>
                                         </div>
                                     </div>
-                                    {/* Danh sách phân loại hàng */}
-                                    <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
-                                        <div className='flex-none mr-3 w-36 text-start md:text-end'>
-                                            <span>Danh sách phân loại</span>
+                                    {/* Giá (không có biến thể) */}
+                                    {variations.length < 1 &&
+                                        <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
+                                            <div className='flex-none mr-3 w-36 text-start md:text-end'>
+                                                <span className='text-red-500'>*</span>
+                                                <span>Giá</span>
+                                            </div>
+                                            <div className='w-full'>
+                                                <div className=''>
+                                                    <input placeholder='Nhập vào' type='number'
+                                                        className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none no-variation-price'
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className='w-full'>
-                                            <div className='flex flex-wrap gap-3'>
-                                                <div className='flex items-center flex-auto'>
-                                                    <div className='flex-auto'>
-                                                        <div className='eds-form-item__control'>
-                                                            <div className='eds-form-item__content'>
-                                                                <input placeholder='Giá' type='number' id='all-price-option'
-                                                                    className='border-gray-300 p-2 border focus:border-blue-500 rounded-l-md w-full outline-none'
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className='flex-auto'>
-                                                        <div className='eds-form-item__control'>
-                                                            <div className='eds-form-item__content'>
-                                                                <input placeholder='Kho hàng' type='number' id='all-stock-option'
-                                                                    className='border-gray-300 p-2 border focus:border-blue-500 w-full outline-none'
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className='flex-auto'>
-                                                        <div className='eds-form-item__control'>
-                                                            <div className='eds-form-item__content'>
-                                                                <div className='eds-input'>
-                                                                    <input placeholder='SKU phân loại' type='text' id='all-sku-option'
-                                                                        className='border-gray-300 p-2 border focus:border-blue-500 rounded-r-md w-full outline-none'
+                                    }
+                                    {/* Kho hàng (không có biến thể) */}
+                                    {variations.length < 1 &&
+                                        <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
+                                            <div className='flex-none mr-3 w-36 text-start md:text-end'>
+                                                <span className='text-red-500'>*</span>
+                                                <span>Kho hàng</span>
+                                            </div>
+                                            <div className='w-full'>
+                                                <div className=''>
+                                                    <input placeholder='Nhập vào' type='number' min={0} defaultValue={0}
+                                                        className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none no-variation-stock'
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    {/* Danh sách phân loại hàng */}
+                                    {variations.length > 0 &&
+                                        <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
+                                            <div className='flex-none mr-3 w-36 text-start md:text-end'>
+                                                <span>Danh sách phân loại</span>
+                                            </div>
+                                            <div className='w-full'>
+                                                <div className='flex flex-wrap gap-3'>
+                                                    <div className='flex items-center flex-auto'>
+                                                        <div className='flex-auto'>
+                                                            <div className='eds-form-item__control'>
+                                                                <div className='eds-form-item__content'>
+                                                                    <input placeholder='Giá' type='number' id='all-price-option'
+                                                                        className='border-gray-300 p-2 border focus:border-blue-500 rounded-l-md w-full outline-none'
                                                                     />
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <div className='flex-auto'>
+                                                            <div className='eds-form-item__control'>
+                                                                <div className='eds-form-item__content'>
+                                                                    <input placeholder='Kho hàng' type='number' id='all-stock-option'
+                                                                        className='border-gray-300 p-2 border focus:border-blue-500 w-full outline-none'
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='flex-auto'>
+                                                            <div className='eds-form-item__control'>
+                                                                <div className='eds-form-item__content'>
+                                                                    <div className='eds-input'>
+                                                                        <input placeholder='SKU phân loại' type='text' id='all-sku-option'
+                                                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-r-md w-full outline-none'
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='flex-none'>
+                                                        <button type='button' onClick={applyAllOptions} className='rounded-md bg-blue-300 gap-1 text-white py-2 px-4'>
+                                                            <span>Áp dụng cho tất cả phân loại</span>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className='flex-none'>
-                                                    <button type='button' onClick={applyAllOptions} className='rounded-md bg-blue-300 gap-1 text-white py-2 px-4'>
-                                                        <span>Áp dụng cho tất cả phân loại</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            {variations.length > 0 &&
+
                                                 <div className='overflow-hidden rounded-md border border-gray-300 mt-5'>
                                                     {
                                                         variations.map((_, i) => {
@@ -506,12 +575,12 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                             <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`} isMultiple={false} />
                                                                                         </td>
                                                                                         <td className='border-r px-1 md:px-4 py-3'>
-                                                                                            <input type='number' placeholder='Nhập vào' min={0}
+                                                                                            <input type='number' placeholder='Nhập vào' defaultValue={product?.options![i]?.value![optionIndex]?.price ?? 0} min={0}
                                                                                                 className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-price-input'
                                                                                             />
                                                                                         </td>
                                                                                         <td className='border-r px-1 md:px-4 py-3'>
-                                                                                            <input type='number' defaultValue={0} min={0}
+                                                                                            <input type='number' defaultValue={product?.options![i]?.value![optionIndex]?.quantity ?? 0} min={0}
                                                                                                 className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-stock-input'
                                                                                             />
                                                                                         </td>
@@ -530,25 +599,25 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                         })
                                                     }
                                                 </div>
-                                            }
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <div className="py-4 px-6 bg-white rounded-md">
-                    <div className="wrapper">
-                        <div className="space-x-4 text-end">
-                            <button type='reset' className="rounded-md py-2 px-4 border border-gray-300 bg-white">
+                <div className='py-4 px-6 bg-white rounded-md'>
+                    <div className='wrapper'>
+                        <div className='space-x-4 text-end'>
+                            <button type='reset' className='rounded-md py-2 px-4 border border-gray-300 bg-white'>
                                 <span>Hủy</span>
                             </button>
-                            {/* <button className="rounded-md py-2 px-4 border border-gray-300 bg-white">
+                            {/* <button className='rounded-md py-2 px-4 border border-gray-300 bg-white'>
                             <span>Lưu & Ẩn</span>
                         </button> */}
-                            <button className="rounded-md bg-blue-300 text-white py-2 px-4">
+                            <button className='rounded-md bg-blue-300 text-white py-2 px-4'>
                                 <span>Lưu & Hiển thị</span>
                             </button>
                         </div>
