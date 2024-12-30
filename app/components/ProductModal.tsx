@@ -88,7 +88,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
             }
         }
         formData.delete('file')
-        // let subs = subCategories.map(sub => sub._id!)
         const tempProduct: Product = Object.fromEntries(formData.entries())
         tempProduct['images'] = imageLinks
         tempProduct['options'] = await getAllVariations()

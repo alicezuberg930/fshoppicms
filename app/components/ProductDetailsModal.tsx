@@ -22,7 +22,7 @@ const ProductDetailsModal: React.FC<{
                                 <tr>
                                     <td className='py-3 px-2 w-36'>Thương hiệu<b className='text-red-500'>*</b></td>
                                     <td className='py-3'>
-                                        <span>{product?.category}</span>
+                                        {/* <span>{product?.category}</span> */}
                                     </td>
                                 </tr>
 
@@ -54,7 +54,7 @@ const ProductDetailsModal: React.FC<{
                                 <tr>
                                     <td className='py-3 px-2 w-36'>Mã sản phẩm</td>
                                     <td className='py-3'>
-                                        <span>{product?.productCode}</span>
+                                        {/* <span>{product?.productCode}</span> */}
                                     </td>
                                 </tr>
                                 <tr>
@@ -121,17 +121,7 @@ const ProductDetailsModal: React.FC<{
                                                     product!.options!.map((variant, i) => {
                                                         return (
                                                             <div key={i}>
-                                                                {
-                                                                    variant.value.map((attr, i) => {
-                                                                        return (
-                                                                            <div className='flex gap-2 my-2 variant' key={i} >
-                                                                                <input disabled defaultValue={variant.key} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[40%] outline-none' type='text' placeholder='Biến thể' />
-                                                                                <input disabled defaultValue={attr.val} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='text' placeholder='Thuộc tính' />
-                                                                                <input disabled defaultValue={attr.quantity} className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-[30%] outline-none' type='number' placeholder='Kho' />
-                                                                            </div>
-                                                                        )
-                                                                    })
-                                                                }
+
                                                             </div>
                                                         )
                                                     })
