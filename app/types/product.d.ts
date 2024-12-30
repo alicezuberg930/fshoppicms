@@ -18,5 +18,14 @@ interface Product {
     brand?: string,
     createdAt?: string,
     updatedAt?: string,
-    childrenCategories?: string[]
+    childrenCategories?: string[],
+    packaging?: string,
+    weight?: number,
+    length?: number,
+    width?: number,
+    height?: number,
+    information?: string,
+    specifications?: string,
+    ingredients?: string,
+    usage?: string,
 }

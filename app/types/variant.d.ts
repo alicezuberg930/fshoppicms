@@ -1,7 +1,8 @@
 interface Variant {
-    key: string,
-    value: {
+    key?: string,
+    value?: {
         val?: string,
+        img?: string,
         quantity?: number,
         price?: number,
         _id?: string

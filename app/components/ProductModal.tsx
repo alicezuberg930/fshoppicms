@@ -2,33 +2,31 @@
 // import dynamic from 'next/dynamic'
 // const CustomCKEditor = dynamic(() => import('@/app/components/CustomCKEditor'), {
 //     ssr: false // Prevents Editor.js from being included in server-side rendering
-// });
+// })
 import CustomImagePicker from '@/app/components/CustomImagePicker'
-import React, { FormEvent, useEffect, useState } from 'react';
-import { icons } from '@/app/common/icons';
-import { uploadFile } from '@/app/services/api.service';
-import { toast } from 'react-toastify';
-import axios from 'axios';
-import { updateProductHook } from '../hooks/product.hooks';
-import { readBrandsHook } from '../hooks/brands.hooks';
-import CategoryModalPicker from './CategoryModalPicker';
+import React, { FormEvent, useState } from 'react'
+import { icons } from '@/app/common/icons'
+import { uploadFile } from '@/app/services/api.service'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+import { updateProductHook } from '../hooks/product.hooks'
+import { readBrandsHook } from '../hooks/brands.hooks'
+import CategoryModalPicker from './CategoryModalPicker'
 
-const ProductModal: React.FC<{
-    product?: Product, setSelected?: (v: Product | null) => void, page: number
-}> = ({ product = null, setSelected, page }) => {
+const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product = null, page }) => {
     const [description, setDescription] = useState<string>('')
     const [images, setImages] = useState<File[]>([])
     const { FaRegTrashAlt, MdOutlineCancel, IoIosAddCircleOutline } = icons
     const [resetAll, setResetAll] = useState<boolean>(false)
     const mutation = updateProductHook(page)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
-    const [variations, setVariations] = useState<number[]>([]);
-    const [options, setOptions] = useState<number[][]>([])
+    const [variations, setVariations] = useState<number[]>([0])
+    const [options, setOptions] = useState<number[][]>([[0]])
 
     const handleProduct = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const currentTarget = e.currentTarget
-        const formData = new FormData(currentTarget);
+        const formData = new FormData(currentTarget)
         let imageLinks: string[] = []
         if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
         if ((images.length < 1 && images.length > 10) && product == null) {
@@ -55,10 +53,10 @@ const ProductModal: React.FC<{
         }
         formData.delete('file')
         // let subs = subCategories.map(sub => sub._id!)
-        const tempProduct: Product = Object.fromEntries(formData.entries()); // Convert FormData to an object
+        const tempProduct: Product = Object.fromEntries(formData.entries())
         tempProduct['description'] = description || product?.description
         tempProduct['images'] = imageLinks
-        tempProduct['options'] = variantInfo()
+        tempProduct['options'] = getAllVariations()
         // tempProduct['childrenCategories'] = subs || []
         mutation!.mutate({ body: tempProduct, product }, {
             onSuccess(data) {
@@ -68,44 +66,25 @@ const ProductModal: React.FC<{
                 setResetAll(true)
                 setDescription('')
                 // setVariantElements([0])
-                if (product != null) setSelected!(null)
             }
         })
     }
 
-    useEffect(() => {
-        const onAddOption = () => {
-            const optionInputs = document.querySelectorAll('.option-input') as NodeListOf<HTMLInputElement>
-            for (let i = 0; i < optionInputs.length; i++) {
-                optionInputs[i].addEventListener('change', (e) => {
-                    // if (optionInputs[i].value != '') {
-                    // console.log(optionInputs[i].value);
-                    // }
-                })
-            }
-        }
-        onAddOption()
-    }, [options])
-
-    const variantInfo = (): Variant[] => {
-        const variantsEls = document.getElementsByClassName('variant')
-        let attributes = []
-        const variants: Variant[] = []
-        for (let i = 0; i < variantsEls.length; i++) {
-            const variant = (variantsEls[i].children[0] as HTMLInputElement).value
-            const attribute = (variantsEls[i].children[1] as HTMLInputElement).value
-            const quantity = +(variantsEls[i].children[2] as HTMLInputElement).value
-            const price = +(variantsEls[i].children[3] as HTMLInputElement).value
-            const isDuplicate = variants.find(value => value.key.toLowerCase() === variant.toLowerCase());
-            if (isDuplicate) {
-                isDuplicate.value.push({ val: attribute, quantity, price })
-            } else {
-                attributes.push({ val: attribute, quantity, price })
-                variants.push({ key: variant, value: attributes })
-            }
+    const getAllVariations = (): Variant[] => {
+        const variationElements = document.querySelectorAll('.variation-item')
+        let attributes: any[] = []
+        const variations: Variant[] = []
+        variationElements.forEach(variation => {
+            let variationNameInput = variation.querySelector('.variation-name-input') as HTMLInputElement
+            let optionElements = variation.querySelectorAll('.option-name-input') as NodeListOf<HTMLInputElement>
+            optionElements.forEach(option => {
+                attributes.push({ val: option.value })
+            })
+            variations.push({ key: variationNameInput.value, value: attributes })
             attributes = []
-        }
-        return variants
+        })
+        console.log(variations)
+        return variations
     }
 
     const applyAllOptions = (e: FormEvent<HTMLFormElement>) => {
@@ -115,7 +94,6 @@ const ProductModal: React.FC<{
         const optionPriceInputs = document.querySelectorAll('.option-price-input') as NodeListOf<HTMLInputElement>
         const optionStockInputs = document.querySelectorAll('.option-stock-input') as NodeListOf<HTMLInputElement>
         const optionSKUInputs = document.querySelectorAll('.option-sku-input') as NodeListOf<HTMLInputElement>
-        console.log(optionPriceInputs);
         optionPriceInputs.forEach(v => v.value = String(entries.price))
         optionStockInputs.forEach(v => v.value = String(entries.stock))
         optionSKUInputs.forEach(v => v.value = String(entries.sku))
@@ -173,116 +151,6 @@ const ProductModal: React.FC<{
                                             <div className=''>
                                                 <CustomImagePicker id='images' setImages={setImages} limit={9} />
                                             </div>
-                                            {/* <div className='eds-modal image-cropper-modal' close-inside=''>
-                                                    <div className='eds-modal__mask'>
-                                                        <div className='eds-modal__container'>
-                                                            <div className='eds-modal__box'>
-                                                                <div className='eds-modal__content eds-modal__content--normal'>
-                                                                    <div className='eds-modal__header'>
-                                                                        <div className='image-cropper-header'>Chỉnh sửa hình ảnh sản phẩm</div>
-                                                                    </div>
-                                                                    <div className='eds-modal__body'>
-                                                                        <div className='image-cropper-content'>
-                                                                            <div className='panel-left'>
-                                                                                <div className='image-container'>
-                                                                                    <img src='/assets/user.png' className='image' alt='' />
-                                                                                </div>
-                                                                                <div className='actions-bar'>
-                                                                                    <div className='actions-left'>
-                                                                                        <div className='zoom'>
-                                                                                            <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
-                                                                                                <div className='eds-popover__ref'>
-                                                                                                    <div className='icon disabled'>
-                                                                                                        <i className='eds-icon icon-zoom'></i>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
-                                                                                                    <div className='eds-popover__content'>Thu nhỏ</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
-                                                                                                <div className='eds-popover__ref'>
-                                                                                                    <div className='icon'>
-                                                                                                        <i className='eds-icon icon-zoom'></i>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
-                                                                                                    <div className='eds-popover__content'>Phóng to</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
-                                                                                            <div className='eds-popover__ref'>
-                                                                                                <div className='icon'>
-                                                                                                    <i className='eds-icon icon-others'></i>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
-                                                                                                <div className='eds-popover__content'>Xoay phải 90°</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
-                                                                                            <div className='eds-popover__ref'>
-                                                                                                <div className='icon'>
-                                                                                                    <i className='eds-icon icon-others'></i>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
-                                                                                                <div className='eds-popover__content'>Lật ngược ảnh theo chiều ngang</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div className='eds-popover eds-popover--dark eds-tooltip tooltip'>
-                                                                                            <div className='eds-popover__ref'>
-                                                                                                <div className='icon'>
-                                                                                                    <i className='eds-icon icon-others'></i>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div className='eds-popper eds-popover__popper eds-popover__popper--dark eds-tooltip__popper'>
-                                                                                                <div className='eds-popover__content'>Lật ngược ảnh theo chiều dọc</div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div className='actions-right'>
-                                                                                        <button type='button' className='eds-button eds-button--small'>
-                                                                                            <span>Nhập Lại</span>
-                                                                                        </button>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className='mask'>
-                                                                                    <div className='mask-loading'>
-                                                                                        <img src='/assets/user.png' loading='eager' />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className='panel-right'>
-                                                                                <div className='label label-preview'>Xem trước</div>
-                                                                                <div className='preview-image-container'>
-                                                                                    <div className='preview-image'>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className='resize-triggers'>
-                                                                            <div className='expand-trigger'></div>
-                                                                            <div className='contract-trigger'></div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className='eds-modal__footer'>
-                                                                        <div className='eds-modal__footer-buttons'>
-                                                                            <button type='button' className='eds-button eds-button--normal'>
-                                                                                <span>Đóng</span>
-                                                                            </button>
-                                                                            <button type='button' className='eds-button eds-button--primary eds-button--normal disabled'>
-                                                                                <span>Lưu</span>
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <i className='eds-icon eds-modal__close'></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -332,6 +200,20 @@ const ProductModal: React.FC<{
                                     <div className='w-full'>
                                         <div className=''>
                                             <input placeholder='Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật' type='text' name='name'
+                                                className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Mã sản phẩm */}
+                                <div className='flex flex-col md:flex-row items-start md:items-center mb-5'>
+                                    <div className='flex-none mr-3 w-36 text-start md:text-end'>
+                                        <span className='text-red-500'>*</span>
+                                        <span>Mã sản phẩm</span>
+                                    </div>
+                                    <div className='w-full'>
+                                        <div className=''>
+                                            <input placeholder='Mã sản phẩm' type='text' name='productCode'
                                                 className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
                                             />
                                         </div>
@@ -417,7 +299,7 @@ const ProductModal: React.FC<{
                                             {
                                                 variations.map((variation, i) => {
                                                     return (
-                                                        <div key={variation} className={`${i > 0 ? 'mt-4' : ''} rounded-md bg-gray-100 p-3`}>
+                                                        <div key={variation} className={`${i > 0 ? 'mt-4' : ''} rounded-md bg-gray-100 p-3 variation-item`}>
                                                             <div className='relative'>
                                                                 <span className='absolute top-0 right-0'
                                                                     onClick={() => {
@@ -430,9 +312,9 @@ const ProductModal: React.FC<{
                                                                 <div className='flex flex-col sm:flex-row items-start sm:items-center pb-3'>
                                                                     <div className='flex-none w-20'>Phân loại {i + 1}</div>
                                                                     <div className='flex-1 w-full variation-name-edit'>
-                                                                        <div className='w-full sm:w-1/2 flex variation-name-edit-item'>
+                                                                        <div className='w-full sm:w-1/2 flex'>
                                                                             <div className='flex-auto'>
-                                                                                <input placeholder='e.g. Color, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
+                                                                                <input placeholder='e.g. Color, etc' type='text' className='variation-name-input border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none' />
                                                                             </div>
                                                                             <div className='flex-none p-0 sm:pr-2 opacity-0'>
                                                                                 <button className='pl-2'>
@@ -454,7 +336,7 @@ const ProductModal: React.FC<{
                                                                                     return (
                                                                                         <div key={optionIndex} className='w-full sm:w-1/2 pt-3 pr-0 sm:odd:pr-2 flex items-center option-item drag-item' draggable>
                                                                                             <div className='flex-auto'>
-                                                                                                <input placeholder='e.g. Red, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-input' />
+                                                                                                <input placeholder='e.g. Red, etc' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-name-input' />
                                                                                             </div>
                                                                                             <div className='h-4 flex-none'>
                                                                                                 <button className='pl-2 text-gray-400' onClick={() => {
@@ -490,7 +372,10 @@ const ProductModal: React.FC<{
                                         </div>
                                         <div className={`${variations.length > 0 ? 'mt-4' : ''}`}>
                                             <button className='flex items-center text-blue-500 border-gray-300 p-2 border border-dashed rounded-md outline-none'
-                                                onClick={() => { setVariations([...variations, variations.length]); setOptions([...[...options], [0]]) }}
+                                                onClick={() => {
+                                                    setVariations([...variations, variations.length])
+                                                    setOptions([...[...options], [0]])
+                                                }}
                                             >
                                                 <IoIosAddCircleOutline size={24} className='mr-2' />
                                                 <span>Thêm nhóm phân loại</span>
@@ -510,7 +395,7 @@ const ProductModal: React.FC<{
                                                     <div className='eds-form-item__control'>
                                                         <div className='eds-form-item__content'>
                                                             <div className='eds-input price-input'>
-                                                                <input placeholder='Giá' name='price' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-l-md w-full outline-none' />
+                                                                <input placeholder='Giá' name='price' type='number' className='border-gray-300 p-2 border focus:border-blue-500 rounded-l-md w-full outline-none' />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -519,7 +404,7 @@ const ProductModal: React.FC<{
                                                     <div className='eds-form-item__control'>
                                                         <div className='eds-form-item__content'>
                                                             <div className='eds-input'>
-                                                                <input placeholder='Kho hàng' name='stock' type='text' className='border-gray-300 p-2 border focus:border-blue-500 w-full outline-none' />
+                                                                <input placeholder='Kho hàng' name='stock' type='number' className='border-gray-300 p-2 border focus:border-blue-500 w-full outline-none' />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -528,7 +413,7 @@ const ProductModal: React.FC<{
                                                     <div className='eds-form-item__control'>
                                                         <div className='eds-form-item__content'>
                                                             <div className='eds-input'>
-                                                                <input placeholder='SKU phân loại' name='sku' className='border-gray-300 p-2 border focus:border-blue-500 rounded-r-md w-full outline-none' />
+                                                                <input placeholder='SKU phân loại' name='sku' type='text' className='border-gray-300 p-2 border focus:border-blue-500 rounded-r-md w-full outline-none' />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -541,35 +426,35 @@ const ProductModal: React.FC<{
                                             </div>
                                         </form>
                                         {variations.length > 0 &&
-                                            <div className="overflow-hidden rounded-md border border-gray-300 mt-5">
+                                            <div className='overflow-hidden rounded-md border border-gray-300 mt-5'>
                                                 {
                                                     variations.map((_, i) => {
                                                         return (
-                                                            <table key={i} className="w-full text-center">
-                                                                <thead className="bg-gray-100">
+                                                            <table key={i} className='w-full text-center'>
+                                                                <thead className='bg-gray-100'>
                                                                     <tr>
-                                                                        <th className="px-1 md:px-4 py-2 border-r border-gray-300 font-medium">
+                                                                        <th className='px-1 md:px-4 py-2 border-r border-gray-300 font-medium'>
                                                                             <div className='flex justify-center gap-1 items-center'>
                                                                                 <span className='relative flex w-2 h-2'>
                                                                                     <div className='absolute w-full h-full bg-blue-400 rounded-full opacity-75 animate-ping'></div>
                                                                                     <div className='relative w-2 h-2 bg-blue-500 rounded-full'></div>
                                                                                 </span>
-                                                                                <span>bienthe {i}</span>
+                                                                                <span>Phân loại {i + 1}</span>
                                                                             </div>
                                                                         </th>
-                                                                        <th className="px-1 md:px-4 py-2 border-r border-gray-300 font-medium">
+                                                                        <th className='px-1 md:px-4 py-2 border-r border-gray-300 font-medium'>
                                                                             <div>
                                                                                 <span className='text-red-500'>*</span>
                                                                                 <span>Giá</span>
                                                                             </div>
                                                                         </th>
-                                                                        <th className="px-1 md:px-4 py-2 border-r border-gray-300 font-medium">
+                                                                        <th className='px-1 md:px-4 py-2 border-r border-gray-300 font-medium'>
                                                                             <div>
                                                                                 <span className='text-red-500'>*</span>
                                                                                 <span>Kho hàng</span>
                                                                             </div>
                                                                         </th>
-                                                                        <th className="px-1 md:px-4 py-2 font-medium">
+                                                                        <th className='px-1 md:px-4 py-2 font-medium'>
                                                                             <span>SKU Phân loại</span>
                                                                         </th>
                                                                     </tr>
@@ -578,24 +463,24 @@ const ProductModal: React.FC<{
                                                                     {
                                                                         options[i].map((_, optionIndex) => {
                                                                             return (
-                                                                                <tr key={optionIndex} className="border-t border-gray-300">
-                                                                                    <td className="border-r py-3 flex flex-col items-center gap-2">
-                                                                                        <div>option {optionIndex}</div>
+                                                                                <tr key={optionIndex} className='border-t border-gray-300'>
+                                                                                    <td className='border-r py-3 flex flex-col items-center gap-2'>
+                                                                                        <span>Tùy chọn {optionIndex + 1}</span>
                                                                                         <CustomImagePicker showTitle={false} setImages={setImages} id={`option-${i}`} isMultiple={false} />
                                                                                     </td>
-                                                                                    <td className="border-r px-1 md:px-4 py-3">
-                                                                                        <input type="number" placeholder="Nhập vào" max={0}
-                                                                                            className="border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-price-input"
+                                                                                    <td className='border-r px-1 md:px-4 py-3'>
+                                                                                        <input type='number' placeholder='Nhập vào' max={0}
+                                                                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-price-input'
                                                                                         />
                                                                                     </td>
-                                                                                    <td className="border-r px-1 md:px-4 py-3">
-                                                                                        <input type="number" defaultValue={0} max={0}
-                                                                                            className="border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-stock-input"
+                                                                                    <td className='border-r px-1 md:px-4 py-3'>
+                                                                                        <input type='number' defaultValue={0} max={0}
+                                                                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-stock-input'
                                                                                         />
                                                                                     </td>
-                                                                                    <td className="px-1 md:px-4 py-3">
-                                                                                        <input type="text" placeholder="Nhập vào"
-                                                                                            className="border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-sku-input"
+                                                                                    <td className='px-1 md:px-4 py-3'>
+                                                                                        <input type='text' placeholder='Nhập vào'
+                                                                                            className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-sku-input'
                                                                                         />
                                                                                     </td>
                                                                                 </tr>
@@ -615,10 +500,25 @@ const ProductModal: React.FC<{
                         </div>
                     </div>
                 </div>
-            </section >
-        </div >
-    )
+            </section>
 
+            <div className="py-4 px-6 bg-white rounded-md">
+                <div className="wrapper">
+                    <div className="space-x-4 text-end">
+                        <button className="rounded-md py-2 px-4 border border-gray-300 bg-white">
+                            <span>Hủy</span>
+                        </button>
+                        {/* <button className="rounded-md py-2 px-4 border border-gray-300 bg-white">
+                                <span>Lưu & Ẩn</span>
+                            </button> */}
+                        <button onClick={() => getAllVariations()} className="rounded-md bg-blue-300 text-white py-2 px-4">
+                            <span>Lưu & Hiển thị</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default ProductModal
