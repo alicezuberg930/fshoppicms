@@ -64,57 +64,61 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     }
 
     const handleProductAction = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        dispatch(dispatch(setIsLoadingOverlay(true)))
-        const currentTarget = e.currentTarget
-        const formData = new FormData(currentTarget)
-        let imageLinks: string[] = []
-        if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
-        if (images.length > 0) {
-            const imageForm = new FormData()
-            for (let i = 0; i < images.length; i++) {
-                imageForm.set('file', images[i])
-                await new Promise((resolve, reject) => {
-                    uploadHook.mutate(imageForm, {
-                        onSuccess(data) {
-                            imageLinks.push(data.url)
-                            resolve(null);
-                        },
-                        onError(error) {
-                            reject(error)
-                        }
+        try {
+            e.preventDefault()
+            dispatch(dispatch(setIsLoadingOverlay(true)))
+            const currentTarget = e.currentTarget
+            const formData = new FormData(currentTarget)
+            let imageLinks: string[] = []
+            if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
+            if (images.length > 0) {
+                const imageForm = new FormData()
+                for (let i = 0; i < images.length; i++) {
+                    imageForm.set('file', images[i])
+                    await new Promise((resolve) => {
+                        uploadHook.mutate(imageForm, {
+                            onSuccess(data) {
+                                imageLinks.push(data.url)
+                                resolve(null);
+                            },
+                            onError(_) {
+                                dispatch(dispatch(setIsLoadingOverlay(false)))
+                            }
+                        })
                     })
-                })
+                }
             }
+            formData.delete('file')
+            const tempProduct: Product = Object.fromEntries(formData.entries())
+            tempProduct['images'] = imageLinks
+            tempProduct['options'] = await getAllVariations()
+            tempProduct['childrenCategories'] = []
+            // temporary test
+            tempProduct['price'] = 1
+            tempProduct['stock'] = 1
+            tempProduct['weight'] = 0.5
+            tempProduct['length'] = 30
+            tempProduct['width'] = 30
+            tempProduct['height'] = 30
+            tempProduct["information"] = "information"
+            tempProduct["specifications"] = "specifications"
+            tempProduct["ingredients"] = "ingredients"
+            tempProduct["usage"] = "usage"
+            tempProduct["packaging"] = "Quy cách đóng gói type String"
+            mutation!.mutate({ body: tempProduct, product }, {
+                onSuccess(data) {
+                    toast.success("Thêm sản phẩm thành công")
+                    currentTarget.reset()
+                    setImages([])
+                    setVariations([0])
+                    setOptions([[0]])
+                }
+            })
+            dispatch(dispatch(setIsLoadingOverlay(false)))
+            console.log(tempProduct);
+        } catch (error) {
+            dispatch(dispatch(setIsLoadingOverlay(false)))
         }
-        formData.delete('file')
-        const tempProduct: Product = Object.fromEntries(formData.entries())
-        tempProduct['images'] = imageLinks
-        tempProduct['options'] = await getAllVariations()
-        tempProduct['childrenCategories'] = []
-        // temporary test
-        tempProduct['price'] = 1
-        tempProduct['stock'] = 1
-        tempProduct['weight'] = 0.5
-        tempProduct['length'] = 30
-        tempProduct['width'] = 30
-        tempProduct['height'] = 30
-        tempProduct["information"] = "information"
-        tempProduct["specifications"] = "specifications"
-        tempProduct["ingredients"] = "ingredients"
-        tempProduct["usage"] = "usage"
-        tempProduct["packaging"] = "Quy cách đóng gói type String"
-        mutation!.mutate({ body: tempProduct, product }, {
-            onSuccess(data) {
-                toast.success("Thêm sản phẩm thành công")
-                currentTarget.reset()
-                setImages([])
-                setVariations([0])
-                setOptions([[0]])
-            }
-        })
-        dispatch(dispatch(setIsLoadingOverlay(false)))
-        console.log(tempProduct);
     }
 
     const applyAllOptions = () => {
