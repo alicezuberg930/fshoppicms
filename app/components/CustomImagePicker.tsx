@@ -1,100 +1,102 @@
 'use client'
-import { Dispatch, DragEvent, SetStateAction, useEffect, useState } from 'react';
-import { icons } from '../common/icons';
-import Image from 'next/image';
-import { toast } from 'react-toastify';
+import { Dispatch, DragEvent, SetStateAction, useEffect, useState } from 'react'
+import { icons } from '../common/icons'
+import Image from 'next/image'
+import { toast } from 'react-toastify'
 
 const CustomImagePicker: React.FC<{
   images?: string[],
-  setImages: Dispatch<SetStateAction<File[]>>,
+  setImages?: Dispatch<SetStateAction<File[]>>,
   isMultiple?: boolean,
   resetAll?: boolean,
   limit?: number,
   id: string,
-  showTitle?: boolean
-}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = isMultiple ? 9 : 1, id, showTitle = true }) => {
-  const [tempfiles, setFiles] = useState<{ file: File; url: string }[]>([]);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const { RiImageAddFill, FaRegTrashAlt, MdModeEdit } = icons;
+  showTitle?: boolean,
+  isDisabled?: boolean,
+  hideEdit?: boolean
+}> = ({ images, setImages, isMultiple = true, resetAll = false, limit = isMultiple ? 9 : 1, id, showTitle = true, isDisabled = false, hideEdit = false }) => {
+  const [tempfiles, setFiles] = useState<{ file: File, url: string }[]>([])
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const { RiImageAddFill, FaRegTrashAlt, MdModeEdit } = icons
 
   useEffect(() => {
     // Load initial images if provided
-    if (images) {
+    if (images && images[0] != "") {
       const initialFiles = images.map((image, i) => ({
         file: new File([], `file-${i}`), // Dummy File for existing images
         url: image,
-      }));
-      setFiles(initialFiles);
+      }))
+      setFiles(initialFiles)
     }
-  }, [images]);
+  }, [images])
 
   useEffect(() => {
     if (resetAll == true) resetImages()
   }, [resetAll])
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (e.dataTransfer.items.length > limit) toast.error(`Bạn chỉ có thể tải lên không quá ${limit} file`)
-    const newFiles: { file: File; url: string }[] = [];
+    const newFiles: { file: File, url: string }[] = []
     if (e.dataTransfer.items) {
       [...e.dataTransfer.items].forEach((item) => {
         if (item.kind === 'file') {
-          const file = item.getAsFile();
+          const file = item.getAsFile()
           if (file) {
-            const url = URL.createObjectURL(file);
-            newFiles.push({ file, url });
+            const url = URL.createObjectURL(file)
+            newFiles.push({ file, url })
           }
         }
-      });
+      })
     }
-    setFiles((prev) => [...prev, ...newFiles].slice(0, limit));
-    setImages((prev) => [...prev, ...newFiles.map(f => f.file)].slice(0, limit));
-  };
+    setFiles((prev) => [...prev, ...newFiles].slice(0, limit))
+    setImages && setImages((prev) => [...prev, ...newFiles.map(f => f.file)].slice(0, limit))
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+    const files = e.target.files
     if (files!.length > limit) toast.error(`Bạn chỉ có thể tải lên không quá ${limit} file`)
     if (files) {
-      let newFiles: { file: File; url: string }[] = [];
+      let newFiles: { file: File, url: string }[] = []
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const url = URL.createObjectURL(file);
-        newFiles.push({ file, url });
+        const file = files[i]
+        const url = URL.createObjectURL(file)
+        newFiles.push({ file, url })
       }
       newFiles = newFiles.slice(0, 8)
-      setFiles(prev => [...prev, ...newFiles].slice(0, limit));
-      setImages(prev => [...prev, ...newFiles.map(f => f.file)].slice(0, limit));
+      setFiles(prev => [...prev, ...newFiles].slice(0, limit))
+      setImages && setImages(prev => [...prev, ...newFiles.map(f => f.file)].slice(0, limit))
     }
-  };
+  }
 
   const handleDragStart = (index: number) => {
-    setDraggedIndex(index);
-  };
+    setDraggedIndex(index)
+  }
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>, index: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index) return;
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === index) return
 
     setFiles((prev) => {
-      const updatedFiles = [...prev];
-      const [draggedFile] = updatedFiles.splice(draggedIndex, 1);
-      updatedFiles.splice(index, 0, draggedFile);
-      return updatedFiles;
-    });
+      const updatedFiles = [...prev]
+      const [draggedFile] = updatedFiles.splice(draggedIndex, 1)
+      updatedFiles.splice(index, 0, draggedFile)
+      return updatedFiles
+    })
 
-    setDraggedIndex(index);
-  };
+    setDraggedIndex(index)
+  }
 
   const handleDragEnd = () => {
-    setDraggedIndex(null);
-    setImages(tempfiles.map(f => f.file));
-  };
+    setDraggedIndex(null)
+    setImages && setImages(tempfiles.map(f => f.file))
+  }
 
   const resetImages = () => {
-    tempfiles.forEach(f => URL.revokeObjectURL(f.url));
-    setFiles([]);
-    setImages([]);
-  };
+    tempfiles.forEach(f => URL.revokeObjectURL(f.url))
+    setFiles([])
+    setImages && setImages([])
+  }
 
   return (
     <div className='text-blue-500 flex flex-wrap gap-3'>
@@ -114,20 +116,22 @@ const CustomImagePicker: React.FC<{
                     alt={`Uploaded file ${i}`}
                     sizes='width: 100%, height: 100%'
                   />
-                  <div className='group-hover:block hidden'>
-                    <div className='text-white w-full py-1 bg-[rgba(0,0,0,0.7)] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
-                      <button className='pr-3'>
-                        <MdModeEdit size={16} />
-                      </button>
-                      <span>|</span>
-                      <button className='pl-3' onClick={() => {
-                        setFiles(prev => prev.filter((_, index) => index != i))
-                        setImages(prev => prev.filter((_, index) => index != i))
-                      }}>
-                        <FaRegTrashAlt size={16} />
-                      </button>
+                  {
+                    !hideEdit && <div className='group-hover:block hidden'>
+                      <div className='text-white w-full py-1 bg-[#000000b3] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
+                        <span className='pr-3'>
+                          <MdModeEdit size={16} />
+                        </span>
+                        <span>|</span>
+                        <span className='pl-3' onClick={() => {
+                          setFiles(prev => prev.filter((_, index) => index != i))
+                          setImages && setImages(prev => prev.filter((_, index) => index != i))
+                        }}>
+                          <FaRegTrashAlt size={16} />
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  }
                 </div>
               </div>
             ))
@@ -142,10 +146,10 @@ const CustomImagePicker: React.FC<{
           <RiImageAddFill size={24} />
           {showTitle && <span className='text-xs text-center'>Thêm hình ảnh ({tempfiles.length}/{limit})</span>}
         </label>
-        <input multiple={isMultiple} type='file' accept='image/*' id={id} name={id} className='hidden' onChange={handleFileChange} />
+        <input multiple={isMultiple} disabled={isDisabled} type='file' accept='image/*' id={id} className='hidden option-file-input' onChange={handleFileChange} />
       </div>
-    </div >
-  );
-};
+    </div>
+  )
+}
 
-export default CustomImagePicker;
+export default CustomImagePicker

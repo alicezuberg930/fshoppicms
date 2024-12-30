@@ -4,6 +4,7 @@ import AdminHeader from "../components/AdminHeader"
 import AdminContent from "../components/AdminContent"
 import { auth } from "../configs/auth.config"
 import CustomQueryClientProvider from "../components/CustomQueryClientProvider"
+import LoadingOverlay from "../components/LoadingOverlay"
 
 export const metadata: Metadata = {
     title: "Future Life | CMS",
@@ -24,6 +25,7 @@ const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>)
                     </AdminContent>
                 </div>
             </div>
+            <LoadingOverlay />
         </CustomQueryClientProvider>
     )
 }

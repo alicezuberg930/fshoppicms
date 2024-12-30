@@ -3,9 +3,15 @@ interface Product {
     description?: string,
     price?: number,
     stock?: number,
-    category?: string,
+    category?: string | {
+        _id?: string,
+        name?: string,
+    },
     images?: string[],
-    productCode?: string,
+    productCode?: string | {
+        _id?: string,
+        code?: string
+    },
     options?: Variant[],
     // extras
     _id?: string,

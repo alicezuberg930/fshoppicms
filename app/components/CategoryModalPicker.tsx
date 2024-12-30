@@ -59,8 +59,8 @@ const CategoryModalPicker: React.FC = () => {
                             </div>
                             <div className=''>
                                 <div className=''>
-                                    <div className='flex justify-between items-center'>
-                                        <div className='flex-none w-[240px]'>
+                                    <div className='flex gap-2 flex-col sm:flex-row justify-between items-center'>
+                                        <div className='flex-none w-full sm:w-[240px]'>
                                             <div className=''>
                                                 <input placeholder='Vui lòng nhập tối thiểu 1 ký tự.' type='text'
                                                     className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
@@ -97,7 +97,6 @@ const CategoryModalPicker: React.FC = () => {
                                                         return (
                                                             <li key={category._id} onClick={() => {
                                                                 setChosenCateggory(prev => prev.length == 1 ? prev.concat(category.name!) : [...prev.filter((_, i) => i !== prev.length - 1), category.name!])
-                                                                setCategoryID(category._id!)
                                                             }} className='category-item px-4 py-2 hover:bg-gray-100 items-center flex justify-between cursor-pointer'>
                                                                 <p className='overflow-hidden text-ellipsis'>{category.name}</p>
                                                                 <div>
@@ -115,7 +114,7 @@ const CategoryModalPicker: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex items-center justify-between'>
+                            <div className='flex gap-2 flex-col sm:flex-row items-center justify-between'>
                                 <div className='category-selected text-sm'>
                                     <span>Đã chọn: </span>
                                     {
@@ -130,14 +129,14 @@ const CategoryModalPicker: React.FC = () => {
                                     }
                                 </div>
                                 <div>
-                                    <button className='rounded-md border border-gray-400 py-2 px-4 mr-2' onClick={() => setShow(false)}>Hủy</button>
-                                    <button className='rounded-md bg-blue-300 text-white py-2 px-4 ml-2' onClick={() => {
+                                    <button type='button' className='rounded-md border border-gray-400 py-2 px-4 mr-2' onClick={() => setShow(false)}>Hủy</button>
+                                    <button type='button' className='rounded-md bg-blue-300 text-white py-2 px-4 ml-2' onClick={() => {
                                         if (categoryID == '') {
                                             toast.error('Hãy chọn 1 ngành hàng (danh mục)')
                                             return
                                         }
                                         setShow(false)
-                                    }} >
+                                    }}>
                                         Xác nhận
                                     </button>
                                 </div>
