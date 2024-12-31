@@ -181,6 +181,12 @@ const CurrentProductsPage: React.FC = () => {
                                                 </td>
                                             </tr> :
                                             products?.products && (products?.products.data.products as Product[]).map((v, i) => {
+                                                let stock = 0
+                                                v.options?.forEach(option => {
+                                                    option.value?.forEach(val => {
+                                                        stock += val.quantity ?? 0
+                                                    })
+                                                })
                                                 return (
                                                     <React.Fragment key={i}>
                                                         <tr className="bg-white">
@@ -210,7 +216,7 @@ const CurrentProductsPage: React.FC = () => {
                                                             </td>
 
                                                             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                {v.stock}
+                                                                {stock}
                                                             </td>
 
                                                             <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
