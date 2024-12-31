@@ -7,7 +7,7 @@ import CustomImagePicker from '@/app/components/CustomImagePicker'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { icons } from '@/app/common/icons'
 import { toast } from 'react-toastify'
-import { updateProductHook } from '../hooks/product.hooks'
+import { createProductHook, updateProductHook } from '../hooks/product.hooks'
 import { readBrandsHook } from '../hooks/brands.hooks'
 import CategoryModalPicker from './CategoryModalPicker'
 import { uploadFilesHook } from '../hooks/common.hooks'
@@ -19,7 +19,8 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     const [images, setImages] = useState<File[]>([])
     const { FaRegTrashAlt, MdOutlineCancel, IoIosAddCircleOutline } = icons
     // const [resetAll, setResetAll] = useState<boolean>(false)
-    const mutation = updateProductHook(page)
+    const updateHook = updateProductHook(page)
+    const createHook = createProductHook(page)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
     const uploadHook = uploadFilesHook()
     const dispatch = useDispatch()
@@ -149,7 +150,19 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
             tempProduct['ingredients'] = 'ingredients'
             tempProduct['usage'] = 'usage'
             tempProduct['packaging'] = 'Quy cách đóng gói type String'
-            mutation!.mutate({ body: tempProduct, product }, {
+            // if (product != null) {
+            // updateHook.mutate({ body: tempProduct, id: product!._id! }, {
+            //     onSuccess(data) {
+            //         toast.success('Sửa sản phẩm thành công')
+            //         currentTarget.reset()
+            //         setImages([])
+            //         setVariations([0])
+            //         setOptions([[0]])
+            //     }
+            // })
+            // }
+            // else {
+            createHook.mutate({ body: tempProduct }, {
                 onSuccess(data) {
                     toast.success('Thêm sản phẩm thành công')
                     currentTarget.reset()
@@ -158,6 +171,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                     setOptions([[0]])
                 }
             })
+            // }
             dispatch(dispatch(setIsLoadingOverlay(false)))
             console.log(tempProduct);
         } catch (error) {
@@ -214,7 +228,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                             </div> */}
                                             <div className=''>
                                                 <div className=''>
-                                                    <CustomImagePicker id='images' setImages={setImages} limit={9} />
+                                                    <CustomImagePicker id='images' setImages={setImages} images={product?.images ?? [""]} limit={9} />
                                                 </div>
                                             </div>
                                         </div>
@@ -227,7 +241,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='flex items-center'>
                                             <div className=''>
-                                                <CustomImagePicker id='banner' isDisabled={true} images={images.length > 0 ? [URL.createObjectURL(images[0])] : ['']} isMultiple={false} hideEdit={true} />
+                                                <CustomImagePicker id='banner' isDisabled={true} images={product ? [product.images![0]] : images.length > 0 ? [URL.createObjectURL(images[0])] : ['']} isMultiple={false} hideEdit={true} />
                                             </div>
                                             <div className='ml-6 text-xs text-gray-400'>
                                                 <ul>

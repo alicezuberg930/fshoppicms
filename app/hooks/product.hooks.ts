@@ -27,10 +27,25 @@ export const readProductsHook = (page: number) => {
     })
 }
 
+export const createProductHook = (page: number) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ body }: { body: Product }) => createProduct(body),
+        onSuccess(data) {
+            // toast.success(data.message)
+            queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
+        },
+        onError(error) {
+            toast.error("Đã có lỗi xảy ra")
+            // if (isAxiosError(error)) toast.error(JSON.parse(error.response?.data))
+        },
+    })
+}
+
 export const updateProductHook = (page: number) => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ body, product }: { body: Product, product: Product | null }) => product != null ? updateProduct(product!._id!, body) : createProduct(body),
+        mutationFn: ({ body, id }: { body: Product, id: string }) => updateProduct(id, body),
         onSuccess(data) {
             // toast.success(data.message)
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })

@@ -26,6 +26,7 @@ const CustomImagePicker: React.FC<{
         file: new File([], `file-${i}`), // Dummy File for existing images
         url: image,
       }))
+      setImages && setImages!(initialFiles.map(file => file.file))
       setFiles(initialFiles)
     }
   }, [images])
