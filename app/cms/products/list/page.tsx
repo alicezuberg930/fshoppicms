@@ -224,55 +224,56 @@ const CurrentProductsPage: React.FC = () => {
                                                                         <FaRegTrashAlt className='w-5 h-5' />
                                                                     </button>
                                                                     {/* <button onClick={() => { setShowDetails(true) }} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
-                                                                    <FaRegShareSquare className='w-5 h-5' />
-                                                                </button> */}
+                                                                        <FaRegShareSquare className='w-5 h-5' />
+                                                                    </button> */}
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                         {/* Biến thể của sản phẩm */}
                                                         {
-                                                            v.options && v.options?.map(option => {
-                                                                return (
-                                                                    <React.Fragment key={option.key}>
-                                                                        {
-                                                                            option.value?.map(val => {
-                                                                                return (
-                                                                                    <tr key={val._id} className="bg-white border-none">
-                                                                                        <td className="px-2 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
-                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
+                                                            v.options!.length > 0 && v.options![0].key != '' ?
+                                                                v.options?.map(option => {
+                                                                    return (
+                                                                        <React.Fragment key={option.key}>
+                                                                            {
+                                                                                option.value?.map(val => {
+                                                                                    return (
+                                                                                        <tr key={val._id} className="bg-white border-none">
+                                                                                            <td className="px-2 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
+                                                                                            <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
 
-                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                                            <div className="w-full flex justify-end">
-                                                                                                <div className="h-12 w-12 relative">
-                                                                                                    <Image fill loading="lazy" className="object-cover" src={val.img || '/logo.png'} alt={val._id!} sizes="width: 100%, height: 100%" />
+                                                                                            <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                                <div className="w-full flex justify-end">
+                                                                                                    <div className="h-12 w-12 relative">
+                                                                                                        <Image fill loading="lazy" className="object-cover" src={val.img || '/logo.png'} alt={val._id!} sizes="width: 100%, height: 100%" />
+                                                                                                    </div>
                                                                                                 </div>
-                                                                                            </div>
-                                                                                        </td>
+                                                                                            </td>
 
-                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                                            <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
-                                                                                                {val.val}
-                                                                                            </div>
-                                                                                        </td>
+                                                                                            <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                                <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
+                                                                                                    {val.val}
+                                                                                                </div>
+                                                                                            </td>
 
-                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                                            <div className="text-gray-700">
-                                                                                                <span className="font-medium">{formatVND(val.price!)}</span>
-                                                                                            </div>
-                                                                                        </td>
+                                                                                            <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                                <div className="text-gray-700">
+                                                                                                    <span className="font-medium">{formatVND(val.price!)}</span>
+                                                                                                </div>
+                                                                                            </td>
 
-                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
-                                                                                            {val.quantity}
-                                                                                        </td>
+                                                                                            <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                                {val.quantity}
+                                                                                            </td>
 
-                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
-                                                                                    </tr>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                    </React.Fragment>
-                                                                )
-                                                            })
+                                                                                            <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
+                                                                                        </tr>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </React.Fragment>
+                                                                    )
+                                                                }) : <></>
                                                         }
                                                     </React.Fragment>
                                                 )
