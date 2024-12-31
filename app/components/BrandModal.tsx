@@ -21,6 +21,7 @@ const BrandModal: React.FC<{ selectedBrand?: Brand, setSelected?: Dispatch<SetSt
         const formData = new FormData(e.currentTarget)
         const brand: Brand = Object.fromEntries(formData.entries()) // Convert FormData to an object
         brand["categories"] = [formData.get("category")!.toString()]
+        formData.set('file', images[0])
         uploadHook.mutate(formData, {
             onSuccess(data) {
                 brand["logo"] = data.url
