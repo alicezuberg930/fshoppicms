@@ -3,6 +3,8 @@ import { createProduct, deleteProduct, getProducts, updateProduct } from "../ser
 import { API } from "@/app/common/api"
 import { toast } from "react-toastify"
 import { isAxiosError } from "@/app/common/utils"
+import { useDispatch } from "react-redux"
+import { setIsLoadingOverlay } from "../services/common.slice"
 
 export const deleteProductHook = (page: number) => {
     const queryClient = useQueryClient()
@@ -29,6 +31,7 @@ export const readProductsHook = (page: number) => {
 
 export const createProductHook = (page: number) => {
     const queryClient = useQueryClient()
+    const dispatch = useDispatch()
     return useMutation({
         mutationFn: ({ body }: { body: Product }) => createProduct(body),
         onSuccess(data) {
@@ -36,6 +39,7 @@ export const createProductHook = (page: number) => {
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
         },
         onError(error) {
+            dispatch(dispatch(setIsLoadingOverlay(false)))
             toast.error("Đã có lỗi xảy ra")
             // if (isAxiosError(error)) toast.error(JSON.parse(error.response?.data))
         },
@@ -44,6 +48,7 @@ export const createProductHook = (page: number) => {
 
 export const updateProductHook = (page: number) => {
     const queryClient = useQueryClient()
+    const dispatch = useDispatch()
     return useMutation({
         mutationFn: ({ body, id }: { body: Product, id: string }) => updateProduct(id, body),
         onSuccess(data) {
@@ -51,6 +56,7 @@ export const updateProductHook = (page: number) => {
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
         },
         onError(error) {
+            dispatch(dispatch(setIsLoadingOverlay(false)))
             toast.error("Đã có lỗi xảy ra")
             // if (isAxiosError(error)) toast.error(JSON.parse(error.response?.data))
         },

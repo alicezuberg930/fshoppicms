@@ -13,6 +13,8 @@ import CategoryModalPicker from './CategoryModalPicker'
 import { uploadFilesHook } from '../hooks/common.hooks'
 import { useDispatch } from 'react-redux'
 import { setIsLoadingOverlay } from '../services/common.slice'
+import { useRouter } from 'next/navigation'
+import { PATH } from '../common/path'
 
 const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product = null, page }) => {
     // const [description, setDescription] = useState<string>('')
@@ -26,6 +28,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     const dispatch = useDispatch()
     const [variations, setVariations] = useState<number[]>([])
     const [options, setOptions] = useState<number[][]>([])
+    const router = useRouter()
 
     useEffect(() => {
         if (product != null && product.options!.length > 0) {
@@ -45,7 +48,8 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     }, [])
 
     const getAllVariations = async (): Promise<Variant[]> => {
-        const variations: Variant[] = []
+        const tempVariation: Variant[] = []
+        console.log(variations.length);
         if (variations.length > 0) {
             const variationElements = document.querySelectorAll('.variation-item')
             const variationTableElements = document.querySelectorAll('.variation-table')
@@ -69,31 +73,32 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                 resolve(null);
                             },
                             onError(error) {
+                                console.log(error);
                                 reject(error)
                             }
                         })
                     })
                 }
-                variations.push({ key: variationNameInput.value, value: attributes })
+                tempVariation.push({ key: variationNameInput.value, value: attributes })
                 attributes = []
             }
         } else {
             const noVariationPriceInput = document.querySelector('.no-variation-price') as HTMLInputElement
             const noVariationStockInput = document.querySelector('.no-variation-stock') as HTMLInputElement
-            variations.push({
-                key: "No variation",
+            tempVariation.push({
+                key: 'No variation',
                 value: [
                     {
-                        val: "No variation",
-                        img: "",
+                        val: 'No variation',
+                        img: '',
                         price: +noVariationPriceInput.value,
                         quantity: +noVariationStockInput.value
                     }
                 ]
             })
         }
-        console.log(variations)
-        return variations
+        console.log(tempVariation)
+        return tempVariation
     }
 
     const applyAllOptions = () => {
@@ -109,74 +114,65 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     }
 
     const handleProductAction = async (e: FormEvent<HTMLFormElement>) => {
-        try {
-            e.preventDefault()
-            dispatch(dispatch(setIsLoadingOverlay(true)))
-            const currentTarget = e.currentTarget
-            const formData = new FormData(currentTarget)
-            let imageLinks: string[] = []
-            if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
-            if (images.length > 0) {
-                const imageForm = new FormData()
-                for (let i = 0; i < images.length; i++) {
-                    imageForm.set('file', images[i])
-                    await new Promise((resolve) => {
-                        uploadHook.mutate(imageForm, {
-                            onSuccess(data) {
-                                imageLinks.push(data.url)
-                                resolve(null);
-                            },
-                            onError(_) {
-                                dispatch(dispatch(setIsLoadingOverlay(false)))
-                            }
-                        })
+        e.preventDefault()
+        dispatch(dispatch(setIsLoadingOverlay(true)))
+        const currentTarget = e.currentTarget
+        const formData = new FormData(currentTarget)
+        let imageLinks: string[] = []
+        if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
+        if (images.length > 0) {
+            const imageForm = new FormData()
+            for (let i = 0; i < images.length; i++) {
+                imageForm.set('file', images[i])
+                await new Promise((resolve) => {
+                    uploadHook.mutate(imageForm, {
+                        onSuccess(data) {
+                            imageLinks.push(data.url)
+                            resolve(null);
+                        },
+                        onError(error) {
+                            console.log("images error");
+                            console.log(error);
+                        }
                     })
-                }
+                })
             }
-            formData.delete('file')
-            const tempProduct: Product = Object.fromEntries(formData.entries())
-            tempProduct['images'] = imageLinks
-            tempProduct['options'] = await getAllVariations()
-            tempProduct['childrenCategories'] = []
-            // temporary test
-            tempProduct['price'] = 1
-            tempProduct['stock'] = 1
-            tempProduct['weight'] = 0.5
-            tempProduct['length'] = 30
-            tempProduct['width'] = 30
-            tempProduct['height'] = 30
-            tempProduct['information'] = 'information'
-            tempProduct['specifications'] = 'specifications'
-            tempProduct['ingredients'] = 'ingredients'
-            tempProduct['usage'] = 'usage'
-            tempProduct['packaging'] = 'Quy cách đóng gói type String'
-            // if (product != null) {
-            // updateHook.mutate({ body: tempProduct, id: product!._id! }, {
-            //     onSuccess(data) {
-            //         toast.success('Sửa sản phẩm thành công')
-            //         currentTarget.reset()
-            //         setImages([])
-            //         setVariations([0])
-            //         setOptions([[0]])
-            //     }
-            // })
-            // }
-            // else {
+        }
+        formData.delete('file')
+        const tempProduct: Product = Object.fromEntries(formData.entries())
+        tempProduct['images'] = imageLinks
+        tempProduct['options'] = await getAllVariations()
+        tempProduct['childrenCategories'] = []
+        // temporary test
+        tempProduct['price'] = 1
+        tempProduct['stock'] = 1
+        tempProduct['weight'] = 0.5
+        tempProduct['length'] = 30
+        tempProduct['width'] = 30
+        tempProduct['height'] = 30
+        tempProduct['information'] = 'information'
+        tempProduct['specifications'] = 'specifications'
+        tempProduct['ingredients'] = 'ingredients'
+        tempProduct['usage'] = 'usage'
+        tempProduct['packaging'] = 'Quy cách đóng gói type String'
+        if (product != null) {
+            console.log("updatinggg");
+            updateHook.mutate({ body: tempProduct, id: product!._id! }, {
+                onSuccess(data) {
+                    toast.success('Sửa sản phẩm thành công')
+                    router.push(PATH.PRODUCT_LIST)
+                }
+            })
+        }
+        else {
             createHook.mutate({ body: tempProduct }, {
                 onSuccess(data) {
                     toast.success('Thêm sản phẩm thành công')
-                    currentTarget.reset()
-                    setImages([])
-                    setVariations([0])
-                    setOptions([[0]])
+                    router.push(PATH.PRODUCT_LIST)
                 }
             })
-            // }
-            dispatch(dispatch(setIsLoadingOverlay(false)))
-            console.log(tempProduct);
-        } catch (error) {
-            dispatch(dispatch(setIsLoadingOverlay(false)))
         }
+        dispatch(dispatch(setIsLoadingOverlay(false)))
     }
 
     return (
@@ -228,7 +224,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                             </div> */}
                                             <div className=''>
                                                 <div className=''>
-                                                    <CustomImagePicker id='images' setImages={setImages} images={product?.images ?? [""]} limit={9} />
+                                                    <CustomImagePicker id='images' setImages={setImages} images={product?.images ?? ['']} limit={9} />
                                                 </div>
                                             </div>
                                         </div>
@@ -336,7 +332,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='w-full'>
                                             <div className=''>
-                                                <select className='border-gray-300 p-2 border rounded-md w-full outline-none' name='brand'>
+                                                <select defaultValue={product?.brand ?? ''} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='brand'>
                                                     {loadingBrands ?
                                                         <option value='' disabled>Không có dữ liệu</option> :
                                                         brands && (brands?.brands?.data as Brand[]).map(brand => {
@@ -586,7 +582,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                     <tr key={optionIndex} className='border-t border-gray-300'>
                                                                                         <td className='border-r py-3 flex flex-col items-center gap-2'>
                                                                                             <span>Tùy chọn {optionIndex + 1}</span>
-                                                                                            <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`} isMultiple={false} />
+                                                                                            <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`} isMultiple={false} images={product ? [product!.options![i].value![optionIndex]!.img!] : ['']} />
                                                                                         </td>
                                                                                         <td className='border-r px-1 md:px-4 py-3'>
                                                                                             <input type='number' placeholder='Nhập vào' defaultValue={product?.options![i]?.value![optionIndex]?.price ?? 0} min={0}
