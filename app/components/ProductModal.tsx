@@ -12,7 +12,6 @@ import CategoryModalPicker from './CategoryModalPicker'
 import { uploadFilesHook } from '../hooks/common.hooks'
 import { useDispatch } from 'react-redux'
 import { setIsLoadingOverlay } from '../services/common.slice'
-import { useRouter } from 'next/navigation'
 import { generateSecureRandomString } from '../common/utils'
 
 const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product = null, page }) => {
@@ -27,7 +26,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
     const dispatch = useDispatch()
     const [variations, setVariations] = useState<number[]>([])
     const [options, setOptions] = useState<number[][]>([])
-    const router = useRouter()
 
     useEffect(() => {
         if (product != null && product.options!.length > 0) {
@@ -275,8 +273,8 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='w-full'>
                                             <div className=''>
-                                                <input placeholder='Mã sản phẩm' type='text' name='productCode' disabled
-                                                    defaultValue={typeof product?.productCode === 'object' ? (product?.productCode?.code ?? '') : generateSecureRandomString(20)}
+                                                <input placeholder='Mã sản phẩm' type='text' name='productCode' readOnly
+                                                    value={typeof product?.productCode === 'object' ? (product?.productCode?.code ?? '') : generateSecureRandomString(20)}
                                                     className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
                                                 />
                                             </div>
