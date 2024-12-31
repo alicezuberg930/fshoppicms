@@ -115,10 +115,10 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         // dispatch(setIsLoadingOverlay(true))
         const currentTarget = e.currentTarget
         const formData = new FormData(currentTarget)
-        console.log(getAllVariations());
+        console.log(await getAllVariations());
         console.log(Object.fromEntries(formData.entries()));
 
-        return
+        // return
         let imageLinks: string[] = []
         // if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
         if (images.length > 0) {
