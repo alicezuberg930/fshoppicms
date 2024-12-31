@@ -112,7 +112,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
 
     const handleProductAction = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        // dispatch(setIsLoadingOverlay(true))
+        dispatch(setIsLoadingOverlay(true))
         const currentTarget = e.currentTarget
         const formData = new FormData(currentTarget)
         console.log(await getAllVariations());
