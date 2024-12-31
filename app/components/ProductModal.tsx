@@ -84,7 +84,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
             const noVariationPriceInput = document.querySelector('.no-variation-price') as HTMLInputElement
             const noVariationStockInput = document.querySelector('.no-variation-stock') as HTMLInputElement
             tempVariation.push({
-                key: 'No variation',
+                key: '',
                 value: [
                     {
                         val: 'No variation',
@@ -150,7 +150,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         tempProduct['usage'] = 'usage'
         tempProduct['packaging'] = 'Quy cách đóng gói type String'
         if (product != null) {
-            console.log("updatinggg");
             updateHook.mutate({ body: tempProduct, id: product!._id! })
         }
         else {

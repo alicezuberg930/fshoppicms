@@ -3,7 +3,7 @@ import { icons } from "@/app/common/icons";
 import LoadingShimmer from "@/app/components/LoadingShimmer";
 // import ProductModal from "@/app/components/ProductModal";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteProductHook, readProductsHook } from "@/app/hooks/product.hooks";
@@ -11,6 +11,7 @@ import { deleteProductHook, readProductsHook } from "@/app/hooks/product.hooks";
 import CustomPaginator from "@/app/components/CustomPaginator";
 import Image from "next/image";
 import { PATH } from "@/app/common/path";
+import { formatVND } from "@/app/common/utils";
 
 const CurrentProductsPage: React.FC = () => {
     // icons
@@ -93,7 +94,7 @@ const CurrentProductsPage: React.FC = () => {
                                     </button>
                                     <div className="absolute right-0 z-50 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg md:w-56 ring-1 ring-black ring-opacity-5 focus:outline-none"
                                         role="menu" aria-orientation="vertical" aria-labelledby="filters-menu">
-                                        <div className="py-1" hidden>
+                                        <div className="py-2" hidden>
                                             <div className="block px-4 py-2 text-sm text-gray-700" role="menuitem">
                                                 <label className="block text-sm font-medium leading-5 text-gray-700 ltr:text-left rtl:text-right">
                                                     Digital
@@ -181,52 +182,99 @@ const CurrentProductsPage: React.FC = () => {
                                             </tr> :
                                             products?.products && (products?.products.data.products as Product[]).map((v, i) => {
                                                 return (
-                                                    <tr key={i} className="bg-white">
-                                                        <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
-                                                        </td>
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            {i}
-                                                        </td>
+                                                    <React.Fragment key={i}>
+                                                        <tr className="bg-white">
+                                                            <td className="px-2 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type="checkbox" />
+                                                            </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                {i}
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="h-24 w-20 relative">
-                                                                <Image fill loading="lazy" className="object-cover" src={v.images![0] ?? '/logo.png'} alt={v.name!} sizes="width: 100%, height: 100%" />
-                                                            </div>
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="h-24 w-24 relative">
+                                                                    <Image fill loading="lazy" className="object-cover" src={v.images![0] ?? '/logo.png'} alt={v.name!} sizes="width: 100%, height: 100%" />
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
-                                                                {v.name}
-                                                            </div>
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
+                                                                    {v.name}
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="text-gray-700">
-                                                                <span className="font-medium">{v.price!}</span>
-                                                            </div>
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="text-gray-700">
+                                                                    <span className="font-medium">{formatVND(v.options![0]?.value![0].price ?? 0)}</span>
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            {v.stock}
-                                                        </td>
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                {v.stock}
+                                                            </td>
 
-                                                        <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
-                                                            <div className="flex flex-wrap justify-start gap-1">
-                                                                <Link href={`${PATH.EDIT_PRODUCT}/${v._id}`} className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
-                                                                    <MdModeEdit className="w-5 h-5" />
-                                                                </Link>
-                                                                <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete"
-                                                                    onClick={() => handleDeleteProduct(v._id!)}
-                                                                >
-                                                                    <FaRegTrashAlt className='w-5 h-5' />
-                                                                </button>
-                                                                {/* <button onClick={() => { setShowDetails(true) }} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
+                                                            <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                <div className="flex flex-wrap justify-start gap-1">
+                                                                    <Link href={`${PATH.EDIT_PRODUCT}/${v._id}`} className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none" title="Edit">
+                                                                        <MdModeEdit className="w-5 h-5" />
+                                                                    </Link>
+                                                                    <button className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700" title="Delete"
+                                                                        onClick={() => handleDeleteProduct(v._id!)}
+                                                                    >
+                                                                        <FaRegTrashAlt className='w-5 h-5' />
+                                                                    </button>
+                                                                    {/* <button onClick={() => { setShowDetails(true) }} className="flex items-center bg-blue-300 hover:bg-blue-700 active:bg-blue-600 p-2 border border-transparent rounded-lg font-medium text-center text-sm text-white leading-5 transition-colors duration-150" title="Delete">
                                                                     <FaRegShareSquare className='w-5 h-5' />
                                                                 </button> */}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {/* Biến thể của sản phẩm */}
+                                                        {
+                                                            v.options && v.options?.map(option => {
+                                                                return (
+                                                                    <React.Fragment key={option.key}>
+                                                                        {
+                                                                            option.value?.map(val => {
+                                                                                return (
+                                                                                    <tr key={val._id} className="bg-white border-none">
+                                                                                        <td className="px-2 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
+                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
+
+                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                            <div className="w-full flex justify-end">
+                                                                                                <div className="h-12 w-12 relative">
+                                                                                                    <Image fill loading="lazy" className="object-cover" src={val.img || '/logo.png'} alt={val._id!} sizes="width: 100%, height: 100%" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </td>
+
+                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                            <div className="text-gray-700 text-ellipsis overflow-hidden line-clamp-2">
+                                                                                                {val.val}
+                                                                                            </div>
+                                                                                        </td>
+
+                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                            <div className="text-gray-700">
+                                                                                                <span className="font-medium">{formatVND(val.price!)}</span>
+                                                                                            </div>
+                                                                                        </td>
+
+                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900">
+                                                                                            {val.quantity}
+                                                                                        </td>
+
+                                                                                        <td className="px-3 py-2 whitespace-normal text-sm leading-5 text-gray-900"></td>
+                                                                                    </tr>
+                                                                                )
+                                                                            })
+                                                                        }
+                                                                    </React.Fragment>
+                                                                )
+                                                            })
+                                                        }
+                                                    </React.Fragment>
                                                 )
                                             })
                                     }
