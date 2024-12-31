@@ -49,7 +49,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
 
     const getAllVariations = async (): Promise<Variant[]> => {
         const tempVariation: Variant[] = []
-        console.log(variations.length);
         if (variations.length > 0) {
             const variationElements = document.querySelectorAll('.variation-item')
             const variationTableElements = document.querySelectorAll('.variation-table')
@@ -66,15 +65,14 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                     let optionSKUInput = table.querySelectorAll('.option-sku-input')[i] as HTMLInputElement
                     let optionImageInput = table.querySelectorAll('.option-file-input')[i] as HTMLInputElement
                     formData.set('file', optionImageInput.files![0])
-                    await new Promise((resolve, reject) => {
+                    await new Promise(resolve => {
                         uploadHook.mutate(formData, {
                             onSuccess(data) {
-                                attributes.push({ val: optionElements[i].value, price: +optionPriceInput.value, quantity: +optionStockInput.value, sku: optionSKUInput.value, img: data.url })
+                                attributes.push({
+                                    val: optionElements[i].value, price: +optionPriceInput.value,
+                                    quantity: +optionStockInput.value, sku: optionSKUInput.value, img: data.url
+                                })
                                 resolve(null);
-                            },
-                            onError(error) {
-                                console.log(error);
-                                reject(error)
                             }
                         })
                     })
@@ -115,7 +113,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
 
     const handleProductAction = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        dispatch(dispatch(setIsLoadingOverlay(true)))
+        dispatch(setIsLoadingOverlay(true))
         const currentTarget = e.currentTarget
         const formData = new FormData(currentTarget)
         let imageLinks: string[] = []
@@ -129,10 +127,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                         onSuccess(data) {
                             imageLinks.push(data.url)
                             resolve(null);
-                        },
-                        onError(error) {
-                            console.log("images error");
-                            console.log(error);
                         }
                     })
                 })
@@ -157,22 +151,12 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         tempProduct['packaging'] = 'Quy cách đóng gói type String'
         if (product != null) {
             console.log("updatinggg");
-            updateHook.mutate({ body: tempProduct, id: product!._id! }, {
-                onSuccess(data) {
-                    toast.success('Sửa sản phẩm thành công')
-                    router.push(PATH.PRODUCT_LIST)
-                }
-            })
+            updateHook.mutate({ body: tempProduct, id: product!._id! })
         }
         else {
-            createHook.mutate({ body: tempProduct }, {
-                onSuccess(data) {
-                    toast.success('Thêm sản phẩm thành công')
-                    router.push(PATH.PRODUCT_LIST)
-                }
-            })
+            createHook.mutate({ body: tempProduct })
         }
-        dispatch(dispatch(setIsLoadingOverlay(false)))
+        dispatch(setIsLoadingOverlay(false))
     }
 
     return (

@@ -1,14 +1,13 @@
 "use client"
 import { icons } from "@/app/common/icons";
 import LoadingShimmer from "@/app/components/LoadingShimmer";
-import ProductModal from "@/app/components/ProductModal";
+// import ProductModal from "@/app/components/ProductModal";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteProductHook, readProductsHook } from "@/app/hooks/product.hooks";
-import { FaRegShareSquare } from "react-icons/fa";
-import ProductDetailsModal from "@/app/components/ProductDetailsModal";
+// import ProductDetailsModal from "@/app/components/ProductDetailsModal";
 import CustomPaginator from "@/app/components/CustomPaginator";
 import Image from "next/image";
 import { PATH } from "@/app/common/path";

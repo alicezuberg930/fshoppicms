@@ -31,6 +31,7 @@ const CategoryModal: React.FC<{
         const formData = new FormData(e.currentTarget)
         const category: Category = Object.fromEntries(formData.entries())
         if (category.parentCategory == "") category.parentCategory = null
+        formData.set("file", images[0])
         uploadHook.mutate(formData, {
             onSuccess(data) {
                 category["thumbnail"] = data.url
