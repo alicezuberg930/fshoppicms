@@ -41,3 +41,10 @@ export const getCachedSession = async (): Promise<Session | null> => {
 export const clearCachedSession = () => {
     cachedSession = null
 }
+
+export const generateSecureRandomString = (length: number): string => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const array = new Uint32Array(length);
+    crypto.getRandomValues(array);
+    return Array.from(array, (value) => characters[value % characters.length]).join('');
+}

@@ -6,7 +6,6 @@
 import CustomImagePicker from '@/app/components/CustomImagePicker'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { icons } from '@/app/common/icons'
-import { toast } from 'react-toastify'
 import { createProductHook, updateProductHook } from '../hooks/product.hooks'
 import { readBrandsHook } from '../hooks/brands.hooks'
 import CategoryModalPicker from './CategoryModalPicker'
@@ -14,7 +13,7 @@ import { uploadFilesHook } from '../hooks/common.hooks'
 import { useDispatch } from 'react-redux'
 import { setIsLoadingOverlay } from '../services/common.slice'
 import { useRouter } from 'next/navigation'
-import { PATH } from '../common/path'
+import { generateSecureRandomString } from '../common/utils'
 
 const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product = null, page }) => {
     // const [description, setDescription] = useState<string>('')
@@ -113,11 +112,15 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
 
     const handleProductAction = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        dispatch(setIsLoadingOverlay(true))
+        // dispatch(setIsLoadingOverlay(true))
         const currentTarget = e.currentTarget
         const formData = new FormData(currentTarget)
+        console.log(getAllVariations());
+        console.log(Object.fromEntries(formData.entries()));
+
+        return
         let imageLinks: string[] = []
-        if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
+        // if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
         if (images.length > 0) {
             const imageForm = new FormData()
             for (let i = 0; i < images.length; i++) {
@@ -220,7 +223,8 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='flex items-center'>
                                             <div className=''>
-                                                <CustomImagePicker id='banner' isDisabled={true} images={product ? [product.images![0]] : images.length > 0 ? [URL.createObjectURL(images[0])] : ['']} isMultiple={false} hideEdit={true} />
+                                                {/* product ? [product.images![0]] : images.length > 0 ? [URL.createObjectURL(images[0])] :  */}
+                                                <CustomImagePicker id='banner' isDisabled={true} images={['']} isMultiple={false} hideEdit={true} />
                                             </div>
                                             <div className='ml-6 text-xs text-gray-400'>
                                                 <ul>
@@ -271,7 +275,8 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='w-full'>
                                             <div className=''>
-                                                <input placeholder='Mã sản phẩm' type='text' name='productCode' defaultValue={typeof product?.productCode === 'object' ? (product?.productCode?.code ?? '') : ''}
+                                                <input placeholder='Mã sản phẩm' type='text' name='productCode' disabled
+                                                    defaultValue={typeof product?.productCode === 'object' ? (product?.productCode?.code ?? '') : generateSecureRandomString(20)}
                                                     className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none'
                                                 />
                                             </div>
@@ -398,7 +403,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                         return (
                                                                                             <div key={optionIndex} className='w-full sm:w-1/2 pt-3 pr-0 sm:odd:pr-2 flex items-center option-item drag-item' draggable>
                                                                                                 <div className='flex-auto'>
-                                                                                                    <input placeholder='e.g. Red, etc' type='text' defaultValue={product ? product?.options![i].value![optionIndex]?.val : ''}
+                                                                                                    <input placeholder='e.g. Red, etc' type='text'
+                                                                                                        defaultValue={product?.options![i]?.value![optionIndex]?.val ?? ""}
+                                                                                                        // defaultValue={product && product!.options && product!.options![i]?.value ? product!.options![i].value![optionIndex]?.val : ""}
                                                                                                         className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-name-input'
                                                                                                     />
                                                                                                 </div>
@@ -565,7 +572,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                     <tr key={optionIndex} className='border-t border-gray-300'>
                                                                                         <td className='border-r py-3 flex flex-col items-center gap-2'>
                                                                                             <span>Tùy chọn {optionIndex + 1}</span>
-                                                                                            <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`} isMultiple={false} images={product ? [product!.options![i].value![optionIndex]!.img!] : ['']} />
+                                                                                            <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`}
+                                                                                                isMultiple={false} images={[product?.options![i]?.value![optionIndex]?.img ?? '']}
+                                                                                            />
                                                                                         </td>
                                                                                         <td className='border-r px-1 md:px-4 py-3'>
                                                                                             <input type='number' placeholder='Nhập vào' defaultValue={product?.options![i]?.value![optionIndex]?.price ?? 0} min={0}
