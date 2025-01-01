@@ -21,10 +21,10 @@ const ProductListPage: React.FC = () => {
     const { data: products, isLoading } = readProductsHook(currentPage)
     const deleteHook = deleteProductHook(currentPage)
 
-    const dummy: number[] = [];
-    for (let i = 0; i <= 8; i++) {
-        dummy.push(i)
-    };
+    // const dummy: number[] = [];
+    // for (let i = 0; i <= 8; i++) {
+    //     dummy.push(i)
+    // };
 
     const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
         // if (e.target.checked) {
@@ -84,15 +84,15 @@ const ProductListPage: React.FC = () => {
                                     <input placeholder='Tìm kiếm' type='text' className='p-2 shadow-sm block sm:text-sm sm:focus:outline-none focus:border-indigo-300 focus:shadow-blue-300 rounded-md' />
                                 </div>
                                 <div className='relative block text-left md:inline-block'>
-                                    <button className='flex items-center gap-2 px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none'>
+                                    <button className='flex items-center gap-2 px-4 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none'>
                                         <FaFilter className='w-4 h-4' />
                                         <span>Filters</span>
                                     </button>
                                     <div className='absolute right-0 z-50 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg md:w-56 ring-1 ring-black ring-opacity-5 focus:outline-none'
                                         role='menu' aria-orientation='vertical' aria-labelledby='filters-menu'>
                                         <div className='py-2' hidden>
-                                            <div className='block px-4 py-2 text-sm text-gray-700' role='menuitem'>
-                                                <label className='block text-sm font-medium text-gray-700 ltr:text-left rtl:text-right'>
+                                            <div className='block px-4 py-2 text-sm'>
+                                                <label className='block text-sm font-medium'>
                                                     Digital
                                                 </label>
                                                 <div className='mt-1 relative rounded-md shadow-sm'>
@@ -122,20 +122,12 @@ const ProductListPage: React.FC = () => {
                             <table className='min-w-full divide-y divide-gray-200'>
                                 <thead>
                                     <tr>
-                                        <th className='px-2 py-2 bg-gray-50'>
+                                        <th className='px-2 py-2 bg-gray-50 w-5'>
                                             <button className='flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 group focus:outline-none'>
                                                 <input type='checkbox' onChange={(e) => selectAll(e)} checked={checkAll} />
                                             </button>
                                         </th>
-                                        <th className='px-3 py-2 md:py-3 bg-gray-50 w-[50px]'>
-                                            <button className='flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 group focus:outline-none focus:underline'>
-                                                <span>ID</span>
-                                                <span className='relative flex items-center'>
-                                                    <FaChevronDown className='w-2 h-2' />
-                                                </span>
-                                            </button>
-                                        </th>
-                                        <th className='px-3 py-2 md:py-3 bg-gray-50 w-[120px]'>
+                                        <th className='px-3 py-2 md:py-3 bg-gray-50 w-24'>
                                             <span className='block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left'>
                                                 Ảnh
                                             </span>
@@ -152,7 +144,7 @@ const ProductListPage: React.FC = () => {
                                         </th>
                                         <th className='px-3 py-2  md:py-3 bg-gray-50'>
                                             <button className='flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left group focus:outline-none focus:underline'>
-                                                <span>Số lượng</span>
+                                                <span>Kho hàng</span>
                                                 <span className='relative flex items-center'>
                                                     <FaChevronDown className='w-2 h-2' />
                                                 </span>
@@ -160,7 +152,7 @@ const ProductListPage: React.FC = () => {
                                         </th>
                                         <th className='px-3 py-2 md:py-3 bg-gray-50 flex items-center'>
                                             <span className='block text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase text-left'>
-                                                Hành động
+                                                Thao tác
                                             </span>
                                         </th>
                                     </tr>
@@ -188,9 +180,6 @@ const ProductListPage: React.FC = () => {
                                                         <td className='px-2 py-2 md:py-4'>
                                                             <input onChange={(e) => selectOne(e, i)} checked={checkBoxes.includes(i)} type='checkbox' />
                                                         </td>
-                                                        <td className='px-3 py-2 md:py-4'>
-                                                            {i}
-                                                        </td>
 
                                                         <td className='px-3 py-2 md:py-4'>
                                                             <div className='h-24 w-24 relative bg-gray-200'>
@@ -199,19 +188,20 @@ const ProductListPage: React.FC = () => {
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4'>
-                                                            <div className='text-gray-700 text-ellipsis overflow-hidden line-clamp-2'>
+                                                            <div className='font-semibold text-ellipsis overflow-hidden line-clamp-2'>
                                                                 {v.name}
                                                             </div>
-                                                        </td>
-
-                                                        <td className='px-3 py-2 md:py-4'>
-                                                            <div className='text-gray-700'>
-                                                                <span className='font-medium'>{formatVND(v.options![0]?.value![0].price ?? 0)}</span>
+                                                            <div className='text-xs text-ellipsis overflow-hidden line-clamp-1'>
+                                                                <span>ID Sản phẩm: {v._id}</span>
                                                             </div>
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4'>
-                                                            {stock}
+                                                            <span className='font-medium'>{formatVND(v.options![0]?.value![0].price ?? 0)}</span>
+                                                        </td>
+
+                                                        <td className='px-3 py-2 md:py-4'>
+                                                            {stock != 0 ? stock : 'Hết hàng'}
                                                         </td>
 
                                                         <td className='px-3 py-2 md:py-4'>
@@ -228,44 +218,43 @@ const ProductListPage: React.FC = () => {
                                                         </td>
                                                     </tr>
                                                     {/* Biến thể của sản phẩm */}
-                                                    {v.options!.length > 0 && v.options![0].key != '' ?
-                                                        v.options?.map(option => {
-                                                            return (
-                                                                <React.Fragment key={option.key}>
-                                                                    {
-                                                                        option.value?.map(val => {
-                                                                            return (
-                                                                                <tr key={val._id} className='bg-white border-none'>
-                                                                                    <td colSpan={3} className='px-3 py-2'>
-                                                                                        <div className='w-full flex justify-end'>
-                                                                                            <div className='h-12 w-12 relative bg-gray-200'>
-                                                                                                <Image fill loading='lazy' className='object-cover' src={val.img || '/logo.png'} alt={val._id!} sizes='width: 100%, height: 100%' />
+                                                    {
+                                                        v.options!.length > 0 && v.options![0].key != '' ?
+                                                            v.options?.map(option => {
+                                                                return (
+                                                                    <React.Fragment key={option.key}>
+                                                                        {
+                                                                            option.value?.map(val => {
+                                                                                return (
+                                                                                    <tr key={val._id} className='bg-white border-none'>
+                                                                                        <td colSpan={2} className='px-3 py-2'>
+                                                                                            <div className='w-full flex justify-end'>
+                                                                                                <div className='h-12 w-12 relative bg-gray-200'>
+                                                                                                    <Image fill loading='lazy' className='object-cover' src={val.img || '/logo.png'} alt={val._id!} sizes='width: 100%, height: 100%' />
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
-                                                                                    </td>
+                                                                                        </td>
 
-                                                                                    <td className='px-3 py-2'>
-                                                                                        <div className='text-gray-700 text-ellipsis overflow-hidden line-clamp-2'>
-                                                                                            {val.val}
-                                                                                        </div>
-                                                                                    </td>
+                                                                                        <td className='px-3 py-2'>
+                                                                                            <span className='text-ellipsis overflow-hidden line-clamp-2'>
+                                                                                                {val.val}
+                                                                                            </span>
+                                                                                        </td>
 
-                                                                                    <td className='px-3 py-2'>
-                                                                                        <div className='text-gray-700'>
+                                                                                        <td className='px-3 py-2'>
                                                                                             <span className='font-medium'>{formatVND(val.price!)}</span>
-                                                                                        </div>
-                                                                                    </td>
+                                                                                        </td>
 
-                                                                                    <td colSpan={2} className='px-3 py-2'>
-                                                                                        {val.quantity}
-                                                                                    </td>
-                                                                                </tr>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </React.Fragment>
-                                                            )
-                                                        }) : <></>
+                                                                                        <td colSpan={2} className='px-3 py-2'>
+                                                                                            {val.quantity}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                )
+                                                                            })
+                                                                        }
+                                                                    </React.Fragment>
+                                                                )
+                                                            }) : <></>
                                                     }
                                                 </React.Fragment>
                                             )
@@ -282,7 +271,7 @@ const ProductListPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </main>
+        </main >
     )
 }
 
