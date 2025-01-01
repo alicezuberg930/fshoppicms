@@ -15,38 +15,44 @@ import { setIsLoadingOverlay } from '../services/common.slice'
 import { generateSecureRandomString } from '../common/utils'
 
 const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product = null, page }) => {
+    // hooks
     const [images, setImages] = useState<{ file: File | null, url: string }[]>([])
-    const { FaRegTrashAlt, MdOutlineCancel, IoIosAddCircleOutline } = icons
-    const updateHook = updateProductHook(page)
-    const createHook = createProductHook(page)
-    const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
-    const uploadHook = uploadFilesHook()
-    const dispatch = useDispatch()
     const [variations, setVariations] = useState<number[]>([])
     const [options, setOptions] = useState<number[][]>([])
+    const [selectedBrand, setSelectedBrand] = useState<string>("")
+    const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
+    const updateHook = updateProductHook(page)
+    const createHook = createProductHook(page)
+    const uploadHook = uploadFilesHook()
+    const dispatch = useDispatch()
+    // icons
+    const { FaRegTrashAlt, MdOutlineCancel, IoIosAddCircleOutline } = icons
 
     useEffect(() => {
-        if (product != null && product.options!.length > 0) {
-            const newVariations: number[] = []
-            const newOptions: number[][] = []
-            for (let i = 0; i < product.options!.length; i++) {
-                if (product.options![i].key == '') continue
-                newVariations.push(i)
-                const optionValues: number[] = []
-                for (let j = 0; j < product.options![i].value!.length; j++) {
-                    optionValues.push(j)
+        if (product) {
+            setSelectedBrand(product.brand!)
+            if (product.images!.length > 0) {
+                const detailImages: { file: File | null, url: string }[] = []
+                for (let i = 0; i < product.images!.length; i++) {
+                    detailImages.push({ file: null, url: product.images![i] })
                 }
-                newOptions.push(optionValues); // Add the options array for this variation
+                setImages(detailImages)
             }
-            setVariations(newVariations)
-            setOptions(newOptions)
-        }
-        if (product != null && product.images!.length > 0) {
-            const detailImages: { file: File | null, url: string }[] = []
-            for (let i = 0; i < product.images!.length; i++) {
-                detailImages.push({ file: null, url: product.images![i] })
+            if (product.options!.length > 0) {
+                const newVariations: number[] = []
+                const newOptions: number[][] = []
+                for (let i = 0; i < product.options!.length; i++) {
+                    if (product.options![i].key == '') continue
+                    newVariations.push(i)
+                    const optionValues: number[] = []
+                    for (let j = 0; j < product.options![i].value!.length; j++) {
+                        optionValues.push(j)
+                    }
+                    newOptions.push(optionValues); // Add the options array for this variation
+                }
+                setVariations(newVariations)
+                setOptions(newOptions)
             }
-            setImages(detailImages)
         }
     }, [])
 
@@ -159,7 +165,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         tempProduct['ingredients'] = 'ingredients'
         tempProduct['usage'] = 'usage'
         tempProduct['packaging'] = 'Quy cách đóng gói type String'
-        if (product != null) {
+        if (product) {
             updateHook.mutate({ body: tempProduct, id: product!._id! })
         } else {
             createHook.mutate({ body: tempProduct })
@@ -231,8 +237,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='flex items-center'>
                                             <div className=''>
-                                                <CustomImagePicker id='banner' isDisabled={true} isMultiple={false} hideEdit={true}
-                                                    images={images}
+                                                <CustomImagePicker id='banner' isDisabled={true} isMultiple={false} hideEdit={true} images={images}
                                                 />
                                             </div>
                                             <div className='ml-6 text-xs text-gray-400'>
@@ -329,10 +334,10 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='w-full'>
                                             <div className=''>
-                                                <select defaultValue={product?.brand ?? ''} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='brand'>
+                                                <select value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)} className='border-gray-300 p-2 border rounded-md w-full outline-none' name='brand'>
                                                     {loadingBrands ?
                                                         <option value='' disabled>Không có dữ liệu</option> :
-                                                        brands && (brands?.brands?.data as Brand[]).map(brand => {
+                                                        brands && brands?.brands?.data.map((brand: Brand) => {
                                                             return (
                                                                 <option key={brand._id} value={brand._id}>{brand.name}</option>
                                                             )
