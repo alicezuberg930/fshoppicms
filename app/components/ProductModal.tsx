@@ -15,10 +15,8 @@ import { setIsLoadingOverlay } from '../services/common.slice'
 import { generateSecureRandomString } from '../common/utils'
 
 const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product = null, page }) => {
-    // const [description, setDescription] = useState<string>('')
-    const [images, setImages] = useState<File[]>([])
+    const [images, setImages] = useState<{ file: File | null, url: string }[]>([])
     const { FaRegTrashAlt, MdOutlineCancel, IoIosAddCircleOutline } = icons
-    // const [resetAll, setResetAll] = useState<boolean>(false)
     const updateHook = updateProductHook(page)
     const createHook = createProductHook(page)
     const { data: brands, isLoading: loadingBrands } = readBrandsHook(1)
@@ -42,6 +40,13 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
             }
             setVariations(newVariations)
             setOptions(newOptions)
+        }
+        if (product != null && product.images!.length > 0) {
+            const detailImages: { file: File | null, url: string }[] = []
+            for (let i = 0; i < product.images!.length; i++) {
+                detailImages.push({ file: null, url: product.images![i] })
+            }
+            setImages(detailImages)
         }
     }, [])
 
@@ -102,7 +107,6 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         }
         return tempVariation
     }
-    console.log(images)
 
     const applyAllOptions = () => {
         const allPrice = document.getElementById('all-price-option') as HTMLInputElement
@@ -121,28 +125,26 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         dispatch(setIsLoadingOverlay(true))
         const currentTarget = e.currentTarget
         const formData = new FormData(currentTarget)
-        console.log(await getAllVariations());
-        console.log(Object.fromEntries(formData.entries()));
-        // return
-        let imageLinks: string[] = []
-        if (product && product?.images!.length > 0) imageLinks = product.images!
+        let tempImages = images.map(image => image.url)
         if (images.length > 0) {
             const imageForm = new FormData()
             for (let i = 0; i < images.length; i++) {
-                imageForm.set('file', images[i])
-                await new Promise((resolve) => {
-                    uploadHook.mutate(imageForm, {
-                        onSuccess(data) {
-                            imageLinks.push(data.url)
-                            resolve(null);
-                        }
+                if (images[i].file != null) {
+                    imageForm.set('file', images[i].file!)
+                    await new Promise((resolve) => {
+                        uploadHook.mutate(imageForm, {
+                            onSuccess(data) {
+                                tempImages[i] = data.url
+                                resolve(null);
+                            }
+                        })
                     })
-                })
+                }
             }
         }
         formData.delete('file')
         const tempProduct: Product = Object.fromEntries(formData.entries())
-        tempProduct['images'] = imageLinks
+        tempProduct['images'] = tempImages
         tempProduct['options'] = await getAllVariations()
         tempProduct['childrenCategories'] = []
         // temporary test
@@ -159,12 +161,13 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         tempProduct['packaging'] = 'Quy cách đóng gói type String'
         if (product != null) {
             updateHook.mutate({ body: tempProduct, id: product!._id! })
-        }
-        else {
+        } else {
             createHook.mutate({ body: tempProduct })
         }
         dispatch(setIsLoadingOverlay(false))
     }
+
+    console.log(images.length);
 
     return (
         <div className='w-full py-4 max-w-[1440px] mx-auto'>
@@ -215,7 +218,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                             </div> */}
                                             <div className=''>
                                                 <div className=''>
-                                                    <CustomImagePicker id='images' setImages={setImages} images={product?.images ?? ['']} limit={9} />
+                                                    <CustomImagePicker id='images' setImages={setImages} images={images} limit={9} />
                                                 </div>
                                             </div>
                                         </div>
@@ -228,8 +231,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                         </div>
                                         <div className='flex items-center'>
                                             <div className=''>
-                                                {/* product ? [product.images![0]] : images.length > 0 ? [URL.createObjectURL(images[0])] :  */}
-                                                <CustomImagePicker id='banner' isDisabled={true} images={['']} isMultiple={false} hideEdit={true} />
+                                                <CustomImagePicker id='banner' isDisabled={true} isMultiple={false} hideEdit={true}
+                                                    images={images}
+                                                />
                                             </div>
                                             <div className='ml-6 text-xs text-gray-400'>
                                                 <ul>
@@ -577,7 +581,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                         <td className='border-r py-3 flex flex-col items-center gap-2'>
                                                                                             <span>Tùy chọn {optionIndex + 1}</span>
                                                                                             <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`}
-                                                                                                isMultiple={false} images={[product?.options![i]?.value![optionIndex]?.img ?? '']}
+                                                                                                isMultiple={false} images={[{ file: null, url: product?.options![i]?.value![optionIndex]?.img! }]}
                                                                                             />
                                                                                         </td>
                                                                                         <td className='border-r px-1 md:px-4 py-3'>

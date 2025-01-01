@@ -5,8 +5,8 @@ import Image from 'next/image'
 import { toast } from 'react-toastify'
 
 const CustomImagePicker: React.FC<{
-  images?: string[],
-  setImages?: Dispatch<SetStateAction<File[]>>,
+  images?: { file: File | null, url: string }[],
+  setImages?: Dispatch<SetStateAction<{ file: File | null, url: string }[]>>,
   isMultiple?: boolean,
   resetAll?: boolean,
   limit?: number,
@@ -15,19 +15,14 @@ const CustomImagePicker: React.FC<{
   isDisabled?: boolean,
   hideEdit?: boolean
 }> = ({ images, setImages, isMultiple = true, resetAll = false, limit = isMultiple ? 9 : 1, id, showTitle = true, isDisabled = false, hideEdit = false }) => {
-  const [tempfiles, setFiles] = useState<{ file: File, url: string }[]>([])
+  const [tempfiles, setTempFiles] = useState<{ file: File | null, url: string }[]>([])
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const { RiImageAddFill, FaRegTrashAlt, MdModeEdit } = icons
 
   useEffect(() => {
     // Load initial images if provided
-    if (images && images[0] != '') {
-      const initialFiles = images.map((image, i) => ({
-        file: new File([], `file-${i}`), // Dummy File for existing images
-        url: image,
-      }))
-      // setImages && setImages!(initialFiles.map(file => file.file))
-      setFiles(initialFiles)
+    if (images != undefined) {
+      setTempFiles(images)
     }
   }, [images])
 
@@ -50,8 +45,8 @@ const CustomImagePicker: React.FC<{
         }
       })
     }
-    setFiles((prev) => [...prev, ...newFiles].slice(0, limit))
-    setImages && setImages((prev) => [...prev, ...newFiles.map(f => f.file)].slice(0, limit))
+    setTempFiles((prev) => [...prev, ...newFiles].slice(0, limit))
+    setImages && setImages((prev) => [...prev, ...newFiles].slice(0, limit))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,8 +60,8 @@ const CustomImagePicker: React.FC<{
         newFiles.push({ file, url })
       }
       newFiles = newFiles.slice(0, 8)
-      setFiles(prev => [...prev, ...newFiles].slice(0, limit))
-      setImages && setImages(prev => [...prev, ...newFiles.map(f => f.file)].slice(0, limit))
+      setTempFiles(prev => [...prev, ...newFiles].slice(0, limit))
+      setImages && setImages(prev => [...prev, ...newFiles].slice(0, limit))
     }
   }
 
@@ -78,7 +73,7 @@ const CustomImagePicker: React.FC<{
     e.preventDefault()
     if (draggedIndex === null || draggedIndex === index) return
 
-    setFiles((prev) => {
+    setTempFiles((prev) => {
       const updatedFiles = [...prev]
       const [draggedFile] = updatedFiles.splice(draggedIndex, 1)
       updatedFiles.splice(index, 0, draggedFile)
@@ -90,57 +85,60 @@ const CustomImagePicker: React.FC<{
 
   const handleDragEnd = () => {
     setDraggedIndex(null)
-    setImages && setImages(tempfiles.map(f => f.file))
+    setImages && setImages(tempfiles)
   }
 
   const resetImages = () => {
     tempfiles.forEach(f => URL.revokeObjectURL(f.url))
-    setFiles([])
+    setTempFiles([])
     setImages && setImages([])
   }
+  console.log("tempfile length; " + tempfiles.length);
 
   return (
     <div className='text-blue-500 flex flex-wrap gap-3'>
       {/* Image list */}
-      <div className={`${tempfiles.length > 0 ? 'block' : 'hidden'}`}>
-        <div className='flex flex-wrap gap-3 image-container'>
-          {
-            tempfiles.map((file, i) => (
-              <div draggable key={i} className='group'
-                onDragStart={() => handleDragStart(i)}
-                onDragOver={(e) => handleDragOver(e, i)}
-                onDragEnd={handleDragEnd}
-              >
-                <div className='rounded-md overflow-hidden relative h-20 w-20 bg-gray-300'>
-                  <Image fill className='object-cover'
-                    src={file.url}
-                    alt={`Uploaded file ${i}`}
-                    sizes='width: 100%, height: 100%'
-                  />
-                  {
-                    !hideEdit && <div className='group-hover:block hidden'>
-                      <div className='text-white w-full py-1 bg-[#000000b3] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
-                        <span className='pr-3'>
-                          <MdModeEdit size={16} />
-                        </span>
-                        <span>|</span>
-                        <span className='pl-3' onClick={() => {
-                          setFiles(prev => prev.filter((_, index) => index != i))
-                          setImages && setImages(prev => prev.filter((_, index) => index != i))
-                        }}>
-                          <FaRegTrashAlt size={16} />
-                        </span>
+      {tempfiles.length > 0 &&
+        <div>
+          <div className='flex flex-wrap gap-3 image-container'>
+            {
+              tempfiles.slice(0, limit).map((file, i) => (
+                <div draggable key={i} className='group'
+                  onDragStart={() => handleDragStart(i)}
+                  onDragOver={(e) => handleDragOver(e, i)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <div className='rounded-md overflow-hidden relative h-20 w-20 bg-gray-300'>
+                    <Image fill className='object-cover' src={file.url} alt={`Uploaded file ${i}`} sizes='width: 100%, height: 100%' />
+                    {/* <img src={file.url} className='object-cover'
+                      alt={`Uploaded file ${i}`}
+                    /> */}
+                    {
+                      !hideEdit &&
+                      <div className='group-hover:block hidden'>
+                        <div className='text-white w-full py-1 bg-[#000000b3] bottom-0 left-0 right-0 absolute flex items-center justify-center'>
+                          <span className='pr-3'>
+                            <MdModeEdit size={16} />
+                          </span>
+                          <span>|</span>
+                          <span className='pl-3' onClick={() => {
+                            setTempFiles(prev => prev.filter((_, index) => index != i))
+                            setImages && setImages(prev => prev.filter((_, index) => index != i))
+                          }}>
+                            <FaRegTrashAlt size={16} />
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  }
-                </div>
-              </div>
-            ))
-          }
+                    }
+                  </div>
+                </div >
+              ))
+            }
+          </div >
         </div>
-      </div>
+      }
       {/* Dropzone */}
-      <div onDragOver={(e) => { e.preventDefault() }} onDrop={handleDrop}
+      < div onDragOver={(e) => { e.preventDefault() }} onDrop={handleDrop}
         className={`${tempfiles.length < limit ? 'block' : 'hidden'} bg-white flex flex-col border border-dashed rounded-md items-center justify-center h-20 w-20`}
       >
         <label htmlFor={id} className='flex flex-col justify-center items-center'>
@@ -148,8 +146,8 @@ const CustomImagePicker: React.FC<{
           {showTitle && <span className='text-xs text-center'>Thêm hình ảnh ({tempfiles.length}/{limit})</span>}
         </label>
         <input multiple={isMultiple} disabled={isDisabled} type='file' accept='image/*' id={id} className='hidden option-file-input' onChange={handleFileChange} />
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 
