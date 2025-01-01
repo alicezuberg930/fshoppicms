@@ -32,6 +32,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
             const newVariations: number[] = []
             const newOptions: number[][] = []
             for (let i = 0; i < product.options!.length; i++) {
+                if (product.options![i].key == '') continue
                 newVariations.push(i)
                 const optionValues: number[] = []
                 for (let j = 0; j < product.options![i].value!.length; j++) {
@@ -61,18 +62,25 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                     let optionStockInput = table.querySelectorAll('.option-stock-input')[i] as HTMLInputElement
                     let optionSKUInput = table.querySelectorAll('.option-sku-input')[i] as HTMLInputElement
                     let optionImageInput = table.querySelectorAll('.option-file-input')[i] as HTMLInputElement
-                    formData.set('file', optionImageInput.files![0])
-                    await new Promise(resolve => {
-                        uploadHook.mutate(formData, {
-                            onSuccess(data) {
-                                attributes.push({
-                                    val: optionElements[i].value, price: +optionPriceInput.value,
-                                    quantity: +optionStockInput.value, sku: optionSKUInput.value, img: data.url
-                                })
-                                resolve(null);
-                            }
+                    if (optionImageInput.files && optionImageInput.files!.length > 0) {
+                        formData.set('file', optionImageInput.files![0])
+                        await new Promise(resolve => {
+                            uploadHook.mutate(formData, {
+                                onSuccess(data) {
+                                    attributes.push({
+                                        val: optionElements[i].value, price: +optionPriceInput.value,
+                                        quantity: +optionStockInput.value, sku: optionSKUInput.value, img: data.url
+                                    })
+                                    resolve(null);
+                                }
+                            })
                         })
-                    })
+                    } else {
+                        attributes.push({
+                            val: optionElements[i].value, price: +optionPriceInput.value,
+                            quantity: +optionStockInput.value, sku: optionSKUInput.value, img: product?.options![j].value![i].img
+                        })
+                    }
                 }
                 tempVariation.push({ key: variationNameInput.value, value: attributes })
                 attributes = []
@@ -92,9 +100,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                 ]
             })
         }
-        console.log(tempVariation)
         return tempVariation
     }
+    console.log(images)
 
     const applyAllOptions = () => {
         const allPrice = document.getElementById('all-price-option') as HTMLInputElement
@@ -115,10 +123,9 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
         const formData = new FormData(currentTarget)
         console.log(await getAllVariations());
         console.log(Object.fromEntries(formData.entries()));
-
         // return
         let imageLinks: string[] = []
-        // if (product?.images != null && product?.images.length > 0 && images.length == 0) imageLinks = product.images
+        if (product && product?.images!.length > 0) imageLinks = product.images!
         if (images.length > 0) {
             const imageForm = new FormData()
             for (let i = 0; i < images.length; i++) {
@@ -402,8 +409,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                             <div key={optionIndex} className='w-full sm:w-1/2 pt-3 pr-0 sm:odd:pr-2 flex items-center option-item drag-item' draggable>
                                                                                                 <div className='flex-auto'>
                                                                                                     <input placeholder='e.g. Red, etc' type='text'
-                                                                                                        defaultValue={product?.options![i]?.value![optionIndex]?.val ?? ""}
-                                                                                                        // defaultValue={product && product!.options && product!.options![i]?.value ? product!.options![i].value![optionIndex]?.val : ""}
+                                                                                                        defaultValue={product?.options![i]?.value![optionIndex]?.val ?? ''}
                                                                                                         className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none option-name-input'
                                                                                                     />
                                                                                                 </div>
@@ -461,7 +467,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                             </div>
                                             <div className='w-full'>
                                                 <div className=''>
-                                                    <input placeholder='Nhập vào' type='number'
+                                                    <input placeholder='Nhập vào' type='number' defaultValue={product?.options![0]?.value![0]?.price ?? 0}
                                                         className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none no-variation-price'
                                                     />
                                                 </div>
@@ -477,7 +483,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                             </div>
                                             <div className='w-full'>
                                                 <div className=''>
-                                                    <input placeholder='Nhập vào' type='number' min={0} defaultValue={0}
+                                                    <input placeholder='Nhập vào' type='number' min={0} defaultValue={product?.options![0]?.value![0]?.quantity ?? 0}
                                                         className='border-gray-300 p-2 border focus:border-blue-500 rounded-md w-full outline-none no-variation-stock'
                                                     />
                                                 </div>

@@ -21,12 +21,12 @@ const CustomImagePicker: React.FC<{
 
   useEffect(() => {
     // Load initial images if provided
-    if (images && images[0] != "") {
+    if (images && images[0] != '') {
       const initialFiles = images.map((image, i) => ({
         file: new File([], `file-${i}`), // Dummy File for existing images
         url: image,
       }))
-      setImages && setImages!(initialFiles.map(file => file.file))
+      // setImages && setImages!(initialFiles.map(file => file.file))
       setFiles(initialFiles)
     }
   }, [images])
