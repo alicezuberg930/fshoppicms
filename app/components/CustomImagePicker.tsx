@@ -21,9 +21,7 @@ const CustomImagePicker: React.FC<{
 
   useEffect(() => {
     // Load initial images if provided
-    if (images != undefined) {
-      setTempFiles(images)
-    }
+    if (images != undefined) setTempFiles(images)
   }, [images])
 
   useEffect(() => {
@@ -93,7 +91,6 @@ const CustomImagePicker: React.FC<{
     setTempFiles([])
     setImages && setImages([])
   }
-  console.log("tempfile length; " + tempfiles.length);
 
   return (
     <div className='text-blue-500 flex flex-wrap gap-3'>

@@ -40,7 +40,7 @@ export const createProductHook = (page: number) => {
         onSuccess(_) {
             toast.success('Thêm sản phẩm thành công')
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
-            router.push(PATH.PRODUCT_LIST)
+            router.push(PATH.PRODUCTS)
         },
         onError(error) {
             dispatch(setIsLoadingOverlay(false))
@@ -59,7 +59,7 @@ export const updateProductHook = (page: number) => {
         onSuccess(_) {
             toast.success('Sửa sản phẩm thành công')
             queryClient.invalidateQueries({ queryKey: [API.READ_PRODUCTS, page] })
-            router.push(PATH.PRODUCT_LIST)
+            router.push(PATH.PRODUCTS)
         },
         onError(error) {
             dispatch(setIsLoadingOverlay(false))

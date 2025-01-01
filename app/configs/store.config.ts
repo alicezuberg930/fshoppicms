@@ -6,6 +6,7 @@ import { sidebarReducer } from "../services/sidebar.slice";
 import { dropDownReducer } from "../services/dropdown.slice";
 import { commonSliceReducer } from "../services/common.slice";
 import { subcategoriesReducer } from "../services/subcategories.slice";
+import { categoryReducer } from "../services/category.slice";
 
 const localPersistConfig = {
     key: "root",
@@ -23,6 +24,7 @@ export const store = configureStore({
         sidebar: persistReducer(localPersistConfig, sidebarReducer),
         common: persistReducer(localPersistConfig, commonSliceReducer),
         subcategory: persistReducer(localPersistConfig, subcategoriesReducer),
+        category: persistReducer(localPersistConfig, categoryReducer)
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {

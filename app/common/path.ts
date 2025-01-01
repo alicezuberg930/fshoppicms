@@ -1,10 +1,12 @@
 export const PATH = {
     CREATE_USER: "/cms/users/create",
     CATEGORIES: "/cms/categories",
+    EDIT_CATEGORY: "/cms/categories/edit",
+    NEW_CATEGORY: "/cms/categories/new",
     ORDERS_NEW: "/cms/orders/new",
     ORDERS_ALL: "/cms/orders",
     USERS: "/cms/users",
-    PRODUCT_LIST: "/cms/products/list",
+    PRODUCTS: "/cms/products/list",
     NEW_PRODUCT: "/cms/products/new",
     EDIT_PRODUCT: "/cms/products/edit",
     SITE_CONFIG: "/cms/config/site",

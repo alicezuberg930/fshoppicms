@@ -1,51 +1,57 @@
 "use client"
-import React, { Dispatch, FormEvent, SetStateAction, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import CustomImagePicker from "@/app/components/CustomImagePicker"
 import { createCategoryHook, readCategoryHook, updateCategoryHook } from "../hooks/category.hooks"
 import { uploadFilesHook } from "../hooks/common.hooks"
 import CategorySelectList from "./CategorySelectList"
-import { icons } from "../common/icons"
 import { useDispatch, useSelector } from "react-redux"
 import { getSubCategories } from "../services/api.service"
 import { setSubCategories } from "../services/subcategories.slice"
 
-const CategoryModal: React.FC<{
-    selectedCategory?: Category, setShow?: (v: boolean) => void, page: number, show?: boolean, setSelected: Dispatch<SetStateAction<Category | null>>
-}> = ({ selectedCategory, setShow, page, show = false, setSelected }) => {
-    const [images, setImages] = useState<File[]>([])
-    const { data: categories, isLoading } = readCategoryHook(1)
-    const create = createCategoryHook()
-    const update = updateCategoryHook()
+const CategoryModal: React.FC<{ page: number }> = ({ page }) => {
+    const { selectedCategory } = useSelector((state: any) => state.category)
+    const [images, setImages] = useState<{ file: File | null, url: string }[]>([])
+    const { data: categories, isLoading } = readCategoryHook(page)
+    const createHook = createCategoryHook(page)
+    const updateHook = updateCategoryHook(page)
     const uploadHook = uploadFilesHook()
-    const { MdCancel } = icons
     const { subCategories, currentParentCategory } = useSelector((state: any) => state.subcategory)
     const dispatch = useDispatch()
 
-    const handleCreateCategory = async (e: FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        if (selectedCategory && selectedCategory.thumbnail) setImages([{ file: null, url: selectedCategory.thumbnail }])
+    }, [])
+
+    const handleCategoryAction = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (images.length < 1) {
             toast.error("Cần ít nhất 1 ảnh cho danh mục")
             return
         }
         const formData = new FormData(e.currentTarget)
-        const category: Category = Object.fromEntries(formData.entries())
-        if (category.parentCategory == "") category.parentCategory = null
-        formData.set("file", images[0])
-        uploadHook.mutate(formData, {
-            onSuccess(data) {
-                category["thumbnail"] = data.url
-                if (selectedCategory == null) {
-                    create.mutate(category)
-                } else {
-                    const isSubcategory = subCategories.find((v: Category) => v._id === selectedCategory._id) !== undefined
-                    update.mutate({ category: category, id: selectedCategory._id!, isSubcategory })
-                    if (isSubcategory)
-                        getSubCategories(currentParentCategory!).then(res => { dispatch(setSubCategories(res.category.data)) })
-                }
-                setShow!(false)
-            }
-        })
+        const tempCategory: Category = Object.fromEntries(formData.entries())
+        if (tempCategory.parentCategory == "") tempCategory.parentCategory = null
+        if (images[0].file != null) {
+            formData.set("file", images[0].file!)
+            await new Promise(resolve => {
+                uploadHook.mutate(formData, {
+                    onSuccess(data) {
+                        tempCategory["thumbnail"] = data.url
+                        resolve(null)
+                    }
+                })
+            })
+        } else {
+            tempCategory["thumbnail"] = images[0].url
+        }
+        if (selectedCategory) {
+            const isSubcategory = subCategories.find((v: Category) => v._id === selectedCategory._id) !== undefined
+            updateHook.mutate({ category: tempCategory, id: selectedCategory._id!, isSubcategory })
+            if (isSubcategory) getSubCategories(currentParentCategory!).then(res => { dispatch(setSubCategories(res.category.data)) })
+        } else {
+            createHook.mutate(tempCategory)
+        }
     }
 
     return (
@@ -53,10 +59,9 @@ const CategoryModal: React.FC<{
             <div className='text-black'>
                 <div className='bg-[#f5f5f5] p-3 flex justify-between items-center'>
                     <h3 className='font-semibold text-red-500'>{selectedCategory ? 'Sửa' : 'Thêm'} danh mục</h3>
-                    <MdCancel size={28} fill="red" onClick={() => { setShow!(false); setSelected(null) }} />
                 </div>
                 <div className='p-3'>
-                    <form onSubmit={handleCreateCategory}>
+                    <form onSubmit={handleCategoryAction}>
                         <table className='w-full'>
                             <tbody>
                                 <tr className='bg-[#347ab6] text-white'>
@@ -79,10 +84,7 @@ const CategoryModal: React.FC<{
                                 <tr>
                                     <td className='py-3 w-32'>Hình</td>
                                     <td className='py-3'>
-                                        <div className='mb-2'>
-                                            <CustomImagePicker setImages={setImages} isMultiple={false} id="category" />
-                                        </div>
-                                        <p className='mb-0 text-red-500 text-sm'><b>Kích thước ảnh:</b> 700 x 700 (px)</p>
+                                        <CustomImagePicker setImages={setImages} images={images} isMultiple={false} id="category" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -104,7 +106,7 @@ const CategoryModal: React.FC<{
                                         <div className='space-x-3 font-bold text-md'>
                                             <input type='submit' className='bg-[#347ab6] p-3 rounded-md text-white outline-none' value='Xác Nhận' />
                                             <input type='reset' className='bg-[#eeeeee] p-3 rounded-md outline-none' value='Nhập Lại' />
-                                            <button onClick={() => { setShow!(false); setSelected(null); }} className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button>
+                                            <button className='bg-[#eeeeee] p-3 rounded-md outline-none'>Đóng</button>
                                         </div>
                                     </td>
                                 </tr>

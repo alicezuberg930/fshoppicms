@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { API } from "@/app/common/api"
 import { createCategory, createSubCategory, deleteCategory, deleteSubCategory, getCategories, getSubCategories, updateCategory, updateSubCategory } from "../services/api.service"
-import { isAxiosError } from "@/app/common/utils"
 import { toast } from "react-toastify"
+import { useRouter } from "next/navigation"
+import { PATH } from "../common/path"
 
 export const readCategoryHook = (page: number) => {
     return useQuery({
@@ -42,13 +43,15 @@ export const deleteSubCategoryHook = (page: number) => {
     })
 }
 
-export const createCategoryHook = () => {
+export const createCategoryHook = (page: number) => {
     const queryClient = useQueryClient()
+    const router = useRouter()
     return useMutation({
         mutationFn: (category: Category) => category.parentCategory != null ? createSubCategory(category) : createCategory(category),
         onSuccess(data) {
-            toast.success(data.message)
-            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, 1] })
+            toast.success("Tạo danh mục thành công")
+            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, page] })
+            router.push(PATH.CATEGORIES)
         },
         onError(error) {
             toast.error("Đã có lỗi xảy ra")
@@ -57,14 +60,15 @@ export const createCategoryHook = () => {
     })
 }
 
-export const updateCategoryHook = () => {
+export const updateCategoryHook = (page: number) => {
     const queryClient = useQueryClient()
+    const router = useRouter()
     return useMutation({
-        mutationFn: ({ category, id, isSubcategory }: { category: Category, id: string, isSubcategory: boolean }) =>
-            isSubcategory ? updateSubCategory(id, category) : updateCategory(id, category),
+        mutationFn: ({ category, id, isSubcategory }: { category: Category, id: string, isSubcategory: boolean }) => isSubcategory ? updateSubCategory(id, category) : updateCategory(id, category),
         onSuccess(data) {
             toast.success(data.message)
-            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, 1] })
+            queryClient.invalidateQueries({ queryKey: [API.READ_CATEGORIES, page] })
+            router.push(PATH.CATEGORIES)
         },
         onError(error) {
             toast.error("Đã có lỗi xảy ra")

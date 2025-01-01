@@ -6,7 +6,7 @@ import { toast } from "react-toastify"
 import CustomImagePicker from "./CustomImagePicker"
 
 const BrandModal: React.FC<{ selectedBrand?: Brand, setSelected?: Dispatch<SetStateAction<Brand | null>> }> = ({ selectedBrand, setSelected }) => {
-    const [images, setImages] = useState<File[]>([])
+    const [images, setImages] = useState<{ file: File | null, url: string }[]>([])
     const { data: categories, isLoading: loadingCategories } = readCategoryHook(1)
     const create = createBrandHook()
     const update = updateBrandHook()
@@ -21,7 +21,7 @@ const BrandModal: React.FC<{ selectedBrand?: Brand, setSelected?: Dispatch<SetSt
         const formData = new FormData(e.currentTarget)
         const brand: Brand = Object.fromEntries(formData.entries()) // Convert FormData to an object
         brand["categories"] = [formData.get("category")!.toString()]
-        formData.set('file', images[0])
+        formData.set('file', images[0].url)
         uploadHook.mutate(formData, {
             onSuccess(data) {
                 brand["logo"] = data.url

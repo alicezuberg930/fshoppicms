@@ -6,43 +6,46 @@ import { readCategoryHook } from '@/app/hooks/category.hooks'
 import CategoryList from '@/app/components/CategoryList'
 import CustomPaginator from '@/app/components/CustomPaginator'
 import CategoryModal from '@/app/components/CategoryModal'
+import Link from 'next/link'
+import { PATH } from '@/app/common/path'
+import { useDispatch } from 'react-redux'
+import { setSelectedCategory } from '@/app/services/category.slice'
 
 const CategoriesPage: React.FC = () => {
     // icons
     const { FaFilter, FaRegTrashAlt, FaChevronDown, IoIosAddCircleOutline } = icons
     // hooks    
-    const [checkBoxes, setCheckBoxes] = useState<number[]>([])
-    const [checkAll, setCheckAll] = useState<boolean>(false)
+    // const [checkBoxes, setCheckBoxes] = useState<number[]>([])
+    // const [checkAll, setCheckAll] = useState<boolean>(false)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const { data: categories, isLoading } = readCategoryHook(currentPage)
-    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-    const [show, setShow] = useState<boolean>(false)
+    const dispatch = useDispatch()
 
-    const dummy: number[] = [];
-    for (let i = 0; i <= 8; i++) {
-        dummy.push(i)
-    };
+    // const dummy: number[] = [];
+    // for (let i = 0; i <= 8; i++) {
+    //     dummy.push(i)
+    // };
 
-    const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
-        if (e.target.checked) {
-            if (!checkBoxes.includes(i)) {
-                setCheckBoxes(checkBoxes.concat(i))
-            }
-            if (checkBoxes.length + 1 == dummy.length) setCheckAll(true)
-        } else {
-            setCheckAll(false)
-            setCheckBoxes(checkBoxes.filter((v) => v !== i))
-        }
-    }
+    // const selectOne = (e: ChangeEvent<HTMLInputElement>, i: number) => {
+    //     if (e.target.checked) {
+    //         if (!checkBoxes.includes(i)) {
+    //             setCheckBoxes(checkBoxes.concat(i))
+    //         }
+    //         if (checkBoxes.length + 1 == dummy.length) setCheckAll(true)
+    //     } else {
+    //         setCheckAll(false)
+    //         setCheckBoxes(checkBoxes.filter((v) => v !== i))
+    //     }
+    // }
 
-    const selectAll = (e: ChangeEvent<HTMLInputElement>) => {
-        setCheckAll(e.target.checked)
-        if (e.target.checked) {
-            setCheckBoxes(dummy)
-        } else {
-            setCheckBoxes([])
-        }
-    }
+    // const selectAll = (e: ChangeEvent<HTMLInputElement>) => {
+    //     setCheckAll(e.target.checked)
+    //     if (e.target.checked) {
+    //         setCheckBoxes(dummy)
+    //     } else {
+    //         setCheckBoxes([])
+    //     }
+    // }
 
     return (
         <main className='h-full'>
@@ -50,10 +53,10 @@ const CategoriesPage: React.FC = () => {
                 <div className='flex items-center justify-between mb-2 text-2xl font-semibold'>
                     <h2 className='text-black'>Danh mục</h2>
                     <div className='flex gap-2'>
-                        <button className='flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4' onClick={() => setShow(true)}>
+                        <Link onClick={() => dispatch(setSelectedCategory(null))} href={PATH.NEW_CATEGORY} className='flex items-center text-sm font-medium rounded-xl bg-blue-300 gap-1 text-white py-2 px-4'>
                             <IoIosAddCircleOutline className='w-5 h-5' />
                             <span>Thêm mới</span>
-                        </button>
+                        </Link>
                         <button className='flex items-center text-sm font-medium rounded-xl bg-red-600 gap-1 text-white py-2 px-4'>
                             <FaRegTrashAlt className='w-5 h-5' />
                             <span>Xóa</span>
@@ -108,7 +111,7 @@ const CategoriesPage: React.FC = () => {
                                     <tr>
                                         <th className='px-2 py-2 bg-gray-50'>
                                             <button className='flex items-center space-x-1 text-xs font-medium leading-4 tracking-wider text-gray-500 group focus:outline-none'>
-                                                <input type='checkbox' onChange={(e) => selectAll(e)} checked={checkAll} />
+                                                <input type='checkbox' />
                                             </button>
                                         </th>
                                         <th className='px-3 py-2 md:py-3 bg-gray-50 w-[50px]'>
@@ -152,27 +155,14 @@ const CategoriesPage: React.FC = () => {
                                                     </div>
                                                 </td>
                                             </tr> :
-                                            categories?.categories && <CategoryList setShow={setShow} setSelectedCategory={setSelectedCategory} categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
+                                            categories?.categories && <CategoryList categories={categories?.categories?.data.categories as Category[]} currentPage={currentPage} />
                                     }
                                 </tbody>
                             </table>
                         </div>
-                        {
-                            isLoading ? <></> :
-                                true ? <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={categories?.categories?.data.page} /> : <></>
+                        {isLoading ? <></> : categories?.categories &&
+                            <CustomPaginator setCurrentPage={setCurrentPage} currentPage={currentPage} totalPage={categories?.categories?.data.page} />
                         }
-                    </div>
-                </div>
-            </div>
-            <div className={`w-full h-screen fixed inset-0 z-20 overflow-y-scroll ${show ? 'block' : 'hidden'}`}>
-                <div className="flex items-end justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0">
-                    <div className="fixed inset-0 transition-opacity">
-                        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                    </div>
-                    <div className="z-30 relative inline-block bg-white shadow-xl my-8 sm:align-middle max-w-5xl rounded-md w-full">
-                        <div className="px-4 py-5 bg-white text-left rounded-md">
-                            {show ? <CategoryModal selectedCategory={selectedCategory!} setSelected={setSelectedCategory} setShow={setShow} page={currentPage} /> : <></>}
-                        </div>
                     </div>
                 </div>
             </div>

@@ -7,10 +7,13 @@ import Image from "next/image";
 import { getSubCategories } from "../services/api.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentParentCategory, setSubCategories } from "../services/subcategories.slice";
+import Link from "next/link";
+import { PATH } from "../common/path";
+import { setSelectedCategory } from "../services/category.slice";
 
 const CategoryList: React.FC<{
-    categories: Category[], setShow: (v: boolean) => void, parentIndex?: number, currentPage: number, parentCategory?: string, setSelectedCategory: Dispatch<SetStateAction<Category | null>>
-}> = ({ categories, setShow, parentIndex = 0, currentPage = 1, parentCategory = "", setSelectedCategory }) => {
+    categories: Category[], parentIndex?: number, currentPage: number, parentCategory?: string
+}> = ({ categories, parentIndex = 0, currentPage = 1, parentCategory = "" }) => {
     const deleteCategory = deleteCategoryHook(currentPage)
     const deleteSubCategory = deleteSubCategoryHook(currentPage)
     const { MdModeEdit, FaRegTrashAlt } = icons
@@ -86,11 +89,11 @@ const CategoryList: React.FC<{
                                 </td>
                                 <td className="px-3 py-2 md:py-4 whitespace-normal text-sm leading-5 text-gray-900">
                                     <div className="flex flex-wrap justify-start gap-1">
-                                        <button onClick={() => { setSelectedCategory(category); setShow(true) }} title="Edit"
+                                        <Link onClick={() => dispatch(setSelectedCategory(category))} href={`${PATH.EDIT_CATEGORY}/${category._id}`} title="Edit"
                                             className="p-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none"
                                         >
                                             <MdModeEdit className="w-5 h-5" />
-                                        </button>
+                                        </Link>
                                         <button onClick={() => handleDeleteCategory(category._id!)} title="Delete"
                                             className="flex items-center p-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700"
                                         >
@@ -100,7 +103,7 @@ const CategoryList: React.FC<{
                                 </td>
                             </tr>
                             {/* Recursively Render List of Subcategories */}
-                            {(subCategories.length > 0 && subCategories[0].parentCategory === category._id) ? <CategoryList setShow={setShow} parentIndex={index + 1} categories={subCategories} currentPage={currentPage} parentCategory={category.name} setSelectedCategory={setSelectedCategory} /> : <></>}
+                            {(subCategories.length > 0 && subCategories[0].parentCategory === category._id) ? <CategoryList parentIndex={index + 1} categories={subCategories} currentPage={currentPage} parentCategory={category.name} /> : <></>}
                         </React.Fragment>
                     );
                 })
