@@ -586,7 +586,7 @@ const ProductModal: React.FC<{ product?: Product, page: number }> = ({ product =
                                                                                         <td className='border-r py-3 flex flex-col items-center gap-2'>
                                                                                             <span>Tùy chọn {optionIndex + 1}</span>
                                                                                             <CustomImagePicker showTitle={false} id={`option-${i}-${optionIndex}`}
-                                                                                                isMultiple={false} images={[{ file: null, url: product?.options![i]?.value![optionIndex]?.img! }]}
+                                                                                                isMultiple={false} images={product?.options![i]?.value![optionIndex]?.img ? [{ file: null, url: product?.options![i]?.value![optionIndex]?.img! }] : []}
                                                                                             />
                                                                                         </td>
                                                                                         <td className='border-r px-1 md:px-4 py-3'>
