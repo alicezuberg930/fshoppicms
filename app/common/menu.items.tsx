@@ -36,12 +36,6 @@ const menuItems = [
         icon: <FaUser className='w-5 h-5' />
     },
     {
-        isParent: false,
-        name: "Tải ảnh lên cloud",
-        path: PATH.UPLOAD_FILES,
-        icon: <MdFileUpload className="w-5 h-5" />
-    },
-    {
         isParent: true,
         name: "Đơn hàng",
         icon: <PiShippingContainer className="w-5 h-5" />,
